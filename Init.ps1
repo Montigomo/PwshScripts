@@ -134,6 +134,6 @@ foreach($value in $userFolders.GetEnumerator())
     if(!(Test-Path $value.Value)){ New-Item -ItemType Directory -Force -Path $value.Value };
     if(!(Test-Path $value.Value)){ continue };
     #$skfr = Set-KnownFolderPath -KnownFolder $value.Name -Path $value.Value
-    $rs = if((Set-KnownFolderPath -KnownFolder $value.Name -Path $value.Value) -eq 0) {'success'} else {'failure'};
-    Write-Output ('Setting Known folder {0} - {1}' -f $value.Name, $rs);
+    #$rs = if((Set-KnownFolderPath -KnownFolder $value.Name -Path $value.Value) -eq 0) {'success'} else {'failure'};
+    Write-Output ('Setting Known folder {0} - {1}' -f $value.Name, (Set-KnownFolderPath -KnownFolder $value.Name -Path $value.Value));
 }
