@@ -2,34 +2,32 @@
 [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Drawing") 
 [void] [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")  
 
-###
-if((Test-Path variable:global:SETTING_OPTIONS) -eq $false)
-{
-    # typedef enum  {
-    New-Variable -Name SETTING_OPTIONS -Value (@{
+$settingFolder = (Get-KnownFolderPath -KnownFolder OneDriveFolder) + '\Powershell\Scripts\settings'
+
+#if((Test-Path variable:global:SETTING_OPTIONS) -eq $false)
+#{ # typedef enum  {
+New-Variable -Name SETTING_OPTIONS -Value (@{
         'Logitech' = @{
             'Backup' = @{
                 'copyfiles' = @{
                     [System.IO.Path]::Combine($env:LOCALAPPDATA, "Logitech\Logitech Gaming Software", "settings.json") = 
-                    [System.IO.Path]::Combine([Environment]::GetFolderPath("MyDocuments") ,"_info\Logitech", "settings.json");
+                    [System.IO.Path]::Combine($settingFolder ,"Logitech", "settings.json");
                     [System.IO.Path]::Combine($env:LOCALAPPDATA, "Logitech\Logitech Gaming Software\profiles", "{09D92D75-3C8C-4723-B06C-4090BCB899C0}.xml") = 
-                    [System.IO.Path]::Combine([Environment]::GetFolderPath("MyDocuments") ,"_info\Logitech", "{09D92D75-3C8C-4723-B06C-4090BCB899C0}.xml")
+                    [System.IO.Path]::Combine($settingFolder ,"Logitech", "{09D92D75-3C8C-4723-B06C-4090BCB899C0}.xml")
                 }
             };
             'Restore' = @{
                 'copyfiles' = @{
                    
-                    [System.IO.Path]::Combine([Environment]::GetFolderPath("MyDocuments") ,"_info\Logitech", "settings.json") =
+                    [System.IO.Path]::Combine($settingFolder ,"Logitech", "settings.json") =
                     [System.IO.Path]::Combine($env:LOCALAPPDATA, "Logitech\Logitech Gaming Software", "settings.json");
-                    [System.IO.Path]::Combine([Environment]::GetFolderPath("MyDocuments") ,"_info\Logitech", "{09D92D75-3C8C-4723-B06C-4090BCB899C0}.xml") = 
+                    [System.IO.Path]::Combine($settingFolder ,"Logitech", "{09D92D75-3C8C-4723-B06C-4090BCB899C0}.xml") = 
                     [System.IO.Path]::Combine($env:LOCALAPPDATA, "Logitech\Logitech Gaming Software\profiles", "{09D92D75-3C8C-4723-B06C-4090BCB899C0}.xml")
                 }
             }
         }
-    }) -Option constant
-    # }   SETTING_OPTIONS;
-}
-###
+})# -Option constant
+# }   SETTING_OPTIONS; #}
 
 
 
