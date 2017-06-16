@@ -17,11 +17,14 @@ Add-Type -AssemblyName PresentationFramework
 "@
 
 $puttyPath = 'D:\tools\network\PuTTY\putty.exe'
+$keysStore = 'D:\tools\network\PuTTY\keys\'
+$pgAgent = 'D:\tools\network\PuTTY\PAGEANT.EXE'
 
 $puttyItems = @{
     'WinSCP' = @{'Path' = "D:\tools\__this\WinSCP.lnk"; 'Args' = ""};
     'asus router' =  @{'Path' = $puttyPath; 'Args' = "-load asus"} ;
-    'eomy' = @{'Path' = $puttyPath; 'Args' = "-load eomy -l root"}
+    'eomy' = @{'Path' = $puttyPath; 'Args' = "-load eomy -l root"};
+    'ubnt' = @{'Path' = $puttyPath; 'Args' = "-load ubnt -l ubnt"}
 };
 
 
@@ -55,7 +58,7 @@ $buttonConnect.Add_Click({
 })
 
 $buttonPagent.Add_Click({
-    Start-Process 'D:\tools\network\PuTTY\PAGEANT.EXE' -ArgumentList 'D:\tools\network\PuTTY\keys\asus\private.ppk D:\tools\network\PuTTY\keys\eomy\private.ppk'
+    Start-Process $pgAgent -ArgumentList ('{0}asus\private.ppk {0}eomy\private.ppk {0}ubnt\ssh_key.ppk' -f $keysStore)
 })
 
 

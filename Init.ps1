@@ -1,6 +1,15 @@
 ﻿
 # to do
 
+[System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+function msgBox($x){
+    [System.Windows.Forms.MessageBox]::Show($x, 'Done!:PowerShell', 
+	[Windows.Forms.MessageBoxButtons]::OK, 
+	[Windows.Forms.MessageBoxIcon]::Information, [Windows.Forms.MessageBoxDefaultButton]::Button1,
+	[Windows.Forms.MessageBoxOptions]::ServiceNotification
+    )
+}
+
 function Install-AgtModules
 {
 <#  
@@ -56,6 +65,12 @@ function Load-AgtModule
     #Get-Module -ListAvailable  -Name 'Agt*' | ForEach-Object { if(-not(Get-Module -Name $_.Name)) { Import-Module $_.Name} }
     
     $srcProfilePath = $PSScriptRoot + "\profiles\profile.ps1"
+
+    #msgBox($PSScriptRoot);
+
+    #$oReturn=[System.Windows.Forms.Messagebox]::Show($PSScriptRoot);
+
+    #exit;
     
     $st = "###Agitech edition###" #'Get-Module -ListAvailable  -Name "Agt*" | ForEach-Object { if(-not(Get-Module -Name $_.Name)) { Import-Module $_.Name} }'
 
