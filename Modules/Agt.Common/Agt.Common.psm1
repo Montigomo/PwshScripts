@@ -39,6 +39,9 @@ function Set-PowerMode
 		{
 			$paca.Activate();
 		}
+
+        #$p = Get-CimInstance -Name root\cimv2\power -Class win32_PowerPlan -Filter "ElementName = 'High Performance'"
+        #Invoke-CimMethod -InputObject $p -MethodName Activate
 	}
 }
 

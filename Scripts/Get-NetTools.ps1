@@ -58,7 +58,11 @@ $buttonConnect.Add_Click({
 })
 
 $buttonPagent.Add_Click({
-    Start-Process $pgAgent -ArgumentList ('{0}asus\private.ppk {0}eomy\private.ppk {0}ubnt\ssh_key.ppk' -f $keysStore)
+    $argList = @(
+        #'{0}asus\private.ppk', 
+        '{0}eomy\private.ppk' , 
+        '{0}ubnt\ssh_key.ppk');
+    Start-Process $pgAgent -ArgumentList (($argList -join ' ') -f $keysStore)
 })
 
 
