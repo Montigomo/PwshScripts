@@ -20,7 +20,7 @@ function Install-AgtModules
     File Name   : Install-AgtModules.ps1  
     Author      : Query Maridy
     Prerequisite: PowerShell V2 on Vista and later versions.
-    Copyright 2014 - Query Maridy    
+    Copyright 2014 - Agitech    
 .LINK  
     Script posted on:  http://www.qmaridy.com  
 .EXAMPLE 
@@ -95,6 +95,12 @@ function Load-AgtModule
         $pc | Out-File $profile.CurrentUserAllHosts -Force
     }
 }
+
+#
+# Guid FOLDERID_SkyDrive = new Guid("A52BBA46-E9E1-435f-B3D9-28DAA648C0F6");
+# location = GetKnownFolderPath(FOLDERID_SkyDrive);
+Get-KnownFolderPath -Knownfolder 'OneDriveFolder'
+
 
 ################################
 #      Install section

@@ -1,10 +1,10 @@
 ﻿
 $wpath = "D:\\temp";
-$wpath = "D:\Media Library\Растровые клипарты\Datacraft\Sozaijiten";
+#$wpath = "D:\Media Library\Растровые клипарты\Datacraft\Sozaijiten";
 $swPiece = "SJ";
 $excludeNames = @("pdf", "PDF catalogs");
-$addSwPiece = $true;
-$remSwPiece = $true;
+$addSwPiece = $false;
+$remSwPiece = !$addSwPiece;
 
 foreach($item in (Get-ChildItem -Path $wpath))
 {
@@ -17,7 +17,7 @@ foreach($item in (Get-ChildItem -Path $wpath))
         if($remSwPiece)
         {
             $newName = $item.Name.Substring($swPiece.Length, $item.Name.Length - $swPiece.Length);
-            #Rename-Item -Path $item.FullName -NewName $newName -Verbose;
+            Rename-Item -Path $item.FullName -NewName $newName -Verbose;
 
         }
     }
@@ -26,7 +26,7 @@ foreach($item in (Get-ChildItem -Path $wpath))
         if($addSwPiece)
         {
             $newName = ($swPiece + $item.Name);
-            #Rename-Item -Path $item.FullName -NewName $newName -Verbose;
+            Rename-Item -Path $item.FullName -NewName $newName -Verbose;
         }
     }
 }
