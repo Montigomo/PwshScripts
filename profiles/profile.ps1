@@ -1,6 +1,16 @@
 
 # Agitech 2015.08.11
 
+function Test-CommandExists
+{
+ Param ($command)
+ $oldPreference = $ErrorActionPreference
+ $ErrorActionPreference = 'stop'
+ try {if(Get-Command $command){RETURN $true}}
+ Catch {Write-Host "$command does not exist"; RETURN $false}
+ Finally {$ErrorActionPreference=$oldPreference}
+} #end function test-CommandExists
+
 function PromptBad
 {
     #(Get-Host).UI.RawUI.WindowTitle="PS $(Get-Location)"
@@ -23,10 +33,13 @@ If (Test-Path $FileAzureShortcutStartup){
 }
 
 #Add variable for onedrive from registry
-Write-host "Get OneDriver path... " -NoNewline
-$onedrive = (Get-ItemProperty -Path "hkcu:\Software\Microsoft\Windows\CurrentVersion\SkyDrive\" -Name UserFolder).UserFolder
-Write-Host "Done!" -ForegroundColor Green
-
+if(Test-CommandExists -command Get-KnownFolderPath)
+{
+    Write-host "Get OneDriver path... " -NoNewline
+    #$onedrive = (Get-ItemProperty -Path "hkcu:\Software\Microsoft\Windows\CurrentVersion\SkyDrive\" -Name UserFolder).UserFolder
+    $onedrive = Get-KnownFolderPath -KnownFolder OneDriveFolder
+    Write-Host "Done!" -ForegroundColor Green
+}
 #Add onedrive modules to the PSModule path.
 Write-host "Add Modules from onedrive... " -NoNewline
 $env:PSModulePath = $env:PSModulePath + ";$onedrive\Software\PowerShell\Modules"
