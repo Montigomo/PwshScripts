@@ -69,7 +69,7 @@ function Set-PowerMode
 	Param
 	(
 		[Parameter(Mandatory = $true,Position = 0)] 
-		[ValidateSet("Power saver", "Balanced", "High performance")]
+		[ValidateSet("Power saver", "Balanced", "High performance", "Ultimate performance")]
 		[String]$PowerMode
 	)
 	$pac = gwmi -NS root\cimv2\power -Class win32_PowerPlan | select ElementName, IsActive | where {$_.IsActive}
@@ -78,7 +78,8 @@ function Set-PowerMode
 		$paca = gwmi -NS root\cimv2\power -Class win32_PowerPlan -Filter "ElementName ='$PowerMode'"
 		if($paca)
 		{
-			$paca.Activate();
+            if($paca.GetType().Name -eq 'ManagementObject'){ $paca.SetPropertyValue('IsActive', $true); }
+            else { $paca[0].SetPropertyValue('IsActive', $true); }
 		}
 
 				#$p = Get-CimInstance -Name root\cimv2\power -Class win32_PowerPlan -Filter "ElementName = 'High Performance'"
