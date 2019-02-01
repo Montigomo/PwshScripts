@@ -1,0 +1,4 @@
+setting 
+
+keylayout switch
+set time zone

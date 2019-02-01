@@ -58,6 +58,11 @@ function Load-AgtModule
 	}
 }
 
+function Install-Keys
+{
+    
+}
+
 
 Install-AgtModules
 Load-AgtModule

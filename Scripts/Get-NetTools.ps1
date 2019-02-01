@@ -63,8 +63,21 @@ $buttonPagent.Add_Click({
         '{0}eomy\private.ppk' , 
         '{0}ubnt\ssh_key.ppk');
     Start-Process $pgAgent -ArgumentList (($argList -join ' ') -f $keysStore)
+    $buttonPagent.Visibility = "Hidden"
 })
 
+$pagent = Get-Process "PAGEANT" -ErrorAction SilentlyContinue
+if ($pagent) {
+  # try gracefully first
+  #$firefox.CloseMainWindow()
+  # kill after five seconds
+  #Sleep 5
+  #if (!$firefox.HasExited) {
+  #  $firefox | Stop-Process -Force
+  #}
+  $buttonPagent.Visibility = "Hidden"
+}
+#Remove-Variable firefox
 
 
 
