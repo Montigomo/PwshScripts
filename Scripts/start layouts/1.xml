@@ -1,0 +1,73 @@
+<LayoutModificationTemplate xmlns:defaultlayout="http://schemas.microsoft.com/Start/2014/FullDefaultLayout" xmlns:start="http://schemas.microsoft.com/Start/2014/StartLayout" Version="1" xmlns="http://schemas.microsoft.com/Start/2014/LayoutModification">
+  <LayoutOptions StartTileGroupCellWidth="8" />
+  <DefaultLayoutOverride>
+    <StartLayoutCollection>
+      <defaultlayout:StartLayout GroupCellWidth="8">
+        <start:Group Name="Create">
+          <start:Tile Size="1x1" Column="4" Row="1" AppUserModelID="Microsoft.WindowsStore_8wekyb3d8bbwe!App" />
+          <start:DesktopApplicationTile Size="1x1" Column="1" Row="5" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\Postman\Postman.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="4" Row="2" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Adobe Photoshop CC 2018.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="1" Row="7" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\EPSON\EPSON Scan\EPSON Scan.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="3" Row="8" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\__this.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="5" Row="4" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\Far.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="7" Row="1" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\Opera Browser.lnk" />
+          <start:Tile Size="1x1" Column="4" Row="0" AppUserModelID="Microsoft.WindowsCalculator_8wekyb3d8bbwe!App" />
+          <start:DesktopApplicationTile Size="1x1" Column="5" Row="8" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Origin\Origin.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="3" Row="6" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\Command Prompt.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="2" Row="3" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\Windows PowerShell\Windows PowerShell ISE.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="7" Row="6" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\Mail.Ru\Disk-O\Disk-O.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="0" Row="7" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\Google Drive.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="0" Row="4" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Visual Studio 2017.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="7" Row="5" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\XnView.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="6" Row="2" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\CCleaner\CCleaner.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="1" Row="8" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\WhatsApp\WhatsApp.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="2" Row="8" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\Discord Inc\Discord.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="4" Row="7" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Skype\Skype.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="5" Row="0" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\ABBYY FineReader 12\ABBYY FineReader 12.lnk" />
+          <start:Tile Size="1x1" Column="2" Row="0" AppUserModelID="microsoft.windowscommunicationsapps_8wekyb3d8bbwe!Microsoft.WindowsLive.Mail" />
+          <start:DesktopApplicationTile Size="1x1" Column="3" Row="4" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\JetBrains\IntelliJ IDEA 2018.2.1.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="6" Row="8" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Epic Games Launcher.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="2" Row="4" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\JetBrains\JetBrains dotPeek 2018.3.1.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="6" Row="6" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\QTranslate\QTranslate.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="6" Row="7" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Battlefield 4\Battlefield 4.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="5" Row="1" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Accessories\Snipping Tool.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="4" Row="6" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\Ubiquiti UniFi\UniFi.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="0" Row="8" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Viber.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="5" Row="7" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\DAEMON Tools Lite\DAEMON Tools Lite.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="2" Row="5" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Axialis IconWorkshop\Axialis IconWorkshop.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="3" Row="7" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\PhonerLite.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="4" Row="8" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\TeamSpeak 3 Client.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="6" Row="4" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Tag&amp;Rename\Tag&amp;Rename.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="3" Row="1" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\VideoLAN\VLC\VLC media player.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="5" Row="6" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\OpenVPN\OpenVPN GUI.lnk" />
+          <start:Tile Size="1x1" Column="7" Row="0" AppUserModelID="Microsoft.MicrosoftEdge_8wekyb3d8bbwe!MicrosoftEdge" />
+          <start:DesktopApplicationTile Size="1x1" Column="2" Row="7" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\MAGIX\SOUND FORGE Pro 12.1\SOUND FORGE Pro 12.0 (x64).lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="6" Row="1" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\System Tools\Control Panel.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="7" Row="7" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Battle.net\Battle.net.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="4" Row="4" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Notepad++.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="6" Row="0" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\TeamViewer 14.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="1" Row="6" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Epson Software\Easy Photo Print.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="2" Row="6" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\Fiddler 4.lnk" />
+          <start:Tile Size="2x2" Column="0" Row="0" AppUserModelID="Microsoft.BingWeather_8wekyb3d8bbwe!App" />
+          <start:DesktopApplicationTile Size="1x1" Column="7" Row="2" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Firefox.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="6" Row="3" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Unity 2018.1.6f1 (64-bit)\Unity.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="4" Row="3" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Word 2016.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="2" Row="2" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Adobe Creative Cloud.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="5" Row="2" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\µTorrent.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="0" Row="5" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\CorelDRAW Graphics Suite 2018 (64-bit)\CorelDRAW 2018 (64-Bit).lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="7" Row="3" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Google Chrome.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="0" Row="6" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\CorelDRAW Graphics Suite 2018 (64-bit)\Corel Font Manager 2018 (64-Bit).lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="3" Row="2" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Adobe Acrobat DC.lnk" />
+          <start:Tile Size="2x2" Column="0" Row="2" AppUserModelID="microsoft.windowscommunicationsapps_8wekyb3d8bbwe!Microsoft.WindowsLive.Calendar" />
+          <start:DesktopApplicationTile Size="1x1" Column="3" Row="0" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Windows Media Player.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="1" Row="4" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Microsoft SQL Server Tools 17\Microsoft SQL Server Management Studio 17.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="5" Row="3" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\rto-proxy.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="7" Row="4" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Administrative Tools\Task Scheduler.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="7" Row="8" DesktopApplicationLinkPath="%APPDATA%\Microsoft\Windows\Start Menu\Programs\Twitch.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="6" Row="5" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Git Extensions.lnk" />
+          <start:DesktopApplicationTile Size="1x1" Column="3" Row="3" DesktopApplicationLinkPath="%ALLUSERSPROFILE%\Microsoft\Windows\Start Menu\Programs\Excel 2016.lnk" />
+        </start:Group>
+      </defaultlayout:StartLayout>
+    </StartLayoutCollection>
+  </DefaultLayoutOverride>
+</LayoutModificationTemplate>
