@@ -1,3 +1,5 @@
+
+#region Example
 # Copyright (c) 1993-2009 Microsoft Corp.
 #
 # This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
@@ -15,88 +17,114 @@
 #
 #      102.54.94.97     rhino.acme.com          # source server
 #       38.25.63.10     x.acme.com              # x client host
-
 # localhost name resolution is handled within DNS itself.
 #	127.0.0.1       localhost
 #	::1             localhost
+#endregion
 
-$file = "C:\Windows\System32\drivers\etc\hosts"
+#region Variables & Internal Function 
 
-function Add-Host([string]$filename, [string]$ip, [string]$hostname)
+
+if((Test-Path variable:global:hostsPath) -eq $false) 
 {
-	remove-host $filename $hostname
-	$ip + "`t`t" + $hostname | Out-File -encoding ASCII -append $filename
+    New-Variable -Name hostsPath -Value "$env:windir\System32\drivers\etc\hosts";
 }
 
-function Remove-Host([string]$filename, [string]$hostname)
-{
-	$c = Get-Content $filename
-	$newLines = @()
-	
-	foreach ($line in $c) {
-		$bits = [regex]::Split($line, "\t+")
-		if ($bits.count -eq 2) {
-			if ($bits[1] -ne $hostname) {
-				$newLines += $line
-			}
-		} else {
-			$newLines += $line
-		}
-	}
-	
-	# Write file
-	Clear-Content $filename
-	foreach ($line in $newLines) {
-		$line | Out-File -encoding ASCII -append $filename
-	}
+if((Test-Path variable:global:hostsDictionary) -eq $false) 
+{    New-Variable -Name hostsDictionary -Value @{};}
+else{
+    $hostsDictionary = @{};
 }
 
-function Print-Hosts([string]$filename) 
-{
-	$c = Get-Content $filename
-	
-	foreach ($line in $c) {
-		$bits = [regex]::Split($line, "\t+")
-		if ($bits.count -eq 2) {
-			Write-Host $bits[0] `t`t $bits[1]
-		}
-	}
-}
-
-# Uncomment lines with localhost on them:
-#$hosts = $hosts | Foreach {if ($_ -match '^\s*#\s*(.*?\d{1,3}.*?localhost.*)') {$matches[1]} else {$_}}
-#$hosts | Out-File $hostsPath -enc ascii
-# Comment lines with localhost on them:
-#$hosts = get-content $hostsPath
-#$hosts | Foreach {if ($_ -match '^\s*([^#].*?\d{1,3}.*?localhost.*)')       {"# " + $matches[1]} else {$_}}
-#$hosts |      Out-File $hostsPath -enc ascii
-#$hosts
-#print-hosts($file)
-#$hosts = $hosts | Foreach {if ($_ -match '(?<ip>\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)\s+(?<host>[^\s]+)') {$Matches["ip"]} else {}}
+# The host file contains lines of text consisting of an IP address in the first text field follewed by one or more host names.
+# 127.0.0.1  localhost loopback
+# ::1        localhost
 
 
-if((Test-Path variable:global:hostsPath) -eq $false) {$hostsPath = "$env:windir\System32\drivers\etc\hosts"}
+function Get-Hosts{
+	$lines = Get-Content $hostsPath | Where-Object {-not $_.StartsWith("#")};
+    $pattern = '(?<ip>\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)\s+(?<host>[^\s]+)';
 
-$hosts = get-content $hostsPath
+    #$rx = [regex]::new($pattern)
 
-$hostsDictionary = @{}
+    #foreach($item in $rx.Matches($lines))
 
-function GetHosts()
-{
-	foreach($line in $hosts)
-	{
-		if ($line -match '(?<ip>\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)\s+(?<host>[^\s]+)')
-		{
-			#$Matches["ip"] + " - " + $Matches["host"]
-			if(-not $hostsDictionary.ContainsKey($Matches["host"]))
+	foreach ($line in  $lines)
+    {
+        if($line -match $pattern)
+        {
+            "$($Matches["ip"]) - $($Matches["host"])";
+
+            if(-not $hostsDictionary.ContainsKey($Matches["host"]))
 			{
 				$hostsDictionary.Add($Matches["host"], $Matches["ip"])
 			}
-		}
+        }
+
+
+    	#if ($line -match '(?<ip>\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b)\s+(?<host>[^\s]+)')
+		#{
+		#	#$Matches["ip"] + " - " + $Matches["host"]
+		#	if(-not $hostsDictionary.ContainsKey($Matches["host"]))
+		#	{
+		#		$hostsDictionary.Add($Matches["host"], $Matches["ip"])
+		#	}
+		#}
+
+        #$bits = [regex]::Split($line, "\s+");
+		#if ($bits.count -eq 2){
+        #    $bkey = $bits[1];
+        #    $bvalue = $bits[0];
+        #    if(-not $hostsDictionary.ContainsKey($bkey))
+        #    {
+        #        $hostsDictionary.Add($bkey, $bvalue);
+        #    }
+		#}
 	}
+
 }
 
-foreach($line in $hostsDictionary.Keys)
-{
-	$line + " = " + $hostsDictionary[$line]
+function Write-Hosts{
+
 }
+
+function Test-Hosts {
+    if(-not (Test-Path $hostsPath)){return $false;}
+    try{
+        Get-Hosts;
+    }
+    catch{
+        return $false;
+    }
+    return $true;
+}
+
+Get-Hosts;
+#endregion
+
+
+function Print-Hosts([string]$filename) 
+{
+    if(Test-Hosts){
+	    
+	    
+    }
+}
+
+function Add-Host([string]$hostname, [string]$ip)
+{
+    if(Test-Hosts){
+	    
+	    
+    }
+}
+
+
+function Remove-Host([string]$hostname)
+{
+    if(Test-Hosts){
+	    
+	    
+    }
+}
+
