@@ -1,15 +1,4 @@
-﻿
-
-$device = Get-PnpDevice | Where-Object {$_.Class -eq "Bluetooth" -and $_.FriendlyName -eq "Samsung U Flex (40BB)"}
-
-Disable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false
-
-Start-Sleep -Seconds 10
-
-Enable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false
-
-
-[CmdletBinding()] Param (
+﻿[CmdletBinding()] Param (
     [Parameter(Mandatory=$true)][ValidateSet('Off', 'On')][string]$BluetoothStatus
 )
 If ((Get-Service bthserv).Status -eq 'Stopped') { Start-Service bthserv }
