@@ -1,21 +1,19 @@
 ﻿<#
-
-192.168.1.100
-192.168.1.101
-
+1. 
 Enable-PSRemoting -Force
 Set-WSManQuickConfig
-
+2. 
 Set-Item wsman:\localhost\client\trustedhosts 81.200.243.64
-Set-Item wsman:\localhost\client\trustedhosts 128.68.223.185
+Set-Item wsman:\localhost\client\trustedhosts 128.68.219.89:280
 Set-Item wsman:\localhost\client\trustedhosts *
-
+3.
 Test-WsMan 128.68.223.185
 
 $password = ConvertTo-SecureString "nidaleb45" -AsPlainText -Force
 $cred= New-Object System.Management.Automation.PSCredential ("username", $password )
 
-Enter-PSSession -ComputerName 128.68.223.185 -Credential nidaleb
+128.68.219.89
+Enter-PSSession -ComputerName 128.68.219.89 -Credential nidaleb@outlook.com
 //nidaleb45
 
 
@@ -38,4 +36,19 @@ $connections | % {$_.GetNetwork().SetCategory(1)}
 Set-NetFirewallRule -Name "WINRM-HTTP-In-TCP" -RemoteAddress Any
 
 
+
+
+
+
+
+
 #>
+
+foreach ($loopnumber in 1..8){
+    Start-Job -ScriptBlock{
+    $result = 1
+        foreach ($number in 1..2147483647){
+            $result = $result * $number
+        }# end foreach
+    }# end Start-Job
+}# end foreach
