@@ -1,0 +1,24 @@
+﻿TOPIC
+    about_ToggleDisplay
+
+SHORT DESCRIPTION
+    The ToggleDisplay module is a set of commands to turn the display on and off.
+
+LONG DESCRIPTION
+    The ToggleDisplay PowerShell module contains the commands Start-Display and Stop-Display that can turn the display on and off. Note that this does not mean the physical monitor, but the display Windows is outputting to the monitor. Some monitors may go into a power-saving mode when the display is turned off, but it is not the same as using the power button. 
+
+EXAMPLES
+    PS C:\> Start-Display
+    
+    This command will turn on the display.
+
+    PS C:\> Stop-Display
+
+    This command will turn off the display.
+
+KEYWORDS
+    Display PowerSaving Monitor
+
+SEE ALSO
+    Get-Help Start-Display
+    Get-Help Stop-Display

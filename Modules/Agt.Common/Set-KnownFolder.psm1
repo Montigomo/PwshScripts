@@ -47,7 +47,7 @@ namespace KnownFolders
 			{"Music", new Guid("4BD8D571-6D19-48D3-BE97-422220080E43") },
 			{"NetHood", new Guid("C5ABBF53-E17F-4121-8900-86626FC2C973") },
 			{"NetworkFolder", new Guid("D20BEEC4-5CA8-4905-AE3B-BF251EA09B53") },
-            {"OneDriveFolder", new Guid("A52BBA46-E9E1-435f-B3D9-28DAA648C0F6")},
+      {"OneDriveFolder", new Guid("A52BBA46-E9E1-435f-B3D9-28DAA648C0F6")},
 			{"OriginalImages", new Guid("2C36C0AA-5812-4b87-BFD0-4CD0DFB19B39") },
 			{"PhotoAlbums", new Guid("69D2CF90-FC33-4FB7-9A0C-EBB0F0FCB43C") },
 			{"Pictures", new Guid("33E28130-4E1E-4676-835A-98395C3BC3BB") },
@@ -151,21 +151,22 @@ namespace KnownFolders
 function Set-KnownFolderPath {
 	Param (
 		[Parameter(Mandatory = $true)]
-            [ValidateSet('AddNewPrograms', 'AdminTools', 'AppUpdates', 'CDBurning', 'ChangeRemovePrograms',
-            'CommonAdminTools', 'CommonOEMLinks', 'CommonPrograms', 'CommonStartMenu', 'CommonStartup', 'CommonTemplates',
-            'ComputerFolder', 'ConflictFolder', 'ConnectionsFolder', 'Contacts', 'ControlPanelFolder', 'Cookies', 'Desktop',
-            'Documents', 'Downloads', 'Favorites', 'FOLDERID_SkyDrive', 'Fonts', 'Games', 'GameTasks', 'History', 'InternetCache',
-            'InternetFolder', 'Links', 'LocalAppData', 'LocalAppDataLow', 'LocalizedResourcesDir', 'Music', 'NetHood', 'NetworkFolder',
-            'OriginalImages', 'PhotoAlbums', 'Pictures', 'Playlists', 'PrintersFolder', 'PrintHood', 'Profile', 'ProgramData',
-            'ProgramFiles', 'ProgramFilesX64', 'ProgramFilesX86', 'ProgramFilesCommon', 'ProgramFilesCommonX64', 'ProgramFilesCommonX86',
-            'Programs', 'Public', 'PublicDesktop', 'PublicDocuments', 'PublicDownloads', 'PublicGameTasks', 'PublicMusic', 'PublicPictures',
-            'PublicVideos', 'QuickLaunch', 'Recent', 'RecycleBinFolder', 'ResourceDir', 'RoamingAppData', 'SampleMusic', 'SamplePictures',
-            'SamplePlaylists', 'SampleVideos', 'SavedGames', 'SavedSearches', 'SEARCH_CSC', 'SEARCH_MAPI', 'SearchHome', 'SendTo',
-            'SidebarDefaultParts', 'SidebarParts', 'StartMenu', 'Startup', 'SyncManagerFolder', 'SyncResultsFolder', 'SyncSetupFolder',
-            'System', 'SystemX86', 'Templates', 'TreeProperties', 'UserProfiles', 'UsersFiles', 'Videos', 'Windows')]
-            [string]$KnownFolder,
-            [Parameter(Mandatory = $true)]
-            [string]$Path
+		[ValidateSet('AddNewPrograms', 'AdminTools', 'AppUpdates', 'CDBurning', 'ChangeRemovePrograms',
+		'CommonAdminTools', 'CommonOEMLinks', 'CommonPrograms', 'CommonStartMenu', 'CommonStartup', 'CommonTemplates',
+		'ComputerFolder', 'ConflictFolder', 'ConnectionsFolder', 'Contacts', 'ControlPanelFolder', 'Cookies', 'Desktop',
+		'Documents', 'Downloads', 'Favorites', 'FOLDERID_SkyDrive', 'Fonts', 'Games', 'GameTasks', 'History', 'InternetCache',
+		'InternetFolder', 'Links', 'LocalAppData', 'LocalAppDataLow', 'LocalizedResourcesDir', 'Music', 'NetHood', 'NetworkFolder',
+		'OriginalImages', 'PhotoAlbums', 'Pictures', 'Playlists', 'PrintersFolder', 'PrintHood', 'Profile', 'ProgramData',
+		'ProgramFiles', 'ProgramFilesX64', 'ProgramFilesX86', 'ProgramFilesCommon', 'ProgramFilesCommonX64', 'ProgramFilesCommonX86',
+		'Programs', 'Public', 'PublicDesktop', 'PublicDocuments', 'PublicDownloads', 'PublicGameTasks', 'PublicMusic', 'PublicPictures',
+		'PublicVideos', 'QuickLaunch', 'Recent', 'RecycleBinFolder', 'ResourceDir', 'RoamingAppData', 'SampleMusic', 'SamplePictures',
+		'SamplePlaylists', 'SampleVideos', 'SavedGames', 'SavedSearches', 'SEARCH_CSC', 'SEARCH_MAPI', 'SearchHome', 'SendTo',
+		'SidebarDefaultParts', 'SidebarParts', 'StartMenu', 'Startup', 'SyncManagerFolder', 'SyncResultsFolder', 'SyncSetupFolder',
+		'System', 'SystemX86', 'Templates', 'TreeProperties', 'UserProfiles', 'UsersFiles', 'Videos', 'Windows')]
+		[string]$KnownFolder,
+		
+		[Parameter(Mandatory = $true)]
+		[string]$Path
     )
     $result = '';
     if ((Test-Path $Path -PathType Container))
