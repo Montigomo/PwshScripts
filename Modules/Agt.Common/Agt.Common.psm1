@@ -1,3 +1,15 @@
+
+
+function IsModulesExists
+{
+	$result = $true
+	$modules = @(<#"Pscx",#> "Agt.Powershell", "Agt.Common"	)
+	#$var = (Get-Module | measure).Count
+	foreach($value in $modules)	{ if (!(Get-Module -Name $value)){ $result = $false; break; } }
+	$result
+}
+
+
 function Get-ExecutableForFile
 {
 		param
@@ -87,14 +99,6 @@ function Set-PowerMode
 	}
 }
 
-function IsModulesExists
-{
-	$result = $true
-	$modules = @(<#"Pscx",#> "Agt.Powershell", "Agt.Common"	)
-	#$var = (Get-Module | measure).Count
-	foreach($value in $modules)	{ if (!(Get-Module -Name $value)){ $result = $false; break; } }
-	$result
-}
 function Start-Fun
 {
 		$null = Register-ObjectEvent -InputObject ([Microsoft.Win32.SystemEvents]) -EventName "SessionSwitch" -Action {

@@ -1,0 +1,15 @@
+
+- powershell 5
+PS C:\Users\agite> [Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::User)
+PS C:\Users\agite> [Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Process)
+C:\Users\agite\OneDrive\Documents\WindowsPowerShell\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\Windows\system32\WindowsPowerShell\v1.0\Modules
+PS C:\Users\agite> [Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine)
+C:\Program Files\WindowsPowerShell\Modules;C:\Windows\system32\WindowsPowerShell\v1.0\Modules
+
+
+- powershell 7
+PS C:\Users\agite> [Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::User)
+PS C:\Users\agite> [Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Process)
+C:\Users\agite\OneDrive\Documents\PowerShell\Modules;C:\Program Files\PowerShell\Modules;c:\program files\powershell\7\Modules;C:\Program Files\WindowsPowerShell\Modules;C:\Windows\system32\WindowsPowerShell\v1.0\Modules
+PS C:\Users\agite> [Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine)
+C:\Program Files\WindowsPowerShell\Modules;C:\Windows\system32\WindowsPowerShell\v1.0\Modules

@@ -1,8 +1,12 @@
 
 ### Download OpenSSH archive from github and try to install it
+
 $osuri = "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v8.1.0.0p1-Beta/OpenSSH-Win64.zip"
+
 $destPath = "c:\Program Files\OpenSSH\"
+
 $installScriptPath = Join-Path $destPath "install-sshd.ps1"
+
 function Test-Administrator  
 {  
     $user = [Security.Principal.WindowsIdentity]::GetCurrent();
@@ -59,6 +63,7 @@ if((Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*").S
 {
     Remove-WindowsCapability -Online  -Name  "OpenSSH.Server*"
 }
+
 if((Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Client*").State -eq "Installed")
 {
     Remove-WindowsCapability -Online  -Name  "OpenSSH.Client*"
@@ -68,6 +73,12 @@ if((Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Client*").S
 $pwshPath = "C:\Program Files\PowerShell\7\pwsh.exe"
 if(Test-Path $pwshPath -PathType Leaf)
 {
+    if(!(Test-Path "HKLM:\SOFTWARE\OpenSSH"))
+    {
+        New-Item 'HKLM:\Software\OpenSSH' -Force
+    }
+    #New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String –Force
+    #New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Program Files\PowerShell\7\pwsh.exe" -PropertyType String –Force
     New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value $pwshPath -PropertyType String –Force
 }
 
@@ -77,7 +88,26 @@ if(Test-Administrator)
     & $installScriptPath
 }
 
+#setup sshd service startup type and start it
+if(Get-Service  sshd -ErrorAction SilentlyContinue)
+{
+    # if((get-service sshd).StartType -eq [System.ServiceProcess.ServiceStartMode]::Manual)
+    Get-Service -Name sshd | Set-Service -StartupType 'Automatic'
+    Start-Service sshd
+}
+
+
 exit
+
+
+
+
+
+
+
+
+
+
 
 # Below commands in arbitrary order for installation OpenSSH to a Windows system
 # few helpfull items
@@ -87,10 +117,9 @@ exit
 # find  "`"22`""
 
 # far
-https://www.farmanager.com/files/Far30b5600.x86.20200518.7z
+# https://www.farmanager.com/files/Far30b5600.x86.20200518.7z
 
 Invoke-WebRequest -Uri https://wsldownload.azureedge.net/Ubuntu_1604.2019.523.0_x64.appx -OutFile Ubuntu.appx -UseBasicParsing
-
 
 # wsl
 Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux

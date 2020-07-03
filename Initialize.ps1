@@ -1,6 +1,10 @@
-﻿# to do
+﻿
+# System initialize after setup script for Powershell 
+# to do
+
 # Get-SymlinkTarget C:\Users\agite\Music
-[System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+ [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+
 function msgBox($x){
 	[System.Windows.Forms.MessageBox]::Show($x, 'Done!:PowerShell', 
 		[Windows.Forms.MessageBoxButtons]::OK, 
@@ -10,30 +14,23 @@ function msgBox($x){
 
 function Install-AgtModules
 {
-	[CmdletBinding()]
-	Param
-	()
-	Process
+	$mpath = $PSScriptRoot + '\Modules'
+	$p = [Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::User)
+	if(!(Test-Path $mpath)) { return; }
+	if((!$p) -or (!($p.Split(';')).Contains($mpath)))
 	{
-		$mpath = $PSScriptRoot + '\Modules'
-		$p = [Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::User)
-		if(!(Test-Path $mpath)) { return; }
-		if((!$p) -or (!($p.Split(';')).Contains($mpath)))
-		{
-			#Add the new path to the $p variable. Begin with a semi-colon separator.
-			if($p)
-			{ $p += ";$mpath"; }
-			else
-			{ $p += "$mpath"; }
-			#  Add the paths in $p to the PSModulePath value.
-			[Environment]::SetEnvironmentVariable("PSModulePath",$p,[System.EnvironmentVariableTarget]::User)
-		}          
-	}
+		#Add the new path to the $p variable. Begin with a semi-colon separator.
+		if($p)
+		{ $p += ";$mpath"; }
+		else
+		{ $p += "$mpath"; }
+		#  Add the paths in $p to the PSModulePath value.
+		[Environment]::SetEnvironmentVariable("PSModulePath",$p,[System.EnvironmentVariableTarget]::User)
+	}          
 }
 
 function Load-AgtModule
 {
-	Param()
 	#Get-Module -ListAvailable  -Name 'Agt*' | ForEach-Object { if(-not(Get-Module -Name $_.Name)) { Import-Module $_.Name} }
 	$srcProfilePath = $PSScriptRoot + "\profiles\profile.ps1"
 	#msgBox($PSScriptRoot);
@@ -56,11 +53,6 @@ function Load-AgtModule
 		$pc += [Environment]::NewLine + $st
 		$pc | Out-File $profile.CurrentUserAllHosts -Force
 	}
-}
-
-function Install-Keys
-{
-    
 }
 
 

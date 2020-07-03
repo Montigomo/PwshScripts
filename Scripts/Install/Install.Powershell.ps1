@@ -17,6 +17,7 @@ function Install-MsiPackage
     )
     Start-Process "msiexec.exe" -ArgumentList $MSIArguments -Wait -NoNewWindow 
 }
+
 function Invoke-RunAs
 {
     [CmdletBinding()]
@@ -41,7 +42,6 @@ function Invoke-RunAs
         [System.Collections.IDictionary]
         $NamedArguments
     )
-
     begin
     {
         # First we set up a separate managed powershell process
@@ -53,7 +53,6 @@ function Invoke-RunAs
         $Runspace.Open()
         Write-Verbose "Runspace state is $($Runspace.RunspaceStateInfo)"
     }
-
     process
     {
         foreach($path in $FilePath){
@@ -96,7 +95,6 @@ function Invoke-RunAs
             }
         }
     }
-
     end
     {
         foreach($target in $ProcessInstance,$Runspace){
@@ -107,42 +105,80 @@ function Invoke-RunAs
         }
     }
 }
+
+function Pin-App
+{
+    param(
+        [string]$appname,
+        [switch]$unpin
+    )
+    try
+    {
+        $shellVar = (New-Object -Com Shell.Application).NameSpace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}');
+        if ($unpin.IsPresent)
+        {
+            ($shellVar.Items() | 
+            Where-Object{$_.Name -eq $appname}).Verbs() | 
+            Where-Object{$_.Name.replace('&','') -match 'From "Start" UnPin|Unpin from Start'} | 
+            ForEach-Object{$_.DoIt()}
+            return "App '$appname' unpinned from Start"
+        }
+        else
+        {
+            ($shellVar.Items() | ?{$_.Name -eq $appname}).Verbs() | Where-Object{$_.Name.replace('&','') -match 'To "Start" Pin|Pin to Start'} | ForEach-Object{$_.DoIt()}
+            return "App '$appname' pinned to Start"
+        }
+    }
+    catch
+    {
+        Write-Error "Error Pinning/Unpinning App! (App-Name correct?)"
+    }
+}
+
 function Get-IsAdmin  
 {  
     $user = [Security.Principal.WindowsIdentity]::GetCurrent();
     [bool](New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
 }
 
-if(!Get-IsAdmin)
+#Write-Host "run flag  $global:runFlag"
+#$global:runFlag = $true;
+
+if(!(Get-IsAdmin))
 {
+    Write-Error "Run as administrator"
+    exit
     $pswPath = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName;
+    #$pp = $MyInvocation.MyCommand.Path
     if(((New-Object -TypeName System.Diagnostics.ProcessStartInfo -ArgumentList $pswPath).Verbs).Contains("runas"))
     {
         Start-Process -FilePath $pswPath -ArgumentList "-File $PSCommandPath" -Verb RunAs
     }
 }
 
+$pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName.Contains("C:\Program Files\PowerShell\7\pwsh.exe");
 
-Write-Output "Succes"
+if(!$pswhInstalled)
+{
+    # ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL - This property controls the option for adding the Open PowerShell item to the context menu in Windows Explorer.
+    # ENABLE_PSREMOTING - This property controls the option for enabling PowerShell remoting during installation.
+    # REGISTER_MANIFEST - This property controls the option for registering the Windows Event Logging manifest.
 
-# $PSVersionTable
-# $MyInvocation
-# Get-Host
-# $host
+    $pwshUriArray = @{
+        "x64" = "https://github.com/PowerShell/PowerShell/releases/download/v7.0.2/PowerShell-7.0.2-win-x64.msi";
+        "x86" = "https://github.com/PowerShell/PowerShell/releases/download/v7.0.2/PowerShell-7.0.2-win-x86.msi"
+    }
+    $pwshUri = $pwshUriArray["x64"];
 
-#exit 
+    # create temp file
 
-# ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL - This property controls the option for adding the Open PowerShell item to the context menu in Windows Explorer.
-# ENABLE_PSREMOTING - This property controls the option for enabling PowerShell remoting during installation.
-# REGISTER_MANIFEST - This property controls the option for registering the Windows Event Logging manifest.
+    $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
 
-$pwshUri = "https://github.com/PowerShell/PowerShell/releases/download/v7.0.1/PowerShell-7.0.1-win-x64.msi"
+    Invoke-WebRequest -OutFile $tmp $pwshUri
 
-# create temp file
+    Install-MsiPackage -FilePath $tmp.FullName -PackageParams "ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1"
+}
 
-$tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } –PassThru
-
-#Invoke-WebRequest -OutFile $tmp $pwshUri
-
-#Install-MsiPackage -FilePath $tmp.FullName -PackageParams "ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1"
+#Pin-App  "PowerShell 7 (x64)"
 #msiexec.exe /package PowerShell-7.0.0-win-x64.msi /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
+
