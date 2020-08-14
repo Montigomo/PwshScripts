@@ -156,29 +156,50 @@ if(!(Get-IsAdmin))
     }
 }
 
+function Get-PowershellUrl
+{
+    $repo = "https://api.github.com/repos/powershell/powershell"
+    $filenamePattern = "PowerShell-\d.\d.\d-win-x64.msi"
+    $preRelease = $false
+
+    if ($preRelease) {
+        $releasesUri = "$repo/releases"
+        $downloadUri = ((Invoke-RestMethod -Method GET -Uri $releasesUri)[0].assets | Where-Object name -like $filenamePattern ).browser_download_url
+    }
+    else {
+        $releasesUri = "$repo/releases/latest"
+        $downloadUri = ((Invoke-RestMethod -Method GET -Uri $releasesUri).assets | Where-Object name -match $filenamePattern ).browser_download_url
+    }
+
+    return $downloadUri
+}
+
 $pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName.Contains("C:\Program Files\PowerShell\7\pwsh.exe");
 
-if(!$pswhInstalled)
-{
-    # ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL - This property controls the option for adding the Open PowerShell item to the context menu in Windows Explorer.
-    # ENABLE_PSREMOTING - This property controls the option for enabling PowerShell remoting during installation.
-    # REGISTER_MANIFEST - This property controls the option for registering the Windows Event Logging manifest.
+#if(!$pswhInstalled)
+#{
 
-    $pwshUriArray = @{
-        "x64" = "https://github.com/PowerShell/PowerShell/releases/download/v7.0.2/PowerShell-7.0.2-win-x64.msi";
-        "x86" = "https://github.com/PowerShell/PowerShell/releases/download/v7.0.2/PowerShell-7.0.2-win-x86.msi"
-    }
-    $pwshUri = $pwshUriArray["x64"];
+$pwshUri = Get-PowershellUrl
 
-    # create temp file
+# create temp file
 
-    $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
+$tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
 
-    Invoke-WebRequest -OutFile $tmp $pwshUri
+Invoke-WebRequest -OutFile $tmp $pwshUri
 
-    Install-MsiPackage -FilePath $tmp.FullName -PackageParams "ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1"
-}
+# ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL - This property controls the option for adding the Open PowerShell item to the context menu in Windows Explorer.
+# ENABLE_PSREMOTING - This property controls the option for enabling PowerShell remoting during installation.
+# REGISTER_MANIFEST - This property controls the option for registering the Windows Event Logging manifest.
+
+Install-MsiPackage -FilePath $tmp.FullName -PackageParams "ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1"
+
+#}
 
 #Pin-App  "PowerShell 7 (x64)"
 #msiexec.exe /package PowerShell-7.0.0-win-x64.msi /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
 
+/*
+Замена зщцукырудд по умолчании
+Установка модулей
+
+*/

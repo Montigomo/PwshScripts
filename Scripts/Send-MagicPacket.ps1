@@ -104,7 +104,8 @@ function Invoke-WakeOnLan
 $MacAdresses = @{
 	AgiLaptopWiFi	= '34:f6:4b:b8:7b:ee'
 	AgiDesktop		= '74:d0:2b:a2:5c:45'
-	NidalebLaptop	= '54:a0:50:bc:29:70'
+  NidalebLaptop	= '54:a0:50:bc:29:70'
+  NidalebLaptopWiFi = '54:27:1e:e4:62:57'
 }
 
 Invoke-WakeOnLan -MacAddress $MacAdresses["NidalebLaptop"] -Verbose 

@@ -3,14 +3,14 @@
 # to do
 
 # Get-SymlinkTarget C:\Users\agite\Music
- [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
+#  [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
 
-function msgBox($x){
-	[System.Windows.Forms.MessageBox]::Show($x, 'Done!:PowerShell', 
-		[Windows.Forms.MessageBoxButtons]::OK, 
-		[Windows.Forms.MessageBoxIcon]::Information, [Windows.Forms.MessageBoxDefaultButton]::Button1,
-		[Windows.Forms.MessageBoxOptions]::ServiceNotification)
-}
+# function msgBox($x){
+# 	[System.Windows.Forms.MessageBox]::Show($x, 'Done!:PowerShell', 
+# 		[Windows.Forms.MessageBoxButtons]::OK, 
+# 		[Windows.Forms.MessageBoxIcon]::Information, [Windows.Forms.MessageBoxDefaultButton]::Button1,
+# 		[Windows.Forms.MessageBoxOptions]::ServiceNotification)
+# }
 
 function Install-AgtModules
 {
@@ -58,6 +58,19 @@ function Load-AgtModule
 
 Install-AgtModules
 Load-AgtModule
+
+
+
+function IsModulesExists
+{
+	$result = $true
+	$modules = @(<#"Pscx",#> "Agt.Powershell", "Agt.Common"	)
+	#$var = (Get-Module | measure).Count
+	foreach($value in $modules)	{ if (!(Get-Module -Name $value)){ $result = $false; break; } }
+	$result
+}
+
+
 
 #checks for installed modules
 $checkModules = $false;

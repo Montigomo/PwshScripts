@@ -3,7 +3,10 @@
 )
 If ((Get-Service bthserv).Status -eq 'Stopped') { Start-Service bthserv }
 Add-Type -AssemblyName System.Runtime.WindowsRuntime
-$asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | ? { $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1' })[0]
+$asTaskGeneric = ([System.WindowsRuntimeSystemExtensions].GetMethods() | Where-Object { 
+        $_.Name -eq 'AsTask' -and $_.GetParameters().Count -eq 1 -and $_.GetParameters()[0].ParameterType.Name -eq 'IAsyncOperation`1' 
+    })[0]
+    
 Function Await($WinRtTask, $ResultType) {
     $asTask = $asTaskGeneric.MakeGenericMethod($ResultType)
     $netTask = $asTask.Invoke($null, @($WinRtTask))
@@ -17,3 +20,8 @@ $radios = Await ([Windows.Devices.Radios.Radio]::GetRadiosAsync()) ([System.Coll
 $bluetooth = $radios | ? { $_.Kind -eq 'Bluetooth' }
 [Windows.Devices.Radios.RadioState,Windows.System.Devices,ContentType=WindowsRuntime] | Out-Null
 Await ($bluetooth.SetStateAsync($BluetoothStatus)) ([Windows.Devices.Radios.RadioAccessStatus]) | Out-Null
+
+$device = Get-PnpDevice | Where-Object {$_.Class -eq "Bluetooth" -and $_.FriendlyName -eq "FriendlyDeviceName"}
+Disable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false
+Start-Sleep -Seconds 10
+Enable-PnpDevice -InstanceId $device.InstanceId -Confirm:$false

@@ -1,15 +1,5 @@
 
 
-function IsModulesExists
-{
-	$result = $true
-	$modules = @(<#"Pscx",#> "Agt.Powershell", "Agt.Common"	)
-	#$var = (Get-Module | measure).Count
-	foreach($value in $modules)	{ if (!(Get-Module -Name $value)){ $result = $false; break; } }
-	$result
-}
-
-
 function Get-ExecutableForFile
 {
 		param

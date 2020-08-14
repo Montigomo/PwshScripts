@@ -1,5 +1,4 @@
 ﻿
-
 function Test-ArgumentCompleter {
     [CmdletBinding()]
      param (

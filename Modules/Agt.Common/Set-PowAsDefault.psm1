@@ -51,7 +51,14 @@ function Set-PowAsDefault
     [string]$TexteMenu = "Go inside PowerShell"
 
     # Text of the program to create
-    [string] $TexteCommande = "%systemroot%\system32\WindowsPowerShell\v1.0\powershell.exe -Command ""&'%1'"""
+    $commands = @{
+      "ps5" = "%systemroot%\system32\WindowsPowerShell\v1.0\powershell.exe -Command ""&'%1'""";
+      "ps7" = "C:\Program Files\PowerShell\7\pshw.exe. ""&'%1'"""
+    }
+
+    #[string] $TexteCommande = "%systemroot%\system32\WindowsPowerShell\v1.0\powershell.exe -Command ""&'%1'"""
+
+    [string] $CommandValue = $commands["ps7"];
 
     # Key to create
     [String] $clefAModifier = "HKLM:\SOFTWARE\Classes\Microsoft.PowerShellScript.1\Shell\Open\Command"

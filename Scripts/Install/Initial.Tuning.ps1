@@ -116,6 +116,11 @@ Set-RegistryKey -RegistryPath "REGISTRY::HKEY_CURRENT_USER\Keyboard Layout\Toggl
 # (delete) = Enable
 # 1 = Disable
 
+
+# change System locale for nonunicode
+
+
+
 exit
 
 #remove all tiles from start
