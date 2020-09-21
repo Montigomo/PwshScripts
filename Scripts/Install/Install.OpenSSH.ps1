@@ -97,7 +97,7 @@ if(Get-Service  sshd -ErrorAction SilentlyContinue)
 }
 
 
-exit
+# exit
 
 
 
@@ -109,46 +109,46 @@ exit
 
 
 
-# Below commands in arbitrary order for installation OpenSSH to a Windows system
-# few helpfull items
-# Powershell strip quotes when call cmd command
-# find  """22"""
-# find  '"22"'
-# find  "`"22`""
+# # Below commands in arbitrary order for installation OpenSSH to a Windows system
+# # few helpfull items
+# # Powershell strip quotes when call cmd command
+# # find  """22"""
+# # find  '"22"'
+# # find  "`"22`""
 
-# far
-# https://www.farmanager.com/files/Far30b5600.x86.20200518.7z
+# # far
+# # https://www.farmanager.com/files/Far30b5600.x86.20200518.7z
 
-Invoke-WebRequest -Uri https://wsldownload.azureedge.net/Ubuntu_1604.2019.523.0_x64.appx -OutFile Ubuntu.appx -UseBasicParsing
+# Invoke-WebRequest -Uri https://wsldownload.azureedge.net/Ubuntu_1604.2019.523.0_x64.appx -OutFile Ubuntu.appx -UseBasicParsing
 
-# wsl
-Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+# # wsl
+# Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
 
-#[bool](New-Object Security.Principal.WindowsPrincipal ([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
+# #[bool](New-Object Security.Principal.WindowsPrincipal ([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
 
-[Environment]::SetEnvironmentVariable("Path",[Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\OpenSSH",[EnvironmentVariableTarget]::Machine)
+# [Environment]::SetEnvironmentVariable("Path",[Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\OpenSSH",[EnvironmentVariableTarget]::Machine)
 
-get-itemproperty -Path "HKCU:\Control Panel\Accessibility\Blind Access" -Name On
+# get-itemproperty -Path "HKCU:\Control Panel\Accessibility\Blind Access" -Name On
 
-set-itemproperty -Path "HKCU:\Control Panel\Accessibility\Blind Access" -Name On -Value 0
+# set-itemproperty -Path "HKCU:\Control Panel\Accessibility\Blind Access" -Name On -Value 0
 
-Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*"
-Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Client*"
+# Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*"
+# Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Client*"
 
-Add-WindowsCapability -Online -Name "OpenSSH.Server*"
+# Add-WindowsCapability -Online -Name "OpenSSH.Server*"
 
-Get-Service -Name sshd | Format-List *
+# Get-Service -Name sshd | Format-List *
 
-Get-Service -Name sshd | Set-Service -StartupType 'Automatic'
+# Get-Service -Name sshd | Set-Service -StartupType 'Automatic'
 
-Get-Service -Name sshd | Start-Service
+# Get-Service -Name sshd | Start-Service
 
-netstat -na | find '":22"'
+# netstat -na | find '":22"'
 
-get-netfirewallrule -Name "OpenSSH-Server-In-TCP" | Select-Object Name, DisplayName, Description, Enabled
+# get-netfirewallrule -Name "OpenSSH-Server-In-TCP" | Select-Object Name, DisplayName, Description, Enabled
 
-New-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+# New-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
 
-New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String –Force
+# New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String –Force
 
-New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Program Files\PowerShell\7\pwsh.exe" -PropertyType String –Force
+# New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Program Files\PowerShell\7\pwsh.exe" -PropertyType String –Force

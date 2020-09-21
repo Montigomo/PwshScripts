@@ -156,20 +156,25 @@ if(!(Get-IsAdmin))
     }
 }
 
-function Get-PowershellUrl
+function Get-Release
 {
-    $repo = "https://api.github.com/repos/powershell/powershell"
-    $filenamePattern = "PowerShell-\d.\d.\d-win-x64.msi"
-    $preRelease = $false
+    param(
+        [Parameter(Mandatory=$true)] [string] $Repouri,
+        [Parameter(Mandatory=$true)] [string] $Pattern,
+        [Parameter(Mandatory=$false)] [switch] $Prerelease
+    )
 
-    if ($preRelease) {
-        $releasesUri = "$repo/releases"
-        $downloadUri = ((Invoke-RestMethod -Method GET -Uri $releasesUri)[0].assets | Where-Object name -like $filenamePattern ).browser_download_url
+    if ($Prerelease.IsPresent) 
+    {
+        $releasesUri = "$Repouri/releases"
+        $downloadUri = ((Invoke-RestMethod -Method GET -Uri $releasesUri)[0].assets | Where-Object name -match $Pattern ).browser_download_url
     }
-    else {
-        $releasesUri = "$repo/releases/latest"
-        $downloadUri = ((Invoke-RestMethod -Method GET -Uri $releasesUri).assets | Where-Object name -match $filenamePattern ).browser_download_url
+    else
+    {
+        $releasesUri = "$Repouri/releases/latest"
+        $downloadUri = ((Invoke-RestMethod -Method GET -Uri $releasesUri).assets | Where-Object name -match $Pattern ).browser_download_url
     }
+
 
     return $downloadUri
 }
@@ -179,7 +184,7 @@ $pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.Fi
 #if(!$pswhInstalled)
 #{
 
-$pwshUri = Get-PowershellUrl
+$pwshUri = Get-Release -Repouri "https://api.github.com/repos/powershell/powershell" -Pattern "PowerShell-\d.\d.\d-win-x64.msi"
 
 # create temp file
 
@@ -198,8 +203,6 @@ Install-MsiPackage -FilePath $tmp.FullName -PackageParams "ADD_EXPLORER_CONTEXT_
 #Pin-App  "PowerShell 7 (x64)"
 #msiexec.exe /package PowerShell-7.0.0-win-x64.msi /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1
 
-/*
-Замена зщцукырудд по умолчании
-Установка модулей
 
-*/
+# Замена зщцукырудд по умолчании
+# Установка модулей
