@@ -1,5 +1,10 @@
 
-
+<#
+.SYNOPSIS
+		Return a exe file that associeted with sended type of file.
+.PARAMETER Path
+		Path to file.
+#>
 function Get-ExecutableForFile
 {
 		param
@@ -10,7 +15,6 @@ function Get-ExecutableForFile
 		)
  
 		$Source = @"
- 
 using System;
 using System.Text;
 using System.Runtime.InteropServices;
@@ -37,8 +41,7 @@ public class Win32API
 		}
  
 "@ 
- 
-		Add-Type -TypeDefinition $Source -ErrorAction SilentlyContinue
+ 		Add-Type -TypeDefinition $Source -ErrorAction SilentlyContinue
 		[Win32API]::FindExecutable($Path)
 }
 

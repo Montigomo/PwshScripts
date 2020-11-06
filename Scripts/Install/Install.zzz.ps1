@@ -69,3 +69,12 @@ $lnkDstPath = Join-Path (Get-KnownfolderPath -KnownFolder Desktop) "OneDrive.lnk
 $lnkSrcPath = (Get-KnownfolderPath -KnownFolder OneDriveFolder)
 
 Set-ShortCut $lnkSrcPath $lnkDstPath
+
+
+# UAC 
+#
+#
+
+(Get-ItemProperty HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System).EnableLUA
+
+Set-ItemProperty -Path REGISTRY::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Policies\System -Name ConsentPromptBehaviorAdmin -Value 0
