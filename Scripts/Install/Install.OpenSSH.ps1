@@ -1,4 +1,14 @@
 
+# import functions
+@(
+    "Invoke-RunAs",
+    "Get-IsAdmin",
+    "Get-Release",
+    "Install-MsiPackage",
+    "Set-EnvironmentVariablePath"
+) |
+ForEach-Object {Import-Module -Name ("{0}\Learn\{1}.ps1" -f (Split-Path $PSScriptRoot -Parent), $_) -Verbose}
+
 ### Download OpenSSH archive from github and try to install it
 
 $osuri = "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v8.1.0.0p1-Beta/OpenSSH-Win64.zip"

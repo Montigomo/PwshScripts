@@ -1,6 +1,26 @@
 
 <#
 .SYNOPSIS
+	Get Is powershell session runned in admin mode 
+.DESCRIPTION
+.PARAMETER Name
+.PARAMETER Extension
+.INPUTS
+.OUTPUTS
+.EXAMPLE
+.EXAMPLE
+.EXAMPLE
+.LINK
+http://www.xxx.com
+#>
+function Get-IsAdmin  
+{  
+    $user = [Security.Principal.WindowsIdentity]::GetCurrent();
+    [bool](New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
+}
+
+<#
+.SYNOPSIS
 		Return a exe file that associeted with sended type of file.
 .PARAMETER Path
 		Path to file.
@@ -313,25 +333,3 @@ function Show-InputBox
 }
  
 #Show-InputBox -Prompt 'Enter your name'
-
-
-function Clear-MusicFolderFromPlayLists
-{
-	[CmdletBinding()]
-	Param
-	(
-		[Parameter(mandatory=$true,ValueFromPipeline=$true)]
-		[ValidateSet('D:\\music')]
-		[string]$MusicFolderPath
-	)
-	Process 
-	{
-		$playlistsfolder = [System.IO.Path]::Combine($MusicFolderPath, "\\Playlists")
-		$templists = Get-ChildItem -Recurse -Path $MusicFolderPath | Where-Object { ($_.Extension -eq ".m3u") -and ($_.FullName  -notmatch $playlistsfolder)}
-	foreach ($row in $templists)
-	{
-			#$row.FullName
-		Remove-Item  -LiteralPath $row.FullName -Force -ErrorAction SilentlyContinue -Verbose
-	}
-	}
-}

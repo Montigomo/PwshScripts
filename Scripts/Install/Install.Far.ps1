@@ -1,96 +1,57 @@
 
-
 # install far
 
-function Get-Release
+$includePath = "{0}\Learn" -f (Split-Path $PSScriptRoot -Parent)
+
+$importFunctions = @(
+    "Get-Release",
+    "Install-MsiPackage",
+    "Set-EnvironmentVariablePath"
+)
+
+foreach($item in $importFunctions)
 {
-    param(
-        [Parameter(Mandatory=$true)] [string] $Repouri,
-        [Parameter(Mandatory=$true)] [string] $Pattern,
-        [Parameter(Mandatory=$false)] [switch] $Prerelease
-    )
-
-    if ($Prerelease.IsPresent) 
-    {
-        $releasesUri = "$Repouri/releases"
-        $downloadUri = ((Invoke-RestMethod -Method GET -Uri $releasesUri)[0].assets | Where-Object name -match $Pattern ).browser_download_url
-    }
-    else
-    {
-        $releasesUri = "$Repouri/releases/latest"
-        $downloadUri = ((Invoke-RestMethod -Method GET -Uri $releasesUri).assets | Where-Object name -match $Pattern ).browser_download_url
-    }
-
-
-    return $downloadUri
+    $scriptPath = "{0}\{1}.ps1" -f $includePath, $item
+    #Import-Module -Name  $scriptPath -Verbose
 }
 
-function Install-MsiPackage
-{
-    Param($FilePath, $PackageParams)
-    $DataStamp = get-date -Format yyyyMMddTHHmmss
-    $logFile = '{0}-{1}.log' -f $FilePath,$DataStamp
-    $MSIArguments = @(
-        "/i"
-        ('"{0}"' -f $FilePath)
-        "/qn"
-        "/norestart"
-        "/L*v"
-        $logFile
-    )
-    Start-Process "msiexec.exe" -ArgumentList $MSIArguments -Wait -NoNewWindow 
-}
-
-function Set-EnvironmentVariablePath
-{
-    param(
-        [Parameter(Mandatory=$true)]
-        [string] $Value,
-        [Parameter(Mandatory=$false)]
-        [ValidateSet('User', 'Process', 'Machine')]
-        [string] $Scope = "User",
-        [Parameter(Mandatory=$false)]
-        [ValidateSet('Add', 'Remove')]
-        [string] $Action = "Add"
-    )
-    if($Action -eq "Add")
-    {        
-        $path = [Environment]::GetEnvironmentVariable('Path', $Scope)
-        if(!($path.Contains($Value)))
-        {
-            $newpath = $path + ";$Value"
-            [Environment]::SetEnvironmentVariable("Path", $newpath, $Scope)
-        }
-    }
-    else {
-        $oev = [Environment]::GetEnvironmentVariable('Path', $Scope).Split(";")
-        $oevNew = ($oev -notlike $Value) -join ";"
-        [Environment]::SetEnvironmentVariable("Path", $oevNew, $Scope)        
-    }
-}
+@(
+    "Get-Release",
+    "Install-MsiPackage",
+    "Set-EnvironmentVariablePath"
+) |
+ForEach-Object {Import-Module -Name ("{0}\Learn\{1}.ps1" -f (Split-Path $PSScriptRoot -Parent), $_) -Verbose}
 
 
+#$test = Get-Release -Repouri "https://api.github.com/repos/powershell/powershell" -Pattern "PowerShell-\d.\d.\d-win-x64.msi"
+#Write-Output $test
 
-$test = Get-Release -Repouri "https://api.github.com/repos/powershell/powershell" -Pattern "PowerShell-\d.\d.\d-win-x64.msi"
+# Far.x64.3.0.5650.1688.e0c026b3fc3c63f815c818ec14861c9b1ea6480b.msicls
 
-Write-Output $test
-
-# Far.x64.3.0.5650.1688.e0c026b3fc3c63f815c818ec14861c9b1ea6480b.msi
 # Far.x64.\d.\d.\d\d\d\d.\d\d\d\d.[a-z0-9].msi
 
-$test = Get-Release -Repouri "https://api.github.com/repos/FarGroup/FarManager" -Pattern "Far.x64.\d.\d.\d\d\d\d.\d\d\d\d.[a-z0-9]{40}.msi"
+# https://github.com/FarGroup/FarManager/releases/download/ci/v3.0.5709.1852/Far.x64.3.0.5709.1852.689c635c5b5bbc01acd667f489a94e18626ad6a4.msi
+
+$requestUri = Get-Release -Repouri "https://api.github.com/repos/FarGroup/FarManager" -Pattern "Far.x64.\d.\d.\d\d\d\d.\d\d\d\d.[a-z0-9]{40}.msi"
 
 Write-Output $test
 
+#3.0.5698.0
+
+$farPath = "C:\Program Files\Far Manager\Far.exe";
+
+if(Test-Path $farPath)
+{
+    $vart = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($farPath)
+}
+
+#3.0.5698.0 x64
 
 $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
 
-Invoke-WebRequest -OutFile $tmp $test
+Invoke-WebRequest -OutFile $tmp $requestUri
 
 #   Far msi package installation options
-#   ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL - This property controls the option for adding the Open PowerShell item to the context menu in Windows Explorer.
-#   ENABLE_PSREMOTING - This property controls the option for enabling PowerShell remoting during installation.
-#   REGISTER_MANIFEST - This property controls the option for registering the Windows Event Logging manifest.
 
 Install-MsiPackage -FilePath $tmp.FullName -PackageParams ""
 
