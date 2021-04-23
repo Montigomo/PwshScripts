@@ -1,14 +1,14 @@
 # this script install powershell 7
 
-# import functions
-@(
-    "Invoke-RunAs",
-    "Get-IsAdmin",
-    "Get-Release",
-    "Install-MsiPackage",
-    "Set-EnvironmentVariablePath"
-) |
-ForEach-Object {Import-Module -Name ("{0}\Learn\{1}.ps1" -f (Split-Path $PSScriptRoot -Parent), $_) -Verbose}
+# # import functions
+# @(
+#     "Invoke-RunAs",
+#     "Get-IsAdmin",
+#     "Get-Release",
+#     "Install-MsiPackage",
+#     "Set-EnvironmentVariablePath"
+# ) |
+# ForEach-Object {Import-Module -Name ("{0}\Learn\{1}.ps1" -f (Split-Path $PSScriptRoot -Parent), $_) -Verbose}
 
 if(!(Get-IsAdmin))
 {

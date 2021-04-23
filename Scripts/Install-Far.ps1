@@ -1,31 +1,6 @@
 
 # install far
 
-$includePath = "{0}\Learn" -f (Split-Path $PSScriptRoot -Parent)
-
-$importFunctions = @(
-    "Get-Release",
-    "Install-MsiPackage",
-    "Set-EnvironmentVariablePath"
-)
-
-foreach($item in $importFunctions)
-{
-    $scriptPath = "{0}\{1}.ps1" -f $includePath, $item
-    #Import-Module -Name  $scriptPath -Verbose
-}
-
-@(
-    "Get-Release",
-    "Install-MsiPackage",
-    "Set-EnvironmentVariablePath"
-) |
-ForEach-Object {Import-Module -Name ("{0}\Learn\{1}.ps1" -f (Split-Path $PSScriptRoot -Parent), $_) -Verbose}
-
-
-#$test = Get-Release -Repouri "https://api.github.com/repos/powershell/powershell" -Pattern "PowerShell-\d.\d.\d-win-x64.msi"
-#Write-Output $test
-
 # Far.x64.3.0.5650.1688.e0c026b3fc3c63f815c818ec14861c9b1ea6480b.msicls
 
 # Far.x64.\d.\d.\d\d\d\d.\d\d\d\d.[a-z0-9].msi
@@ -40,10 +15,17 @@ Write-Output $test
 
 $farPath = "C:\Program Files\Far Manager\Far.exe";
 
+$vl = $null;
+$vr  = $null
 if(Test-Path $farPath)
 {
-    $vart = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($farPath)
+    $vl = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($farPath)
 }
+if(((Invoke-RestMethod -Method GET -Uri  "https://api.github.com/repos/FarGroup/FarManager/releases").tag_name | Select-Object -First 1) -match "ci\/v(?<version>\d\.\d\.\d\d\d\d\.\d\d\d\d)")
+{
+    $vr = $matches["version"];
+}
+
 
 #3.0.5698.0 x64
 

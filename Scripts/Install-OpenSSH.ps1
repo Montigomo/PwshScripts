@@ -1,14 +1,4 @@
 
-# import functions
-@(
-    "Invoke-RunAs",
-    "Get-IsAdmin",
-    "Get-Release",
-    "Install-MsiPackage",
-    "Set-EnvironmentVariablePath"
-) |
-ForEach-Object {Import-Module -Name ("{0}\Learn\{1}.ps1" -f (Split-Path $PSScriptRoot -Parent), $_) -Verbose}
-
 ### Download OpenSSH archive from github and try to install it
 
 $osuri = "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v8.1.0.0p1-Beta/OpenSSH-Win64.zip"
@@ -16,12 +6,6 @@ $osuri = "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v8.1.0.0
 $destPath = "c:\Program Files\OpenSSH\"
 
 $installScriptPath = Join-Path $destPath "install-sshd.ps1"
-
-function Test-Administrator  
-{  
-    $user = [Security.Principal.WindowsIdentity]::GetCurrent();
-    [bool](New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
-}
 
 # create target directory
 [System.IO.Directory]::CreateDirectory($destPath)
@@ -63,6 +47,10 @@ $zip.Dispose()
 $tmp | Remove-Item
 
 # create firewall rule
+if((get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue))
+{
+    Remove-NetFirewallRule -Name "OpenSSH-Server-In-TCP"
+}
 if(-not (get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue))
 {
     New-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
@@ -93,7 +81,7 @@ if(Test-Path $pwshPath -PathType Leaf)
 }
 
 # try to run installation script
-if(Test-Administrator)
+if(Get-IsAdmin)
 {
     & $installScriptPath
 }
