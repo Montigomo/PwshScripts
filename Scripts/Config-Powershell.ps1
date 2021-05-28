@@ -1,17 +1,5 @@
 ﻿
-# System initialize after setup script for Powershell 
-# to do
-
-# Get-SymlinkTarget C:\Users\agite\Music
-#  [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms")
-
-# function msgBox($x){
-# 	[System.Windows.Forms.MessageBox]::Show($x, 'Done!:PowerShell', 
-# 		[Windows.Forms.MessageBoxButtons]::OK, 
-# 		[Windows.Forms.MessageBoxIcon]::Information, [Windows.Forms.MessageBoxDefaultButton]::Button1,
-# 		[Windows.Forms.MessageBoxOptions]::ServiceNotification)
-# }
-
+exit
 function Install-AgtModules
 {
 	$mpath = $PSScriptRoot + '\Modules'

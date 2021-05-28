@@ -48,6 +48,13 @@ function Enable-ProcessCreationEvent
  #>
 
 
-$Path = "$env:userprofile\Downloads"
+# $Path = "$env:userprofile\Downloads"
  
-Get-ChildItem -Path $Path -file | Where-Object { @(Get-Item -Path $_.FullName -Stream * ).Stream -contains 'Zone.Identifier' } | ForEach-Object {   Get-Content -Path $_.FullName -Stream Zone.Identifier }6
+# Get-ChildItem -Path $Path -file | Where-Object { @(Get-Item -Path $_.FullName -Stream * ).Stream -contains 'Zone.Identifier' } | ForEach-Object {   Get-Content -Path $_.FullName -Stream Zone.Identifier }6
+
+$token = [System.Security.Principal.WindowsIdentity]::GetCurrent()
+$xy = 'S-1-5-64-36'
+if ($token.Groups -contains $xy)
+{
+"You're in this group."
+}

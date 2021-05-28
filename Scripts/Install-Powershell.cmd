@@ -2,7 +2,7 @@
 
 @ECHO OFF
 SET ThisScriptsDirectory=%~dp0
-SET PowerShellScriptPath=%ThisScriptsDirectory%Install.Powershell.ps1
+SET PowerShellScriptPath=%ThisScriptsDirectory%Install-Powershell.ps1
 
 rem PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& '%PowerShellScriptPath%'"
 

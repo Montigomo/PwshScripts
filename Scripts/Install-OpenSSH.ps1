@@ -29,6 +29,11 @@ $entries = $zip.Entries | Where-Object {-not [string]::IsNullOrWhiteSpace($_.Nam
 #create dir for result of extraction
 #New-Item -ItemType Directory -Path "c:\temp\c" -Force
 
+if((get-service sshd).Status -eq "Running")
+{
+    Stop-Service sshd
+}
+
 #extraction
 foreach($entry in $entries)
 {
@@ -46,15 +51,6 @@ $zip.Dispose()
 # remove temporary file
 $tmp | Remove-Item
 
-# create firewall rule
-if((get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue))
-{
-    Remove-NetFirewallRule -Name "OpenSSH-Server-In-TCP"
-}
-if(-not (get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue))
-{
-    New-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
-}
 
 # remove old capabilities
 if((Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*").State -eq "Installed")

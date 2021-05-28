@@ -29,13 +29,17 @@ C:\Users\agite\Documents\PowerShell\profile.ps1
 $profile.CurrentUserCurrentHost
 C:\Users\agite\Documents\PowerShell\Microsoft.PowerShell_profile.ps1
 
+
 -powershell 5
 $profile.AllUsersAllHosts
 C:\Windows\System32\WindowsPowerShell\v1.0\profile.ps1
+
 $profile.AllUsersCurrentHost
 C:\Windows\System32\WindowsPowerShell\v1.0\Microsoft.PowerShell_profile.ps1
+
 $profile.CurrentUserAllHosts
 C:\Users\agite\Documents\WindowsPowerShell\profile.ps1
+
 $profile.CurrentUserCurrentHost
 C:\Users\agite\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1
 

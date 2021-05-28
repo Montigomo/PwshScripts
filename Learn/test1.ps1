@@ -1,4 +1,12 @@
 ﻿
+
+
+
+0..12 | foreach-object { $_ ; Start-Sleep -Seconds 1}
+
+exit
+
+
 function Test-ArgumentCompleter {
     [CmdletBinding()]
      param (
