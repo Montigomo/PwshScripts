@@ -1,0 +1,810 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0101)https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=616 -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/analytics.js.download" type="text/javascript"></script>
+<script type="text/javascript">window.addEventListener('DOMContentLoaded',function(){var v=archive_analytics.values;v.service='wb';v.server_name='wwwb-app202.us.archive.org';v.server_ms=281;archive_analytics.send_pageview({});});</script><script type="text/javascript" src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/playback.bundle.js.download" charset="utf-8"></script>
+<script type="text/javascript" src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/wombat.js.download" charset="utf-8"></script>
+<script type="text/javascript">
+  __wm.init("https://web.archive.org/web");
+  __wm.wombat("http://blogs.techrepublic.com.com:80/window-on-windows/?p=616","20080211083122","https://web.archive.org/","web","/_static/",
+	      "1202718682");
+</script>
+<link rel="stylesheet" type="text/css" href="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/banner-styles.css">
+<link rel="stylesheet" type="text/css" href="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/iconochive.css">
+<!-- End Wayback Rewrite JS Include -->
+
+    	<title>   Make Vista launch UAC restricted programs at startup with Task Scheduler | Microsoft Windows | TechRepublic.com</title>
+	    <meta name="description" content="These bloggers tackle the Microsoft OS from all angles, including ramping up to Windows Vista and tips and tricks on how to solve today&#39;s problems on Windows XP.">
+	    <meta name="keywords" content="TechRepublic, blogs, information technology, tech">
+		
+        
+<style type="text/css" media="screen">
+@import url("https://web.archive.org/web/20080211083122cs_/http://i.techrepublic.com.com/css/tr2006.css");
+@import url("https://web.archive.org/web/20080211083122cs_/http://i.techrepublic.com.com/css/tr_ws2006.css");
+@import url("https://web.archive.org/web/20080211083122cs_/http://news.zdnet.com/css/z/ads/hs.css");
+@import url("https://web.archive.org/web/20080211083122cs_/http://i.techrepublic.com.com/css/trBlog.css");
+</style>
+
+<link rel="stylesheet" type="text/css" href="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/print.css" media="print">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?feed=rss2">
+<script type="text/javascript" src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/articleScript.js.download"></script>
+		<!-- MAC ad --><!-- NO AD TEXT: _QUERY_STRING="META&ADSEPARATOR=%2B%2B%2B%2B%2B%2B%2B%2B%2B%2B&GLOBAL&BRAND=9&SITE=11&NCAT=12841:12843&ADREQ&SP=80&POS=100&ADREQ&SP=16&POS=100&PREHTML=%3Cdiv%20class%3D%22advert%22%3E&POSTHTML=%3C%2Fdiv%3E&ADREQ&SP=16&POS=200&PREHTML=%3Cdiv%20class%3D%22advert%22%3E&POSTHTML=%3C%2Fdiv%3E&ADREQ&SP=136&POS=100&ADREQ&SP=8&POS=300&PREHTML=%3Cdiv%20class%3D%22window%22%3E&POSTHTML=%3C%2Fdiv%3E&ADREQ=1&SP=64&POS=300&PREHTML=%3Cbr%20clear%3D%22right%22/%3E%3Cdiv%20style%3D%22float%3Aright%3B%22%3E&POSTHTML=%3C%2Fdiv%3E&GLOBAL&RE" _REQ_NUM="0"  --><!-- default ad --></head><body id="EyeBrow" data-new-gr-c-s-check-loaded="14.1012.0" data-gr-ext-installed=""><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/dotclear.gif" height="0" width="0" alt="" style="position:absolute; top:0px; left:0px"><!-- MAC [r20071210-1033-DynamicVars:1.13.8] c17-ad-xw7.cnet.com::4076698544 2008.02.11.08.31.21 --><!-- MAC T 0.0.2.2 -->    
+
+<!-- BEGIN WAYBACK TOOLBAR INSERT -->
+<style type="text/css">
+body {
+  margin-top:0 !important;
+  padding-top:0 !important;
+  /*min-width:800px !important;*/
+}
+</style>
+<script>__wm.rw(0);</script>
+<div id="wm-ipp-base" lang="en" style="display: block; direction: ltr;">
+</div><div id="wm-ipp-print">The Wayback Machine - https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com:80/window-on-windows/?p=616</div>
+<div id="donato" style="position:relative;width:100%;">
+  <div id="donato-base">
+    <iframe id="donato-if" src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/donate.html" scrolling="no" frameborder="0" style="width:100%; height:100%">
+    </iframe>
+  </div>
+</div><script type="text/javascript">
+__wm.bt(650,27,25,2,"web","http://blogs.techrepublic.com.com/window-on-windows/?p=616","20080211083122",1996,"/_static/",["/_static/css/banner-styles.css?v=omkqRugM","/_static/css/iconochive.css?v=qtvMKcIJ"], false);
+  __wm.rw(1);
+</script>
+<!-- END WAYBACK TOOLBAR INSERT -->
+
+<div id="goiter">
+<div id="width">
+	<div id="eyebrowsBanner">
+		<div id="eyebrowsInner">
+<div class="rubics_netxp1_main">
+	On CNET: 
+	<a target="_top" href="https://web.archive.org/web/20080211083122/http://dw.com.com/rubicsclk?ver=2&amp;ts=2008.02.11.00.31.21&amp;edId=&amp;onId=12843&amp;ptId=&amp;sId=11&amp;appId=19&amp;offId=1345&amp;unitId=45&amp;poolId=1&amp;f1=9&amp;f2=%2d0&amp;f3=%2d0&amp;alg=3&amp;&amp;opt=1&amp;linkPos=1&amp;destUrl=http:%2F%2Freviews.cnet.com%2Fflat-panel-tvs%2Finsignia-ns-pdp42%2F4505-6482_7-32717895.html" class="xpromolink">Don't buy this plasma TV</a>
+	<img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/c.gif" alt="" height="1" width="1">
+</div>
+<!-- ros [r20070521-1832-ronr-v1-13-5:1.13.5] c17-ad-rubics-ros5.cnet.com::4022127536 2008.02.11.00.31.21 --><!-- ros t 0.0.0.0.2.2.2.2 -->			<ul class="cnbLinks">
+				<li>BNET Business Network: </li>
+				<li><a href="https://web.archive.org/web/20080211083122/http://www.bnet.com/">BNET</a> |</li>
+				<li><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/">TechRepublic</a> |</li>
+				<li><a href="https://web.archive.org/web/20080211083122/http://www.zdnet.com/">ZDNet</a></li>
+			</ul>
+		</div><!-- /eyebrowsInner -->
+	</div><!-- /eyebrowsBanner -->
+<div id="masthead">
+
+<a id="logo" href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/"></a>
+
+	<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://ssl.cnb.cnet.com/blogs/window-on-windows/xmlrpc.php?rsd">
+<script type="text/javascript">
+/* Start Of Javascript Generated By WP-Polls 2.12 */
+/* <![CDATA[ */
+	if(site_url != 'https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows' || ajax_url != '/window-on-windows/index.php') {
+		var site_url = 'https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows';
+		var ajax_url = '/window-on-windows/index.php';
+	}
+/* ]]> */
+/* End Of Javascript Generated By WP-Polls 2.12 */
+</script>
+<script src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/tw-sack.js.download" type="text/javascript"></script>
+<script src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/polls-js.js.download" type="text/javascript"></script>
+<link rel="stylesheet" href="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/polls-css.css" type="text/css" media="screen">
+
+		<ul class="tool">
+			<li><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5265-11518-0.html" class="blue">My Workspace</a>&nbsp;|&nbsp;<a href="https://web.archive.org/web/20080211083122/http://nl.com.com/acct_mgmt.sc?brand=techrepublic" class="blue">My Newsletters</a></li>
+			<li><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/1320-4-55.html" class="orange normal">Log in</a>&nbsp;|&nbsp;<a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/1301-4-55.html?subj=19948&amp;part=tr" class="orange normal">Get a free membership</a></li>
+		</ul>
+
+  <!-- MAC ad --><!-- NO AD TEXT: _QUERY_STRING="META&ADSEPARATOR=%2B%2B%2B%2B%2B%2B%2B%2B%2B%2B&GLOBAL&BRAND=9&SITE=11&NCAT=12841:12843&ADREQ&SP=80&POS=100&ADREQ&SP=16&POS=100&PREHTML=%3Cdiv%20class%3D%22advert%22%3E&POSTHTML=%3C%2Fdiv%3E&ADREQ&SP=16&POS=200&PREHTML=%3Cdiv%20class%3D%22advert%22%3E&POSTHTML=%3C%2Fdiv%3E&ADREQ&SP=136&POS=100&ADREQ&SP=8&POS=300&PREHTML=%3Cdiv%20class%3D%22window%22%3E&POSTHTML=%3C%2Fdiv%3E&ADREQ=1&SP=64&POS=300&PREHTML=%3Cbr%20clear%3D%22right%22/%3E%3Cdiv%20style%3D%22float%3Aright%3B%22%3E&POSTHTML=%3C%2Fdiv%3E&GLOBAL&RE" _REQ_NUM="5"  --><!-- default ad --><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/dotclear(1).gif" height="0" width="0" alt="" style="position:absolute; top:0px; left:0px"><!-- MAC [r20071210-1033-DynamicVars:1.13.8] c17-ad-xw7.cnet.com::4076698544 2008.02.11.08.31.21 --><!-- MAC T d.e.f.f --></div>
+
+
+<div id="main">
+	<ul id="headerNav">
+	   <li><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/">Home</a></li>   
+	   <li><a class="on" href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/">Blogs</a></li>
+	   <li><a href="https://web.archive.org/web/20080211083122/http://downloads.techrepublic.com.com/">Downloads</a></li>
+	   <li><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5221-6230-0.html">Forums</a></li>
+	   <li><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/2001-10875-0.html">Articles</a></li>
+	   <li><a href="https://web.archive.org/web/20080211083122/http://content.techrepublic.com.com/2350-1_11-0.html">Photos</a></li>
+	   <li><a href="https://web.archive.org/web/20080211083122/http://video.techrepublic.com.com/2434-13789_11-167680.html">Videos</a></li>
+	   <li><a href="https://web.archive.org/web/20080211083122/http://webcasts.techrepublic.com.com/">Webcasts</a></li> 
+	   <li><a href="https://web.archive.org/web/20080211083122/http://whitepapers.techrepublic.com.com/">White Papers</a></li>
+	   <li><a href="https://web.archive.org/web/20080211083122/http://software.techrepublic.com.com/">Software</a></li>
+	   <li><a href="https://web.archive.org/web/20080211083122/http://jobs.techrepublic.com.com/">Jobs</a></li>
+		
+		<li><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/1393-6242-97.html">Store</a></li>
+   		 
+	</ul>
+
+
+<div id="topHTML">
+<form action="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/index.php" method="get" name="tr_site_search" class="searchForm blogsForm">
+
+<input id="searchInput" name="q" type="text" value="Search" onfocus="this.value=&#39;&#39;">
+
+
+<select id="searchList" name="t">
+
+           <option value="1">in Blogs</option>
+           <option value="0">all of TechRepublic</option>
+
+   </select>
+
+ <input id="searchButton" value="Search" type="submit">
+ </form>
+</div><!--/topHTML-->
+
+
+    <script language="javascript" src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/cnet-common.js.download"></script>
+    <script language="javascript" src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/cnet-blog-voting.js.download"></script>
+    <script language="javascript">CNET.Globals.currentNetwork = 'TechRepublic';</script>
+	<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://ssl.cnb.cnet.com/blogs/window-on-windows/xmlrpc.php?rsd">
+<script type="text/javascript">
+/* Start Of Javascript Generated By WP-Polls 2.12 */
+/* <![CDATA[ */
+	if(site_url != 'https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows' || ajax_url != '/window-on-windows/index.php') {
+		var site_url = 'https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows';
+		var ajax_url = '/window-on-windows/index.php';
+	}
+/* ]]> */
+/* End Of Javascript Generated By WP-Polls 2.12 */
+</script>
+<script src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/tw-sack.js.download" type="text/javascript"></script>
+<script src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/polls-js.js.download" type="text/javascript"></script>
+<link rel="stylesheet" href="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/polls-css.css" type="text/css" media="screen">
+
+	<script language="javascript">
+	  function load(email) {
+
+	    var load = window.open('/include/objects/emailform.php?email='+email
+				   ,'','scrollbars=no,menubar=no,height=450,width=550,resizable=no,toolbar=no,location=no,status=no');
+
+	    load.document.close();
+	  }
+	</script>
+
+	<div id="blogHeader" class="btmFade clearFix" style="padding-bottom: 0px; margin: 0px 0px 5px 0px;">
+        <div class="blogcareer" style="background-image: url( &#39;https://web.archive.org/web/20080211083122im_/http://i.i.com.com/cnwk.1d/i/tr/bloghd/windows_hd.gif&#39; )">
+            <h2><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows">Microsoft Windows</a></h2>
+
+            <ul>
+                <li><a class="icon rss" href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/wp-rss2.php">Subscribe</a></li>
+                <li><a class="icon alerts" href="https://web.archive.org/web/20080211083122/http://whitepapers.techrepublic.com.com/alertform.aspx?url=http%3A%2F%2Fblogs.techrepublic.com.com%2Fwindow-on-windows%2Fwp-rss2.php&amp;title=Microsoft+Windows&amp;source=http%3A%2F%2Fblogs.techrepublic.com.com%2Fwindow-on-windows%2F">Alerts</a></li>
+                <li><a class="icon mobile" href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/wp-mobile.php">Mobile</a></li>
+	        </ul>
+
+            <span class="topBHead">Host: Mark Kaelin</span>
+	    
+	      <form id="Blog Categories" action="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/index.php" method="get" name="Blog Categories">
+                <select name="cat" class="postform">
+	<option value="0">Pick a blog category</option>
+	<option value="99">10 Things</option>
+	<option value="348">Apple</option>
+	<option value="203">Backup</option>
+	<option value="166">Data Recovery</option>
+	<option value="308">Drivers</option>
+	<option value="1">General</option>
+	<option value="280">How Do I</option>
+	<option value="351">MAC</option>
+	<option value="349">MAC OS X</option>
+	<option value="352">Macintosh</option>
+	<option value="145">Performance</option>
+	<option value="72">Righttool</option>
+	<option value="25">Security</option>
+	<option value="345">Servers</option>
+	<option value="3">The Hot Button</option>
+	<option value="346">tip</option>
+	<option value="350">virtualization</option>
+	<option value="6">Virtualization</option>
+	<option value="354">VMware</option>
+	<option value="53">Web Server</option>
+	<option value="347">Windows 2000 Professional</option>
+	<option value="344">Windows 2000 Server</option>
+	<option value="212">Windows 3.1</option>
+	<option value="112">Windows 95</option>
+	<option value="177">Windows 98</option>
+	<option value="113">Windows 9x</option>
+	<option value="356">Windows Home Server</option>
+	<option value="142">Windows Server 2003</option>
+	<option value="353">Windows Server 2008</option>
+	<option value="55">Windows Vista</option>
+	<option value="37">Windows XP</option>
+</select>
+
+                <input type="submit" name="submit" value="view">
+            </form>
+            <span><a class="icon mail" href="javascript:load(&quot;window-on-windows&quot;)">Contact</a></span>
+        </div><!--? include("../include/description.php"); ?--></div><div id="content">
+
+<div id="leftCol">
+
+  
+	<!--<div class="navigation">
+			&laquo; <a href="http://blogs.techrepublic.com.com/window-on-windows/?p=615">Put your applications into a tabbed user interface with WinTabber</a><a href="http://blogs.techrepublic.com.com/window-on-windows/?p=613">Tip: How do I change the default option of the Windows Vista Power Button</a> &raquo;		</div>-->
+
+		<div class="post" id="post-616">
+			<div id="contentData">
+				<h1><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=616" rel="bookmark" title="Permanent Link: Make Vista launch UAC restricted programs at startup with Task Scheduler">Make Vista launch UAC restricted programs at startup with Task Scheduler</a></h1>
+
+				<ul class="postData">
+					<li><strong>Date</strong>: February 5th, 2008</li>
+					<li><strong>Author</strong>: Greg Shultz </li>
+					<li><strong>Category</strong>: <a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?cat=55" title="View all posts in Windows Vista" rel="category tag">Windows Vista</a>,  <a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?cat=346" title="View all posts in tip" rel="category tag">tip</a></li>
+                    <li><strong>Tags:</strong> <a href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/search/Program.html">Program</a>, <a href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/search/Microsoft+Windows+Vista.html">Microsoft Windows Vista</a>, <a href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/search/Dialog+Box.html">Dialog Box</a>, <a href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/search/Microsoft+Windows+Vista+%28Longhorn%29.html">Microsoft Windows Vista (Longhorn)</a>, <a href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/search/Hacking.html">Hacking</a>, <a href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/search/Security.html">Security</a>, <a href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/search/Operating+Systems.html">Operating Systems</a>, <a href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/search/Microsoft+Windows.html">Microsoft Windows</a>, <a href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/search/Software.html">Software</a>, <a href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/search/Greg+Shultz.html">Greg Shultz</a></li>
+                    <li></li>
+				</ul>
+
+
+<div class="interact clearFix">
+                         <div class="cmntCount">
+                            <a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=616#comments"><span>9</span> comment(s)</a>
+                         </div>
+                    <ul class="toolbar">
+
+<li class="share"><a title="Send a link to &#39;Make Vista launch UAC restricted programs at startup with Task Scheduler&#39; to a friend." href="https://web.archive.org/web/20080211083122/mailto:/?subject=TechRepublic%20Blogs:%20Make%20Vista%20launch%20UAC%20restricted%20programs%20at%20startup%20with%20Task%20Scheduler&amp;body=http://blogs.techrepublic.com.com/window-on-windows/?p=616">Email</a></li>
+
+<li class="save"><a href="javascript:location.href=&#39;https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5262-6257-0.html?link=&#39;+encodeURIComponent(location.href)+&#39;&amp;title=&#39;+encodeURIComponent(document.title)" class="button" title="Add to your TechRepublic My Links page">Save</a></li>
+
+<li class="print"><a href="javascript:window.print();" title="Print a printer-friendly version of &#39;Make Vista launch UAC restricted programs at startup with Task Scheduler&#39;">Print</a></li>
+
+<li class="digg"><a href="https://web.archive.org/web/20080211083122/http://digg.com/submit?phase=2&amp;url=http://blogs.techrepublic.com.com/window-on-windows/?p=616&amp;title=Make%20Vista%20launch%20UAC%20restricted%20programs%20at%20startup%20with%20Task%20Scheduler&amp;bodytext=When%20you%20start%20Microsoft%20Windows%20Vista%20have%20you%20encountered%20a%20warning%20message%20in%20the%20notification%20area%20like%20the%20one%20shown%20in%20Figure%20A%20that%20indicates%20that%20Vista%20has%20blocked%20a%20startup%20program?%20The%20reason%20that%20this%20type%20of%20warning%20is%20displayed%20is%20because%20Vista%20discovered%20a%20program%20that%20has%20User...&amp;topic=tech_news">Digg This</a></li>
+
+<li class="recommend"><a href="https://web.archive.org/web/20080211083122/http://membership.zdnet.com/1320-4_11-55.html?path=http://blogs.techrepublic.com.com/window-on-windows/?p=616" title="Click to recommend this article" class="last">Recomend</a></li>
+<li class="vote"><div id="voteswindowonwindows_616" class="votecount" title="How many people recommended this article">10</div></li>
+                         </ul><!-- /toolbar -->
+                    </div><!-- /interact -->
+               </div><!-- /contentData -->
+
+
+                
+				<div class="entry">
+					<p>When you start <a target="_blank" href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/search/Microsoft+Windows+Vista.html">Microsoft Windows Vista</a> have you encountered a warning message in the notification area like the one shown in <strong>Figure A</strong> that indicates that Vista has blocked a startup program? The reason that this type of warning is displayed is because Vista discovered a program that has <a href="https://web.archive.org/web/20080211083122/http://search.techrepublic.com.com/index.php?t=1&amp;s=0&amp;o=0&amp;q=uac">User Account Control</a> (UAC) restrictions in either the startup process or logon process. When this happens, Software Explorer blocks the program and displays the warning message in the Notification area.</p>
+<h4>Figure A</h4>
+<h5><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/186930-469-132.png"></h5>
+<h6>When Software Explorer recognizes a UAC restricted program in the startup sequence, it blocks it and displays a warning message</h6>
+<p>To resolve the issue and run the blocked program, Microsoft recommends that you click the Blocked Startup Program icon in the Notification area, select the Run Blocked Program menu, and then click the program’s icon, as shown in <strong>Figure B</strong>. When you do, you’ll see a UAC and will have to respond accordingly.</p>
+<h4>Figure B</h4>
+<h5><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/186931-500-112.png"></h5>
+<h6>The recommended workaround is to manually launch the program from the Run Blocked Program menu</h6>
+<p>While this system, and the recommended workaround, is designed to protect your computer from a malicious program sneaking into the startup folder or run registry key, it can be a real pain if the program is indeed something that you want to run at startup.</p>
+<p>While it may seem that there is no standard way for you to allow a UAC restricted program to automatically run at startup within this security system, that’s not really the case. You can do it, if you use Task Scheduler.</p>
+<p>In this edition of the Windows Vista Report, I’ll show you how to use Task Scheduler to make Vista run UAC restricted programs at startup.</p>
+<h2>An example</h2>
+<p>Let’s suppose that the program that you want to have automatically run at startup is Event Viewer. As you know, when you launch Event Viewer, you must first go through a UAC. If you attempt to place the Event Viewer shortcut in the Startup group, Software Explorer will recognize that Event Viewer requires a UAC and will block it from running. You’ll then encounter a warning message like the one shown earlier in Figure A, when you log on.</p>
+<h3>The procedure</h3>
+<p>To make Event Viewer run at startup via Task Scheduler, you must be logged on to the Vista system with an account that has Administrative privileges. To begin, click the Start button, type Task Scheduler in the Start Search box, and press [Enter]. In a moment, you’ll see a UAC and when you respond appropriately, you’ll see the Task Scheduler window as shown in <strong>Figure C</strong>.</p>
+<h4>Figure C</h4>
+<h5><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/186932-500-413.png"></h5>
+<h6>Once Task Scheduler is up and running, you can create a new task for your UAC restricted program</h6>
+<p>In order to schedule a task to run Event Viewer at startup you’ll begin by clicking the Create Task item in the Actions panel. When the Create Task dialog box appears, you’ll assign the task a name in the Name box and type a description in the Description box, as shown in <strong>Figure D</strong>. At the top of the Security Options panel, you should see your administrative user account, which, as you can see, is the account that Task Manager will use to run the task. Next, select the <em>Run With Highest Privileges</em> check box and leave all the other settings in the default configuration.</p>
+<h4>Figure D</h4>
+<h5><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/186933-500-374.png"></h5>
+<h6>Make sure that you select the Run With Highest Privileges check box</h6>
+<p>Now, you’ll need to configure an Event Trigger. To do so, select the Trigger tab and then click the New button. When you see the New Trigger dialog box, select At Log On from the Begin The Task dropdown. Select the Specific User or Group option, as shown in <strong>Figure E</strong>. If you normally log on to the Vista system with a Limited account, then click the Change User or Group button and select that account. Leave all the other settings in the default configuration and click OK.</p>
+<h4>Figure E</h4>
+<h5><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/186934-500-430.png"></h5>
+<h6>You’ll configure the Event Trigger to begin the task as log on</h6>
+<p>At this point, you’ll specify Event Viewer as the Action. To do so, select the Action tab and then click the New button. When you see the New Action dialog box, click the Browse button and locate the Event Viewer MSC file. If you look at the Event Viewer shortcut on the start menu, its command line includes the /s argument, so you should type <em>/s</em> in the Add Arguments box, as shown in <strong>Figure F</strong>. Leave all the other settings in the default configuration and click OK.</p>
+<h4>Figure F</h4>
+<h5><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/186935-468-504.png"></h5>
+<h6>Use the Browse button to locate and select the program that you want to automatically run when you log on</h6>
+<p>To complete the operation, click OK to close the Create Task dialog box and then close Task Scheduler.</p>
+<h2>Testing your scheduled startup program</h2>
+<p>Since you configured Task Scheduler to launch your UAC restricted program using the <em>Run With Highest Privileges</em> setting, the UAC is essentially bypassed. And while this may seem like a hole in the security of startup system it’s not. As you’ll remember, I stated that security system designed to protect your computer from a malicious program sneaking into the startup folder or run registry key. However, since malicious programs are not able to create tasks in Task Scheduler without triggering some other security system, there is no way that a malicious program to sneak into the system using this technique.</p>
+<p>To test your new setup, restart your system. When you log on, Task Scheduler will immediately run your UAC restricted program without any intervention from you.</p>
+<h2><strong>Get Vista tips in your mailbox!</strong></h2>
+<p><em>Delivered each Friday, TechRepublic’s Windows Vista Report newsletter features tips, news, and scuttlebutt on Vista development, as well as a look at new features in the latest version of the Windows OS. <a href="https://web.archive.org/web/20080211083122/http://nl.com.com/MiniFormHandler?brand=techrepublic&amp;list_id=e132">Automatically sign up today! </a></em></p>
+					
+				</div><!-- /entry -->
+				<ul class="navigation clearFix">
+					<li class="prev"><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=615">« Previous Post </a></li>
+					<li class="next"><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=613"> Next Post »</a></li>
+				</ul>
+
+		<!--Related Content-->
+						<script type="text/javascript" src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/wi"></script>
+		<script type="text/javascript">getrelatedContent()</script>			
+		<!--/Related Content-->
+		
+		
+				<a name="comments"></a>
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+	
+
+
+<h2><span class="farRight">   
+   
+
+
+
+   <a rel="nofollow" href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/1320-4-55.html?path=5206-12843-0.html%3FforumID%3D102%26threadID%3D253454%26start%3D0">Print/View all Posts</a>
+   
+
+</span>Comments on this 
+blog
+</h2><!--End of comment-->
+
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+  <tbody>
+  <tr><td class="trcThreadOddRow" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeItem.gif" align="left" border="0" width="20" height="45"><span class="threadHed"><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5208-12843-0.html?forumID=102&amp;threadID=253454&amp;messageID=2421238">Having a problem with anti spam secret codes?</a></span><span class="contentType">BALTHOR &nbsp;|&nbsp;02/05/08</span></td></tr>
+
+
+
+<tr><td class="trcThreadEvenRow" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeItem.gif" align="left" border="0" width="20" height="45"><span class="threadHed"><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5208-12843-0.html?forumID=102&amp;threadID=253454&amp;messageID=2423559">Now my computer won't restart ...</a></span><span class="contentType">etruss@... &nbsp;|&nbsp;02/08/08</span></td></tr>
+
+
+
+<tr><td class="trcThreadOddRow" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeSkipItem.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeLastItem.gif" align="left" border="0" width="20" height="45"><span class="threadHed"><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5208-12843-0.html?forumID=102&amp;threadID=253454&amp;messageID=2423624">Coincidence?</a></span><span class="contentType">etruss@... &nbsp;|&nbsp;02/08/08</span></td></tr>
+
+
+
+<tr><td class="trcThreadEvenRow" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeSkipItem.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/spacer.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeItem.gif" align="left" border="0" width="20" height="45"><span class="threadHed"><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5208-12843-0.html?forumID=102&amp;threadID=253454&amp;messageID=2423742">Task Scheduler not starting pgm and slow bootup</a></span><span class="contentType">mike@... &nbsp;|&nbsp;02/08/08</span></td></tr>
+
+
+
+<tr><td class="trcThreadOddRow" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeSkipItem.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/spacer.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeItem.gif" align="left" border="0" width="20" height="45"><span class="threadHed"><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5208-12843-0.html?forumID=102&amp;threadID=253454&amp;messageID=2423894">Nope, it's a feature....</a></span><span class="contentType">armstrongb@... &nbsp;|&nbsp;02/08/08</span></td></tr>
+
+
+
+<tr><td class="trcThreadEvenRow" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeSkipItem.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/spacer.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeSkipItem.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeLastItem.gif" align="left" border="0" width="20" height="45"><span class="threadHed"><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5208-12843-0.html?forumID=102&amp;threadID=253454&amp;messageID=2424178">Slow Responses from Vista</a></span><span class="contentType">remymaza@... &nbsp;|&nbsp;02/08/08</span></td></tr>
+
+
+
+<tr><td class="trcThreadOddRow" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeSkipItem.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/spacer.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeLastItem.gif" align="left" border="0" width="20" height="45"><span class="threadHed"><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5208-12843-0.html?forumID=102&amp;threadID=253454&amp;messageID=2424058">Which exe is scheduled?</a></span><span class="contentType">lelerew@... &nbsp;|&nbsp;02/08/08</span></td></tr>
+
+
+
+<tr><td class="trcThreadEvenRow" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeSkipItem.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/spacer.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/spacer.gif" align="left" border="0" width="20" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeLastItem.gif" align="left" border="0" width="20" height="45"><span class="threadHed"><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5208-12843-0.html?forumID=102&amp;threadID=253454&amp;messageID=2424097">Yes, that's the one</a></span><span class="contentType">etruss@... &nbsp;|&nbsp;02/08/08</span></td></tr>
+
+
+
+<tr><td class="trcThreadOddRow" height="45"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/treeLastItem.gif" align="left" border="0" width="20" height="45"><span class="threadHed"><a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5208-12843-0.html?forumID=102&amp;threadID=253454&amp;messageID=2425223">RE: Make Vista launch UAC restricted programs at startup with Task Scheduler</a><span class="tool orange">&nbsp;NEW</span></span><span class="contentType">david.sloan@... &nbsp;|&nbsp;02/10/08</span></td></tr>
+
+
+
+
+     </tbody>
+     </table>
+
+<div class="cmntBox">
+            
+          
+
+	<form action="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/5210-12843-0-1.html" method="post" class="clearFix" name="postform">
+		<h3>What do you think?</h3>
+		<input class="cmntTitle" type="text" name="subject" size="40" maxlength="75" value="RE: Make Vista launch UAC restricted programs at startup with Task Scheduler" onclick="this.value=&#39;&#39;">
+		<textarea name="body" cols="45" wrap="PHYSICAL" rows="8"></textarea>
+		
+		
+		            <label for="autoSubscribe">Alert me when new posts are added</label>
+		            <input type="checkbox" name="autoSubscribe">
+         	
+
+		<input type="hidden" name="reply" value="true">
+		<input type="hidden" name="forumID" value="102">
+		<input type="hidden" name="threadID" value="253454">
+		<input type="hidden" name="messageID" value="2421222">         
+		
+		<button type="submit" name="doPost">Add Comment</button>
+
+
+	</form>
+</div><!-- /cmntSubmit -->
+
+
+
+   
+   
+
+
+
+
+<!-- You can start editing here. -->
+<h2>
+			Trackbacks
+</h2>
+<p>The <acronym title="Uniform Resource Identifier">URI</acronym> to TrackBack this entry is: <em>http://blogs.techrepublic.com.com/window-on-windows/wp-trackback.php?p=616</em></p>
+
+
+	<p>No trackbacks yet.</p>
+<p></p>
+
+
+
+
+		</div><!-- /post -->
+
+
+
+
+	
+	<iframe src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/search.html" align="top" scrolling="no" width="100%" height="500" marginheight="0" marginwidth="0" frameborder="0" target="_top"></iframe>
+
+</div><!--/leftCol-->
+
+<div id="rightCol" class="noAV">
+	<div class="keyline">
+
+		
+<!-- MAC ad --><div class="advert"><div style="text-align:center"><a href="https://web.archive.org/web/20080211083122/http://www.cnetnetworks.com/adfeedback/?RGROUP=11818&amp;SEGMENTID=780656&amp;LINEID=99546&amp;SP=16" target="new"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/ad_feedback_120x10_trans.gif" width="120" height="10" border="0" alt="advertisement"></a><br></div><iframe src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/saved_resource.html" width="300" height="250" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" bordercolor="#000000">
+<script language="JavaScript1.1" src="https://web.archive.org/web/20080211083122js_/http://ad.doubleclick.net/adj/N1841.cnet.com/B2649276.6;abr=!ie;sz=300x250;click0=http://adlog.com.com/adlog/e/r=11818&amp;s=780656&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=100&amp;e=&amp;rqid=00c17-ad-e247AA26B730B80F7&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21&amp;event=58/;ord=2008.02.11.08.31.21">
+</script>
+<noscript>
+<a href="https://web.archive.org/web/20080211083122/http://adlog.com.com/adlog/e/r=11818&amp;s=780656&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=100&amp;e=&amp;rqid=00c17-ad-e247AA26B730B80F7&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21&amp;event=58/http://ad.doubleclick.net/jump/N1841.cnet.com/B2649276.6;abr=!ie4;abr=!ie5;sz=300x250;ord=2008.02.11.08.31.21">
+<img src="https://web.archive.org/web/20080211083122im_/http://ad.doubleclick.net/ad/N1841.cnet.com/B2649276.6;abr=!ie4;abr=!ie5;sz=300x250;ord=2008.02.11.08.31.21" border="0" width="300" height="250" alt="Click Here"></a>
+</noscript>
+</iframe><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/dotclear(2).gif" height="0" width="0" alt="" style="position:absolute; top:0px; left:0px"></div><!-- MAC [r20071210-1033-DynamicVars:1.13.8] c17-ad-xw7.cnet.com::4076698544 2008.02.11.08.31.21 --><!-- MAC T 2.2.4.5 -->
+
+
+
+
+<h2>Recent Entries</h2>
+<div class="rhContent">
+        <ul>
+                	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=614" title="How do I view hidden menus in Windows Vista?">How do I view hidden menus in Windows Vista?</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=613" title="Tip: How do I change the default option of the Windows Vista Power Button">Tip: How do I change the default option of the Windows Vista Power Button</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=616" title="Make Vista launch UAC restricted programs at startup with Task Scheduler">Make Vista launch UAC restricted programs at startup with Task Scheduler</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=615" title="Put your applications into a tabbed user interface with WinTabber">Put your applications into a tabbed user interface with WinTabber</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=612" title="Give Firefox a Windows Vista Look &amp; Feel">Give Firefox a Windows Vista Look &amp; Feel</a></li>
+        </ul>
+</div>
+
+
+<div> <a href="https://web.archive.org/web/20080211083122/http://twitter.com/TRBlogs"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/img_tr_twitter.gif"></a> </div>
+
+
+
+
+<div id="topRated">
+    <h2><span>Top Rated</span></h2>
+    <ul><li class="icon vote"><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=594">Use the PushD command to create a quick temporary drive map in Windows XP</a><cite>+70 votes</cite></li><li class="icon vote"><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=591">Re-enable icon transparency on your desktop</a><cite>+46 votes</cite></li><li class="icon vote"><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=615">Put your applications into a tabbed user interface with WinTabber</a><cite>+33 votes</cite></li><li class="icon vote"><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=599">Automatically log in to Vista and still be password protected</a><cite>+23 votes</cite></li><li class="icon vote"><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=602">Use Virtual PC 2007 to access a Complete PC Backup image</a><cite>+17 votes</cite></li><li class="icon vote"><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=604">Create an old-time monochrome command prompt in Windows XP</a><cite>+14 votes</cite></li><li class="icon vote"><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=616">Make Vista launch UAC restricted programs at startup with Task Scheduler</a><cite>+10 votes</cite></li><li class="icon vote"><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=605">Lock down your Windows Vista logon tight and then even tighter</a><cite>+10 votes</cite></li></ul></div> <!-- id="topRated" -->
+    
+
+
+
+
+
+
+<style type="text/css" media="screen">
+@import url("https://web.archive.org/web/20080211083122cs_/http://i.techrepublic.com.com/css/simplyHired.css");
+</style>
+<div id="featuredJobs">
+	<h2><span>TechRepublic </span>Featured Jobs</h2>
+
+	<table cellspacing="0" cellpadding="0">
+		<tbody><tr>
+			<th>Job Title/Location</th>
+			<th>Posted</th>
+		</tr>
+
+		<tr>
+			<td><a href="https://web.archive.org/web/20080211083122/http://dw.com.com/redir?siteid=11&amp;tag=pos1&amp;desturl=http://techrepublic.simplyhired.com/a/jobs/view/jobkey-5934.f5384ac7eaa0468f51cbd32880e5d6d0/hits-55479&amp;part=simplyhired.com&amp;subj=IT+Director">IT Director</a>Delafield, WI</td>
+			<td>02/05/2008</td>
+		</tr>
+
+
+		<tr>
+			<td><a href="https://web.archive.org/web/20080211083122/http://dw.com.com/redir?siteid=11&amp;tag=pos1&amp;desturl=http://techrepublic.simplyhired.com/a/jobs/view/jobkey-18f9463f1126a27036e863ec7ceeae58d94fab/hits-55479&amp;part=simplyhired.com&amp;subj=IT+Director">IT Director</a>Rye, NY</td>
+			<td>01/05/2008</td>
+		</tr>
+
+
+		<tr>
+			<td><a href="https://web.archive.org/web/20080211083122/http://dw.com.com/redir?siteid=11&amp;tag=pos1&amp;desturl=http://techrepublic.simplyhired.com/a/jobs/view/jobkey-709aaeff311a69b295379f39f58ff45fa26fd5cd/hits-55479&amp;part=simplyhired.com&amp;subj=IT+Director">IT Director</a>Hillsboro, OR</td>
+			<td>02/06/2008</td>
+		</tr>
+
+
+		<tr>
+			<td><a href="https://web.archive.org/web/20080211083122/http://dw.com.com/redir?siteid=11&amp;tag=pos1&amp;desturl=http://techrepublic.simplyhired.com/a/jobs/view/jobkey-74f38b55168bd1336dc562ec3a4cae9169caac27/hits-55479&amp;part=simplyhired.com&amp;subj=IT+Director">IT Director</a>Gahanna, OH</td>
+			<td>01/31/2008</td>
+		</tr>
+
+
+	</tbody></table>
+	<ul>
+			<li class="search">
+			<form id="" action="https://web.archive.org/web/20080211083122/http://jobs.techrepublic.com.com/a/jobs/search" method="GET" name="" onsubmit="return sh_process_search(this)">
+
+					<input id="searchInput" maxlength="45" name="l" value="Search Jobs by Zip Code" type="text" onfocus="this.value=&#39;&#39;">
+					<input id="searchButton" value="Go" type="submit">
+			
+
+			</form>
+		</li>
+		<li class="poweredBy">Powered by: <a href="https://web.archive.org/web/20080211083122/http://www.simplyhired.com/"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/logo_simplyHired.gif" alt="Simply Hired"></a></li>
+		<li class="clear">.</li>
+	</ul>
+</div>
+
+	<h2>Archives</h2>
+	<div class="rhContent">
+		<ul>
+				<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200802" title="February 2008">February 2008</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200801" title="January 2008">January 2008</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200712" title="December 2007">December 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200711" title="November 2007">November 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200710" title="October 2007">October 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200709" title="September 2007">September 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200708" title="August 2007">August 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200707" title="July 2007">July 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200706" title="June 2007">June 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200705" title="May 2007">May 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200704" title="April 2007">April 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200703" title="March 2007">March 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200702" title="February 2007">February 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200701" title="January 2007">January 2007</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200612" title="December 2006">December 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200611" title="November 2006">November 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200610" title="October 2006">October 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200609" title="September 2006">September 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200608" title="August 2006">August 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200607" title="July 2006">July 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200606" title="June 2006">June 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200605" title="May 2006">May 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200604" title="April 2006">April 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200603" title="March 2006">March 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200602" title="February 2006">February 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200601" title="January 2006">January 2006</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200512" title="December 2005">December 2005</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200511" title="November 2005">November 2005</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200510" title="October 2005">October 2005</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200509" title="September 2005">September 2005</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200508" title="August 2005">August 2005</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200507" title="July 2005">July 2005</a></li>
+	<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?m=200506" title="June 2005">June 2005</a></li>
+		</ul>
+	</div>
+
+
+
+	
+	<h2><span>TechRepublic Blogs</span></h2>
+	        <div class="rhContent">
+			<ul>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/10things">10 Things</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/helpdesk">Desktop Support</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/geekend">Geekend</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/howdoi">How Do I...</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/project-management">IT Consultant</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/tech-manager">IT Leadership</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/tech-news">IT News Digest</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/security">IT Security</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/opensource">Linux and Open Source</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/msoffice">Microsoft Office</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows">Microsoft Windows</a></li>
+</ul>
+<ul class="half">
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/wireless">Mobile and Wireless</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/networking">Network Administrator</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/gadgets">Practical Gadgetry</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/programming-and-development">Programming and Development</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/righttool">The Right Tool for the Job?</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/datacenter">Servers and Storage</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/techofalltrades">Tech of all Trades</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/hiner">Tech Sanity Check</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/tr-out-loud">TechRepublic Out Loud</a></li>
+<li><a href="https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/career">View from the Cubicle</a></li>
+              
+			</ul>
+		</div><!-- /rhContent -->
+
+
+
+<!-- MAC ad --><div class="advert"><div style="text-align:center"><a href="https://web.archive.org/web/20080211083122/http://www.cnetnetworks.com/adfeedback/?RGROUP=8538&amp;SEGMENTID=778401&amp;LINEID=235896&amp;SP=16" target="new"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/ad_feedback_120x10_trans.gif" width="120" height="10" border="0" alt="advertisement"></a><br></div><iframe src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/saved_resource(1).html" width="300" height="250" marginwidth="0" marginheight="0" hspace="0" vspace="0" frameborder="0" scrolling="no" bordercolor="#000000">
+<script language="JavaScript1.1" src="https://web.archive.org/web/20080211083122js_/http://ad.doubleclick.net/adj/N815.zdnet.com/B2670561.3;abr=!ie;sz=300x250;click0=http://adlog.com.com/adlog/e/r=8538&amp;s=778401&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=200&amp;e=&amp;rqid=01c17-ad-e647AA27523187C22&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21&amp;event=58/;ord=2008.02.11.08.31.21">
+</script>
+<noscript>
+<a href="https://web.archive.org/web/20080211083122/http://adlog.com.com/adlog/e/r=8538&amp;s=778401&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=200&amp;e=&amp;rqid=01c17-ad-e647AA27523187C22&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21&amp;event=58/http://ad.doubleclick.net/jump/N815.zdnet.com/B2670561.3;abr=!ie4;abr=!ie5;sz=300x250;ord=2008.02.11.08.31.21">
+<img src="https://web.archive.org/web/20080211083122im_/http://ad.doubleclick.net/ad/N815.zdnet.com/B2670561.3;abr=!ie4;abr=!ie5;sz=300x250;ord=2008.02.11.08.31.21" border="0" width="300" height="250" alt="Click Here"></a>
+</noscript>
+</iframe><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/dotclear(3).gif" height="0" width="0" alt="" style="position:absolute; top:0px; left:0px"></div><!-- MAC [r20071210-1033-DynamicVars:1.13.8] c17-ad-xw7.cnet.com::4076698544 2008.02.11.08.31.21 --><!-- MAC T 5.5.7.7 -->
+<div id="_loomia_si_anchor" class=""></div>
+
+	</div><!-- /keyline-->
+</div><!-- /rightCol -->
+<br clear="all">
+</div><!--/content-->
+
+<div id="preFooter">
+<hr>
+
+<!-- MAC ad --><div id="rubics-b2btr1">
+	<dl>
+		<dt><a href="https://web.archive.org/web/20080211083122/http://dw.com.com/rubicsclk?ver=2&amp;ts=2008.02.11.00.31.22&amp;edId=&amp;onId=&amp;ptId=&amp;sId=-2&amp;appId=7&amp;offId=50&amp;unitId=25&amp;poolId=1&amp;f1=%2d0&amp;f2=%2d0&amp;f3=%2d0&amp;alg=3&amp;&amp;opt=1&amp;linkPos=1&amp;destUrl=http%3A%2F%2Ftechrepublic.com.com%2F1395-20-97-747555578-0-E048.html%3Fsubj%3DSP001_rubics">Recovering Windows Clients</a></dt>
+		<dd>Part of your job is to make sure that your users' PCs are healthy and reliable. And when a system crash occurs--whether the culprit is a rogue applica ...</dd>
+		<dd><a class="button" href="https://web.archive.org/web/20080211083122/http://dw.com.com/rubicsclk?ver=2&amp;ts=2008.02.11.00.31.22&amp;edId=&amp;onId=&amp;ptId=&amp;sId=-2&amp;appId=7&amp;offId=50&amp;unitId=25&amp;poolId=1&amp;f1=%2d0&amp;f2=%2d0&amp;f3=%2d0&amp;alg=3&amp;&amp;opt=1&amp;linkPos=1&amp;destUrl=http%3A%2F%2Ftechrepublic.com.com%2F1395-20-97-747555578-0-E048.html%3Fsubj%3DSP001_rubics"><span>Buy Now</span></a></dd>
+	</dl>
+	<dl>
+		<dt><a href="https://web.archive.org/web/20080211083122/http://dw.com.com/rubicsclk?ver=2&amp;ts=2008.02.11.00.31.22&amp;edId=&amp;onId=&amp;ptId=&amp;sId=-2&amp;appId=7&amp;offId=34&amp;unitId=25&amp;poolId=1&amp;f1=%2d0&amp;f2=%2d0&amp;f3=%2d0&amp;alg=3&amp;&amp;opt=1&amp;linkPos=2&amp;destUrl=http%3A%2F%2Ftechrepublic.com.com%2F1395-20-97-747555578-0-S001.html%3Fsubj%3DSP001_rubics">TechRepublic Pocket Polo</a></dt>
+		<dd>"Nice!" That's what you'll think when you slip on TechRepublic's new short-sleeved polo shirt. The navy blue shirt with chest pocket is made from 100% ...</dd>
+		<dd><a class="button" href="https://web.archive.org/web/20080211083122/http://dw.com.com/rubicsclk?ver=2&amp;ts=2008.02.11.00.31.22&amp;edId=&amp;onId=&amp;ptId=&amp;sId=-2&amp;appId=7&amp;offId=34&amp;unitId=25&amp;poolId=1&amp;f1=%2d0&amp;f2=%2d0&amp;f3=%2d0&amp;alg=3&amp;&amp;opt=1&amp;linkPos=2&amp;destUrl=http%3A%2F%2Ftechrepublic.com.com%2F1395-20-97-747555578-0-S001.html%3Fsubj%3DSP001_rubics"><span>Buy Now</span></a></dd>
+	</dl>
+</div>
+<img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/c(1).gif" height="1" width="1" alt="">
+<!-- ros [r20070521-1832-ronr-v1-13-5:1.13.5] c17-ad-rubics-ros3.cnet.com::3029842864 2008.02.11.00.31.22 --><!-- ros t 0.0.0.0.1.1.1.1 --><!-- MAC [r20071210-1033-DynamicVars:1.13.8] c17-ad-xw6.cnet.com::4057750448 2008.02.11.08.31.22 --><!-- MAC T 0.0.3.3 -->
+
+
+<iframe marginheight="0" marginwidth="0" frameborder="0" scrolling="no" target="_parent" src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/tpg_iframe.html" id="rubicsIframe"></iframe>
+
+</div><!--/preFooter-->
+
+<ul id="footer">
+	<li id="footFeedback">		
+		<a class="eb_foot" href="https://web.archive.org/web/20080211083122/http://www.zdnet.com/">A ZDNet brand</a>
+		<a href="https://web.archive.org/web/20080211083122/http://techrepublic.custhelp.com/">Site Help &amp; Feedback</a>
+	</li>
+
+
+			<li id="footCnet">
+			<div class="clearFix">
+
+			<p><a href="https://web.archive.org/web/20080211083122/http://www.cnetnetworks.com/"><b>About CNET Networks</b></a> | <a href="https://web.archive.org/web/20080211083122/http://www.cnetnetworks.com/careers/">Jobs</a> | <a href="https://web.archive.org/web/20080211083122/http://www.cnetnetworks.com/advertise/">Advertise</a> | <a href="https://web.archive.org/web/20080211083122/http://www.cnetnetworks.com/partnerships/">Partnerships</a> | <a href="https://web.archive.org/web/20080211083122/http://m.techrepublic.com.com/">Mobile</a></p>
+
+			<script language="javascript">
+			document.write("<form><p>Visit other CNET Networks sites:</p> <select name=\"menu\" id=\"form_menu\" ><option selected value=\"\">Select Site</option><option value=\"http://www.bnet.com\">BNET</option><option value=\"http://www.cnet.com\">CNET.com</option><option value=\"http://www.cnetchannel.com\">CNET Channel</option><option value=\"http://www.gamespot.com\">GameSpot</option><option value=\"http://www.cnetnetworks.com/advertise/properties/international.html\">International Media</option><option value=\"http://www.mp3.com\">MP3.com</option><option value=\"http://www.mysimon.com\">mySimon</option><option value=\"http://www.search.com\">Search.com</option><option value=\"http://techrepublic.com.com/\">TechRepublic</option><option value=\"http://www.tv.com\">TV.com</option><option value=\"http://www.zdnet.com\">ZDNet</option></select><a onClick=\"window.location=document.getElementById('form_menu').options[document.getElementById('form_menu').selectedIndex].value;\"><img src=\"http://i.techrepublic.com.com/images/200609/go_search_button.gif\" id=\"visitButton\" height=\"21\" width=\"55\"  /></a></form>");
+</script><form><p>Visit other CNET Networks sites:</p> <select name="menu" id="form_menu"><option selected="" value="">Select Site</option><option value="http://www.bnet.com">BNET</option><option value="http://www.cnet.com">CNET.com</option><option value="http://www.cnetchannel.com">CNET Channel</option><option value="http://www.gamespot.com">GameSpot</option><option value="http://www.cnetnetworks.com/advertise/properties/international.html">International Media</option><option value="http://www.mp3.com">MP3.com</option><option value="http://www.mysimon.com">mySimon</option><option value="http://www.search.com">Search.com</option><option value="http://techrepublic.com.com/">TechRepublic</option><option value="http://www.tv.com">TV.com</option><option value="http://www.zdnet.com">ZDNet</option></select><a onclick="window.location=document.getElementById(&#39;form_menu&#39;).options[document.getElementById(&#39;form_menu&#39;).selectedIndex].value;"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/go_search_button.gif" id="visitButton" height="21" width="55"></a></form>
+<noscript>
+<a href="https://web.archive.org/web/20080211083122/http://www.bnet.com/">BNET</a> |
+<a href="https://web.archive.org/web/20080211083122/http://www.cnet.com/">CNET.com</a> |
+<a href="https://web.archive.org/web/20080211083122/http://www.cnetchannel.com/main/default.aspx">CNET Channel</a> |
+<a href="https://web.archive.org/web/20080211083122/http://www.gamespot.com/">GameSpot</a> |
+<a href="https://web.archive.org/web/20080211083122/http://www.cnetnetworks.com/advertise/properties/international.html">International Media</a> |
+<a href="https://web.archive.org/web/20080211083122/http://www.mp3.com/">MP3.com</a> |
+<a href="https://web.archive.org/web/20080211083122/http://www.mysimon.com/2001-1_8-0.html">mySimon</a> |
+<a href="https://web.archive.org/web/20080211083122/http://www.search.com/">Search.com</a> |
+<a href="https://web.archive.org/web/20080211083122/http://techrepublic.com.com/">TechRepublic</a> |
+<a href="https://web.archive.org/web/20080211083122/http://www.tv.com/">TV.com</a> |
+<a href="https://web.archive.org/web/20080211083122/http://www.zdnet.com/">ZDNet</a>
+</noscript>
+</div>
+
+</li>
+<li id="footCopyright">
+Copyright © 2007 CNET Networks, Inc. All Rights Reserved.  <a href="https://web.archive.org/web/20080211083122/http://www.cnet.com/html/aboutcnet/editorial/privacy.html?tag=tr.ft.co">Privacy Policy</a> <span>|</span>  <a href="https://web.archive.org/web/20080211083122/http://www.cnet.com/html/aboutcnet/editorial/terms.html?tag=tr.ft.co">Terms of Use</a>
+
+</li>
+</ul><!--/footer-->
+
+</div><!--/main -->
+</div><!--/width-->
+
+<!-- MAC ad --><div class="hotspot">
+		<ul>
+			<li class="head">
+				Premium Tools
+			</li>
+			
+			<li class="noBd img">
+				<a target="_blank" class="zd" href="https://web.archive.org/web/20080211083122/http://adlog.com.com/adlog/c/r=9108&amp;s=759265&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=100&amp;e=&amp;rqid=00c17-ad-e247AA26B730B80F8&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21/http://dw.com.com/redir?tag=hs.tr.2go&amp;destUrl=http://techrepublic.com.com/1395-6242-97-747555578-445608872-F002.html">
+					<img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/hs_premium1.gif" alt="premium tools">	
+				</a>
+			</li><li class="yesBd">
+				<a target="_blank" class="zd" href="https://web.archive.org/web/20080211083122/http://adlog.com.com/adlog/c/r=9108&amp;s=759265&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=100&amp;e=&amp;rqid=00c17-ad-e247AA26B730B80F8&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21/http://dw.com.com/redir?tag=hs.tr.2go&amp;destUrl=http://techrepublic.com.com/1395-6242-97-747555578-445608872-F002.html">
+				<strong>TechRepublic-2-Go</strong>
+				</a>
+				This 2GB USB drive is loaded with over 500 of TechRepublic's premium tools and downloads. 
+			</li>
+			
+			<li class="noBd img">
+				<a target="_blank" class="zd" href="https://web.archive.org/web/20080211083122/http://adlog.com.com/adlog/c/r=9108&amp;s=759265&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=100&amp;e=&amp;rqid=00c17-ad-e247AA26B730B80F8&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21/http://dw.com.com/redir?tag=hs.tr.proguide&amp;destUrl=http://techrepublic.com.com/1395-6242-97-747555578-445608872-295620.html">
+					<img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/hs_premium2.gif" alt="premium tools">
+				</a>
+			</li><li class="yesBd">
+				<a target="_blank" class="zd" href="https://web.archive.org/web/20080211083122/http://adlog.com.com/adlog/c/r=9108&amp;s=759265&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=100&amp;e=&amp;rqid=00c17-ad-e247AA26B730B80F8&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21/http://dw.com.com/redir?tag=hs.tr.proguide&amp;destUrl=http://techrepublic.com.com/1395-6242-97-747555578-445608872-295620.html">
+				<strong>IT Pro Guide to Policies and Procedures </strong>
+				</a>
+			</li>
+			
+			<li class="noBd img">
+				<a target="_blank" class="zd" href="https://web.archive.org/web/20080211083122/http://adlog.com.com/adlog/c/r=9108&amp;s=759265&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=100&amp;e=&amp;rqid=00c17-ad-e247AA26B730B80F8&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21/http://dw.com.com/redir?tag=hs.tr.500things&amp;destUrl=http://techrepublic.com.com/1395-6242-97-747555578-445608872-297089.html">
+					<img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/hs_premium3.gif" alt="premium tools">
+				</a>
+			</li><li class="yesBd">
+				<a target="_blank" class="zd" href="https://web.archive.org/web/20080211083122/http://adlog.com.com/adlog/c/r=9108&amp;s=759265&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=100&amp;e=&amp;rqid=00c17-ad-e247AA26B730B80F8&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21/http://dw.com.com/redir?tag=hs.tr.500things&amp;destUrl=http://techrepublic.com.com/1395-6242-97-747555578-445608872-297089.html">
+				<strong>500 Things Every IT Pro Needs to Know</strong>
+				</a>
+			</li>
+			
+			<li class="noBd img">
+				<a target="_blank" class="zd" href="https://web.archive.org/web/20080211083122/http://adlog.com.com/adlog/c/r=9108&amp;s=759265&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=100&amp;e=&amp;rqid=00c17-ad-e247AA26B730B80F8&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21/http://dw.com.com/redir?tag=hs.tr.trpromore&amp;destUrl=http://articles.techrepublic.com.com/5651-6242_11-5325391-1.html">
+					<img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/tr_pro.gif" alt="premium tools">
+				</a>
+			</li><li class="noBd">
+				Gain access to hundreds of premium tools and downloads with TechRepublic Pro. The $99 fee provides one year of access to virtually all of items in the TechRepublic Store a value of over $2000, and growing!
+				
+				<a target="_blank" class="zd" href="https://web.archive.org/web/20080211083122/http://adlog.com.com/adlog/c/r=9108&amp;s=759265&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=100&amp;e=&amp;rqid=00c17-ad-e247AA26B730B80F8&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21/http://dw.com.com/redir?tag=hs.tr.trpromore&amp;destUrl=http://articles.techrepublic.com.com/5651-6242_11-5325391-1.html">
+				<strong><br>Learn more</strong>
+				</a>
+			</li>
+
+
+		</ul>
+	</div><!-- /hotspot--><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/dotclear(4).gif" height="0" width="0" alt="" style="position:absolute; top:0px; left:0px"><!-- MAC [r20071210-1033-DynamicVars:1.13.8] c17-ad-xw7.cnet.com::4076698544 2008.02.11.08.31.21 --><!-- MAC T 7.7.9.a --><!-- MAC ad --><div class="window"><div style="text-align:center"><a href="https://web.archive.org/web/20080211083122/http://www.cnetnetworks.com/adfeedback/?RGROUP=10767&amp;SEGMENTID=721172&amp;LINEID=185730&amp;SP=8" target="new"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/ad_feedback_120x10_trans.gif" width="120" height="10" border="0" alt="advertisement"></a><br></div><a href="https://web.archive.org/web/20080211083122/http://adlog.com.com/adlog/c/r=10767&amp;s=721172&amp;o=12841:12843:&amp;h=cn&amp;p=2&amp;b=9&amp;l=en_US&amp;site=11&amp;pt=&amp;nd=&amp;pid=&amp;cid=&amp;pp=300&amp;e=&amp;rqid=01c17-ad-e747AA276E3239C64&amp;orh=&amp;oepartner=&amp;epartner=&amp;cpnmodule=&amp;count=&amp;ra=64.208.172.174&amp;t=2008.02.11.08.31.21/http://www.bnet.com/" target="_blank"><img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/070319_BNET_gen_125x125.gif" height="125" width="125" alt="Click Here" border="0"></a></div><!-- MAC [r20071210-1033-DynamicVars:1.13.8] c17-ad-xw7.cnet.com::4076698544 2008.02.11.08.31.21 --><!-- MAC T a.b.d.d -->
+</div><!--/goiter-->
+
+<img src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/c(2).gif" border="0" height="1" width="1" alt="">
+
+
+<!--    Loomia Global Script -->
+<div id="_loomia_script_anchor" class="failsafe"></div>
+<div id="_loomia_cs_anchor"><script src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/clixdom.js.download"></script></div>
+
+<script type="text/javascript">
+    // Initialization
+    var _loomia_scripts_loaded=0; 
+    if (typeof L_VARS=='undefined') { L_VARS = new Object() }
+
+    // Loomia common settings
+    L_VARS.publisher_key = '1552378618';
+    L_VARS.anchor="_loomia_si_anchor";
+    L_VARS.guid='https://web.archive.org/web/20080211083122/http://blogs.techrepublic.com.com/window-on-windows/?p=616';
+    L_VARS.query_params = null;
+
+    function _loomia_addScript(url,script_anchor) {
+        var anchor=document.getElementById(script_anchor);
+        var script= document.createElement("SCRIPT");
+        script.src=url;
+        anchor.appendChild(script);
+    }
+
+    function _loomia_addCS() { 
+        try {_loomia_rec_type = document.getElementById(L_VARS.anchor).className; } 
+        catch(e) { _loomia_rec_type='' }
+
+        if (!_loomia_scripts_loaded) { 
+            _loomia_addScript("https://web.archive.org/web/20080211083122/http://assets.loomia.com/js/clixdom.js", "_loomia_cs_anchor");
+            if (_loomia_rec_type.indexOf('socialrecs') != -1)
+                _loomia_addScript("https://web.archive.org/web/20080211083122/http://assets.loomia.com/js/socialrecs.js", "_loomia_script_anchor");
+            else if (_loomia_rec_type.indexOf('similarrecs') != -1)
+                _loomia_addScript("https://web.archive.org/web/20080211083122/http://assets.loomia.com/js/simitems.js", "_loomia_script_anchor");
+            else if (_loomia_rec_type.indexOf('personalrecs') != -1)
+                _loomia_addScript("https://web.archive.org/web/20080211083122/http://assets.loomia.com/js/personalrecs.js", "_loomia_script_anchor");
+            else if (_loomia_rec_type.indexOf('checkoutrecs') != -1)
+                _loomia_addScript("https://web.archive.org/web/20080211083122/http://assets.loomia.com/js/checkoutrecs.js", "_loomia_script_anchor");
+        }
+        _loomia_scripts_loaded=1;
+    }
+    
+    // Loads Loomia script after page has loaded
+    if (window.addEventListener) {
+        window.addEventListener("DOMContentLoaded", _loomia_addCS, false);
+        window.addEventListener("load", _loomia_addCS, false);
+    } else if (window.attachEvent) window.attachEvent("onload", _loomia_addCS);
+</script><!--
+     FILE ARCHIVED ON 08:31:22 Feb 11, 2008 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 09:06:24 May 24, 2021.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  captures_list: 124.088
+  exclusion.robots: 0.302
+  exclusion.robots.policy: 0.29
+  RedisCDXSource: 11.922
+  esindex: 0.008
+  LoadShardBlock: 89.802 (3)
+  PetaboxLoader3.datanode: 124.441 (4)
+  CDXLines.iter: 19.542 (3)
+  load_resource: 140.691
+  PetaboxLoader3.resolve: 46.408
+--><iframe height="0" width="0" id="__loomia_cs_iframe__" style="border: 0px;" allow="autoplay &#39;self&#39;; fullscreen &#39;self&#39;" src="./Make Vista launch UAC restricted programs at startup with Task Scheduler _ Microsoft Windows _ TechRepublic.com_files/saved_resource(2).html"></iframe><div at-magnifier-wrapper=""><div class="at-theme-light"><div class="at-base notranslate" translate="no"><div class="Z1-AJ" style="top: 0px; left: 0px;"></div></div></div></div></body></html>

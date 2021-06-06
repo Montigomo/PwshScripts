@@ -1,0 +1,97 @@
+var _____WB$wombat$assign$function_____ = function(name) {return (self._wb_wombat && self._wb_wombat.local_init && self._wb_wombat.local_init(name)) || self[name]; };
+if (!self.__WB_pmw) { self.__WB_pmw = function(obj) { this.__WB_source = obj; return this; } }
+{
+  let window = _____WB$wombat$assign$function_____("window");
+  let self = _____WB$wombat$assign$function_____("self");
+  let document = _____WB$wombat$assign$function_____("document");
+  let location = _____WB$wombat$assign$function_____("location");
+  let top = _____WB$wombat$assign$function_____("top");
+  let parent = _____WB$wombat$assign$function_____("parent");
+  let frames = _____WB$wombat$assign$function_____("frames");
+  let opener = _____WB$wombat$assign$function_____("opener");
+
+function MM_openBrWindow(theURL,winName,features) { //v2.0
+	window.open(theURL,winName,features);
+}
+
+
+function usrActionReg(which,action) //user engagement
+{
+   which.innerHTML += '<img src="https://web.archive.org/web/20080215132921/http://dw.com.com/redir?destUrl=http%3A%2F%2Fi.i.com.com%2Fcnwk.1d%2Fi%2Fb.jpg' + dwInfo + '&usraction=' + action + '" width="1" height="1" border="0">';
+      if (action == 20) {
+         window.print ();  
+      }
+      else if (action == 19) {
+      	location.href='mailto:?subject='+encodeURIComponent(document.title)+'&body='+encodeURIComponent(location.href);
+      }
+}
+
+//Get related content
+function getrelatedContent() 
+{
+	try {
+		var assets = relassets();
+		var impressions = relimpressions();
+		if (assets.length > 0) {
+			document.writeln('<h2>People who read this, also read...</h2>');
+			document.writeln('<ul class="relatedContent">');
+			for (var i = 0; i < assets.length; i++) {
+				if (i == (assets.length - 1)){
+  			 		document.writeln('<li class="last">');
+  			 	} else {
+  			 		document.writeln('<li>');
+  			 	}
+  			 		document.writeln('<a href="' + assets[i].url + '">' + assets[i].title + '</a></li>');  			 		
+  			 	}
+					document.writeln('</ul>');
+				}
+			if (impressions.length > 0) {
+				for (var i = 0; i < impressions.length; i++) {
+  			 		document.writeln( impressions[i] );
+  			 	}	}			
+	} catch(ex) { }
+}
+
+
+//Rubics unit for the gallery
+function getgalleryRubics()
+{
+	try {
+		if (rubicsResponse.rubics.response.offerList.length > 0) {
+			document.writeln('<h2>Featured Galleries<\/h2>');
+			document.writeln('<ul class="rubicContent">');
+			for (var i = 0; i < rubicsResponse.rubics.response.offerList.length; i++) {
+					document.writeln('<li>');
+  			 		document.writeln('<span><a href="' + rubicsResponse.rubics.response.offerList[i].url + '"><img src="' + rubicsResponse.rubics.response.offerList[i].thumbnailUrl + '"><\/a><\/span>');  
+  			 		document.writeln('<a href="' + rubicsResponse.rubics.response.offerList[i].url + '">' + rubicsResponse.rubics.response.offerList[i].title + '<\/a>');  		
+  			 		document.writeln('<\/li>');
+  			 	}
+			document.writeln('<\/ul>');
+			}
+		document.writeln(rubicsResponse.rubics.response.unitImpTracking);		
+	} catch(ex) { }
+
+}
+
+}
+/*
+     FILE ARCHIVED ON 13:29:21 Feb 15, 2008 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 09:06:27 May 24, 2021.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  captures_list: 76.058
+  exclusion.robots: 0.126
+  exclusion.robots.policy: 0.115
+  RedisCDXSource: 0.811
+  esindex: 0.012
+  LoadShardBlock: 46.048 (3)
+  PetaboxLoader3.datanode: 46.622 (4)
+  CDXLines.iter: 24.112 (3)
+  load_resource: 43.634
+  PetaboxLoader3.resolve: 32.678
+*/

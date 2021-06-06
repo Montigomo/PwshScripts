@@ -1,3 +1,4 @@
+
 # specify the folder that you want to discover
 # $home is the root folder of your user profile
 # you can use any folder: $path = 'c:\somefolder'

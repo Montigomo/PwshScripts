@@ -1,0 +1,228 @@
+var _____WB$wombat$assign$function_____ = function(name) {return (self._wb_wombat && self._wb_wombat.local_init && self._wb_wombat.local_init(name)) || self[name]; };
+if (!self.__WB_pmw) { self.__WB_pmw = function(obj) { this.__WB_source = obj; return this; } }
+{
+  let window = _____WB$wombat$assign$function_____("window");
+  let self = _____WB$wombat$assign$function_____("self");
+  let document = _____WB$wombat$assign$function_____("document");
+  let location = _____WB$wombat$assign$function_____("location");
+  let top = _____WB$wombat$assign$function_____("top");
+  let parent = _____WB$wombat$assign$function_____("parent");
+  let frames = _____WB$wombat$assign$function_____("frames");
+  let opener = _____WB$wombat$assign$function_____("opener");
+
+/* BEGIN: Define everything in anonymous function to prevent name spilling */
+(function() {
+/* -----> */
+
+    /* Declare namespaces updated in this file: Redeclaration is fine */
+    CNET.namespace('CNET.Blog.Voting');
+
+    /* BEGIN: Blog Voting Class */
+    CNET.Blog.Voting.BlogVoting = function() {
+        this.url = '';
+        this.id = null;
+        this.rating = null;
+        this.successCallback = null;
+        this.failureCallback = null;
+        this.callbackParams = [];
+        this.callbackScope = null;
+        this.results = {
+            ranking: null,
+            text: null
+        };
+    };
+
+    /* BEGIN: BlogVoting Member Functions */
+    CNET.Blog.Voting.BlogVoting.prototype = {
+        getVotingUrl:function() {
+            if(this.id) {
+                var ratingValue = -1;
+                if(this.rating > 0) {
+                    ratingValue = 1;
+                }
+                // TODO: use &amp; instead of & for url construction?
+                return this.url + '&cr=' + ratingValue + '&cid=' + this.id;
+            } else {
+                return null;
+            }
+        },
+
+        handleSuccess:function(o){
+            // This member handles the success response
+            this.processResult(o);
+            CNET.lang.callWithScope(this.successCallback, this.callbackParams, this.callbackScope);
+        },
+
+        handleFailure:function(o){
+            // This member handles the failure response
+            CNET.lang.callWithScope(this.failureCallback, this.callbackParams, this.callbackScope);
+        },
+
+        processResult:function(o){
+            // This member is called by handleSuccess
+            var rankingResults = o.responseText.split('~');
+            if(rankingResults.length >= 2) {
+                this.results.ranking = rankingResults[0];
+                this.results.text = rankingResults[1];
+            }
+        },
+
+        startRequest:function() {
+            var votingUrl = this.getVotingUrl();
+            if(votingUrl) {
+                /* YUI Usage --> */
+                var callbackObj = {
+                    success: this.handleSuccess,
+                    failure: this.handleFailure,
+                    timeout: 5000,
+                    scope: this
+                };
+                YAHOO.util.Connect.asyncRequest('GET', votingUrl, callbackObj, null);
+                /* <-- YUI Usage */
+            }
+        }
+    };
+    /* END: BlogVoting Member Functions */
+    /* END: Blog Voting Class */
+
+    /* BEGIN: Blog Voting UI class */
+    CNET.Blog.Voting.BlogVotingUI = function(initValues) {
+        this.blogVoting = null;
+        if(initValues) {
+            this.init(initValues);
+        }
+    };
+    /* BEGIN: Blog Voting UI Member Functions */
+    CNET.Blog.Voting.BlogVotingUI.prototype = {
+        init: function(initValues) {
+            this.existingVotes = initValues.existingVotes;
+            this.id = initValues.id;
+            this.rating = initValues.rating;
+            this.url = initValues.url;
+
+            this.blogVoting = new CNET.Blog.Voting.BlogVoting();
+            this.blogVoting.id = this.id;
+            this.blogVoting.rating = this.rating;
+            this.blogVoting.url = this.url;
+            this.blogVoting.successCallback = this.handleSuccess;
+            this.blogVoting.callbackScope = this;
+        },
+        sendVote: function() {
+            this.blogVoting.startRequest();
+        },
+        handleSuccess: function() {
+            this.updateUI();
+            this.setCookie();
+        },
+        setCookie: function() {
+            CNET.util.setCookie('service', this.existingVotes + '~' + this.id, 30, '/' );
+        },
+        updateUI: function() {
+            alert('Results: ' + this.blogVoting.results.ranking + '~' + this.blogVoting.results.text);
+        }
+    };
+    /* BEGIN: Blog Voting UI Member Functions */
+    /* END: Blog Voting UI class */
+
+    /* BEGIN: ZDNET Blog Voting UI class */
+    CNET.Blog.Voting.ZDNETBlogVotingUI = function(initValues) {
+        // Chain the constructors
+        CNET.Blog.Voting.ZDNETBlogVotingUI.superclass.constructor.call(this, initValues);
+    };
+    /* YUI Usage */ YAHOO.lang.extend(CNET.Blog.Voting.ZDNETBlogVotingUI, CNET.Blog.Voting.BlogVotingUI);
+    /* BEGIN: ZDNET Blog Voting UI: Override superclass methods */
+    CNET.Blog.Voting.ZDNETBlogVotingUI.prototype.updateUI = function() {
+        var ranking = this.blogVoting.results.ranking;
+        var voteText = this.blogVoting.results.text;
+        if(ranking > 0) {
+            ranking = '+' + ranking;
+        }
+
+        document.getElementById( 'votes' + this.id ).innerHTML      = ranking;
+        document.getElementById( 'vote_text' + this.id ).innerHTML  = voteText;
+        document.getElementById( 'voteStatus' + this.id ).innerHTML = "";
+        document.getElementById( 'voteStatus' + this.id ).className = "thanks";
+    };
+    /* END: ZDNET Blog Voting UI: Override superclass methods */
+    /* END: ZDNET Blog Voting UI class */
+
+    /* BEGIN: TechRepublic Blog Voting UI class */
+    CNET.Blog.Voting.TechRepublicBlogVotingUI = function(initValues) {
+        // Chain the constructors
+        CNET.Blog.Voting.TechRepublicBlogVotingUI.superclass.constructor.call(this, initValues);
+    };
+    /* YUI Usage */ YAHOO.lang.extend(CNET.Blog.Voting.TechRepublicBlogVotingUI, CNET.Blog.Voting.BlogVotingUI);
+    /* BEGIN: TechRepublic Blog Voting UI: Override superclass methods */
+    CNET.Blog.Voting.TechRepublicBlogVotingUI.prototype.updateUI = function() {
+        var ranking = this.blogVoting.results.ranking;
+        // var voteText = this.blogVoting.results.text;
+        if(ranking > 0) {
+            ranking = '+' + ranking;
+        }
+
+        var v = document.getElementById( 'votes' + this.id );
+        var vs = document.getElementById( 'voteStatus' + this.id );
+        v.innerHTML = ranking;
+        vs.innerHTML = "Thanks";
+        vs.href = null;
+        vs.onclick = "function() { return false; }";
+        vs.parentNode.className = "thanks";
+    };
+    /* END: TechRepublic Blog Voting UI: Override superclass methods */
+    /* END: TechRepublic Blog Voting UI class */
+
+    /* BEGIN: BNET Blog Voting UI class */
+    CNET.Blog.Voting.BNETBlogVotingUI = function(initValues) {
+        // Chain the constructors
+        CNET.Blog.Voting.BNETBlogVotingUI.superclass.constructor.call(this, initValues);
+    };
+    /* YUI Usage */ YAHOO.lang.extend(CNET.Blog.Voting.BNETBlogVotingUI, CNET.Blog.Voting.TechRepublicBlogVotingUI);
+    /* BEGIN: BNET Blog Voting UI: Override superclass methods */
+    /* END: BNET Blog Voting UI: Override superclass methods */
+    /* END: BNET Blog Voting UI class */
+
+/* <----- */
+})();
+/* END: Define everything in anonymous function call to prevent name spilling */
+
+/* DEPRECATED: --> Instead of calling sendVote, please instantiate the appropriate Blog Voting UI class */
+function sendVote(rating, existing_votes, cid, rpc) {
+    var blogVotingUI = null;
+    if(CNET.Globals.currentNetwork == 'ZDNET') {
+        blogVotingUI = new CNET.Blog.Voting.ZDNETBlogVotingUI();
+    } else if(CNET.Globals.currentNetwork == 'TechRepublic') {
+        blogVotingUI = new CNET.Blog.Voting.TechRepublicBlogVotingUI();
+    } else if(CNET.Globals.currentNetwork == 'BNET') {
+        blogVotingUI = new CNET.Blog.Voting.BNETBlogVotingUI();
+    } else {
+        blogVotingUI = new CNET.Blog.Voting.BlogVotingUI();
+    }
+    blogVotingUI.init({id: cid, existingVotes: existing_votes, url: rpc, rating: rating});
+    blogVotingUI.sendVote();
+}
+/* DEPRECATED: <-- Instead of calling sendVote, please instantiate the appropriate Blog Voting UI class */
+
+
+
+}
+/*
+     FILE ARCHIVED ON 13:29:11 Feb 15, 2008 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 09:06:28 May 24, 2021.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
+/*
+playback timings (ms):
+  captures_list: 84.671
+  exclusion.robots: 0.113
+  exclusion.robots.policy: 0.104
+  RedisCDXSource: 1.869
+  esindex: 0.009
+  LoadShardBlock: 58.7 (3)
+  PetaboxLoader3.datanode: 49.702 (4)
+  CDXLines.iter: 16.798 (3)
+  load_resource: 65.618
+  PetaboxLoader3.resolve: 51.342
+*/
