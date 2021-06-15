@@ -31,15 +31,17 @@ function Open-Ssh
 
     # create temp with zip extension (or Expand will complain)
     $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'zip' } –PassThru
-    #download
+
+    # download
     Invoke-WebRequest -OutFile $tmp $osuri
 
-    #exract to destination folder 
-    #$tmp | Expand-Archive -DestinationPath $destPath -Force
+    # exract to destination folder
+
+    $tmp | Expand-Archive -DestinationPath $destPath -Force
 
     Add-Type -Assembly System.IO.Compression.FileSystem
 
-    #extract list entries for dir 
+    # extract list entries for dir 
     $zip = [IO.Compression.ZipFile]::OpenRead($tmp.FullName)
 
     $entries = $zip.Entries | Where-Object {-not [string]::IsNullOrWhiteSpace($_.Name) } #| where {$_.FullName -like 'myzipdir/c/*' -and $_.FullName -ne 'myzipdir/c/'} 
@@ -52,7 +54,7 @@ function Open-Ssh
         Stop-Service sshd
     }
 
-    #extraction
+    # extraction
     foreach($entry in $entries)
     {
         $dpath = $destPath + $entry.Name
@@ -64,7 +66,8 @@ function Open-Ssh
     $zip.Dispose()
 
     # set environment path vartiable
-    [Environment]::SetEnvironmentVariable("Path",[Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\OpenSSH",[EnvironmentVariableTarget]::Machine)
+    #[Environment]::SetEnvironmentVariable("Path",[Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\OpenSSH",[EnvironmentVariableTarget]::Machine)
+    Set-EnvironmentVariable -VariableName 'Path' -Scope 'Machine' -Value $destPath
 
     # remove temporary file
     $tmp | Remove-Item

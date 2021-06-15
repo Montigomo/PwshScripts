@@ -1,22 +1,21 @@
 
-<#
-.SYNOPSIS
-	Run msi package 
-.DESCRIPTION
-.PARAMETER FilePath
-    Specifies path to msi package
-.PARAMETER PackageParams
-    Specific msi package parameters
-.INPUTS
-.OUTPUTS
-.EXAMPLE
-.EXAMPLE
-.EXAMPLE
-.LINK
-http://www.xxx.com
-#>
 function Install-MsiPackage
 {
+    <#
+    .SYNOPSIS
+        Run msi package 
+    .DESCRIPTION
+    .PARAMETER FilePath
+        Specifies path to msi package
+    .PARAMETER PackageParams
+        Specific msi package parameters
+    .INPUTS
+    .OUTPUTS
+    .EXAMPLE
+    .EXAMPLE
+    .EXAMPLE
+    .LINK
+    #>
     Param
     (   
         [Parameter(Mandatory=$true)]

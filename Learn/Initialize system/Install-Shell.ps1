@@ -20,3 +20,5 @@ if(-not (Get-IsAdmin))
 & "$PSScriptRoot\config-openssh.ps1"
 
 & "$PSScriptRoot\install-far.ps1"
+
+# change folder C:\Users\agite\source\repos to D:\work

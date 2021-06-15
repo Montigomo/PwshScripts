@@ -18,7 +18,7 @@ function Set-EnvironmentVariable
     param(
         [Parameter(Mandatory=$true)]
         [string] $Value,
-        #[Parameter(Mandatory=$false)]
+        [Parameter(Mandatory=$false)]
         [ValidateSet('Path', 'PSModulePath')]
         $VariableName = "Path",
         [Parameter(Mandatory=$false)]
