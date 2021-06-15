@@ -1,21 +1,20 @@
 
 
-<#
-.SYNOPSIS
-	Get Is powershell session runned in admin mode 
-.DESCRIPTION
-.PARAMETER Name
-.PARAMETER Extension
-.INPUTS
-.OUTPUTS
-.EXAMPLE
-.EXAMPLE
-.EXAMPLE
-.LINK
-http://www.xxx.com
-#>
-function Get-Release
+function Get-ReleaseUri
 {
+    <#
+    .SYNOPSIS
+        Get github project release uri
+    .DESCRIPTION
+    .PARAMETER Name
+    .PARAMETER Extension
+    .INPUTS
+    .OUTPUTS
+    .EXAMPLE
+    .EXAMPLE
+    .EXAMPLE
+    .LINK
+    #>
     param(
         [Parameter(Mandatory=$true)] [string] $Repouri,
         [Parameter(Mandatory=$true)] [string] $Pattern,

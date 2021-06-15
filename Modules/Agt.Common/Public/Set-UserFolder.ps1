@@ -1,16 +1,14 @@
-<#
-    .SYNOPSIS
-        Used to set user folser location
 
-    .PARAMETER KnownFolder
-        Any of user folders like Desktop, Pictures, Documents
-
-    .PARAMETER Path
-        Path to what need set user folder value
-
-#>
 function Set-UserFolder
 {
+	<#
+    .SYNOPSIS
+        Used to set user folser location
+    .PARAMETER KnownFolder
+        Any of user folders like Desktop, Pictures, Documents
+    .PARAMETER Path
+        Path to what need set user folder value
+	#>
     Param (
 		[Parameter(Mandatory = $true)]
 		[ValidateSet('Favorites', 'Desktop', 'Pictures', 'Music')]

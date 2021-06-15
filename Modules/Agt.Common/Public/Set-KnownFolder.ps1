@@ -1,5 +1,5 @@
 
-# Rnown folders IDs - https://msdn.microsoft.com/en-us/library/windows/desktop/dd378457(v=vs.85).aspx
+# Known folders IDs - https://msdn.microsoft.com/en-us/library/windows/desktop/dd378457(v=vs.85).aspx
 
 Add-Type @"
 using System;
@@ -47,7 +47,7 @@ namespace KnownFolders
 			{"Music", new Guid("4BD8D571-6D19-48D3-BE97-422220080E43") },
 			{"NetHood", new Guid("C5ABBF53-E17F-4121-8900-86626FC2C973") },
 			{"NetworkFolder", new Guid("D20BEEC4-5CA8-4905-AE3B-BF251EA09B53") },
-      {"OneDriveFolder", new Guid("A52BBA46-E9E1-435f-B3D9-28DAA648C0F6")},
+      		{"OneDriveFolder", new Guid("A52BBA46-E9E1-435f-B3D9-28DAA648C0F6")},
 			{"OriginalImages", new Guid("2C36C0AA-5812-4b87-BFD0-4CD0DFB19B39") },
 			{"PhotoAlbums", new Guid("69D2CF90-FC33-4FB7-9A0C-EBB0F0FCB43C") },
 			{"Pictures", new Guid("33E28130-4E1E-4676-835A-98395C3BC3BB") },
@@ -135,20 +135,21 @@ namespace KnownFolders
 }
 "@
 
-<#
-.SYNOPSIS
-    Sets a known folder's path using SHSetKnownFolderPath.
-.PARAMETER Folder
-    The known folder whose path to set.
-.PARAMETER Path
-    The path.
-.NOTES
-    Name: Set-KnownFolderPath
-    Author: Agitech
-.EXAMPLE
-    Set-KnownFolderPath -KnownFolder Desktop -Path 'D:\Desktop'
-#>
+
 function Set-KnownFolderPath {
+	<#
+	.SYNOPSIS
+		Sets a known folder's path using SHSetKnownFolderPath.
+	.PARAMETER Folder
+		The known folder name whose path need to set.
+	.PARAMETER Path
+		The path to new folder location.
+	.NOTES
+		Name: Set-KnownFolderPath
+		Author: Agitech
+	.EXAMPLE
+		Set-KnownFolderPath -KnownFolder Desktop -Path 'D:\Desktop'
+	#>
 	Param (
 		[Parameter(Mandatory = $true)]
 		[ValidateSet('AddNewPrograms', 'AdminTools', 'AppUpdates', 'CDBurning', 'ChangeRemovePrograms',
@@ -164,36 +165,37 @@ function Set-KnownFolderPath {
 		'SidebarDefaultParts', 'SidebarParts', 'StartMenu', 'Startup', 'SyncManagerFolder', 'SyncResultsFolder', 'SyncSetupFolder',
 		'System', 'SystemX86', 'Templates', 'TreeProperties', 'UserProfiles', 'UsersFiles', 'Videos', 'Windows')]
 		[string]$KnownFolder,
-		
+
 		[Parameter(Mandatory = $true)]
 		[string]$Path
     )
-    $result = '';
+    [bool]$result = $false;
     if ((Test-Path $Path -PathType Container))
     {
         if([KnownFolders.KnownFolder]::SetKnownFolderPath([KnownFolders.KnownFolder]::Kguids[$KnownFolder],$Path) -eq 0)
         {
-            $result = 'Success'
+            $result = $true
         }
     }
     else
     {
-        $result = 'Invalid path';
+        $result = $false;
     }
     return $result;
 }
-<#
-.SYNOPSIS
-    Sets a known folder's path using SHSetKnownFolderPath.
-.PARAMETER Folder
-    The known folder whose path to get.
-.NOTES
-    Name: Get-KnownFolderPath
-    Author: Agitech
-.EXAMPLE
-    Get-KnownFolderPath -KnownFolder Desktop
-#>
+
 function Get-KnownFolderPath {
+	<#
+	.SYNOPSIS
+		Get a known folder's path using SHGetKnownFolderPath.
+	.PARAMETER Folder
+		The known folder name whose path to get.
+	.NOTES
+		Name: Get-KnownFolderPath
+		Author: Agitech
+	.EXAMPLE
+		Get-KnownFolderPath -KnownFolder Desktop
+	#>
 	Param (
 		[Parameter(Mandatory = $true)]
             [ValidateSet('AddNewPrograms', 'AdminTools', 'AppUpdates', 'CDBurning', 'ChangeRemovePrograms',
@@ -211,5 +213,4 @@ function Get-KnownFolderPath {
             [string]$KnownFolder
     )
     return [KnownFolders.KnownFolder]::GetKnownFolderPath([KnownFolders.KnownFolder]::Kguids[$KnownFolder]);
-
 }

@@ -1,21 +1,22 @@
 
-<#
-.SYNOPSIS
-	Get Is powershell session runned in admin mode 
-.DESCRIPTION
-.PARAMETER Name
-.PARAMETER Extension
-.INPUTS
-.OUTPUTS
-.EXAMPLE
-.EXAMPLE
-.EXAMPLE
-.LINK
-http://www.xxx.com
-#>
-
 function Invoke-RunAs
 {
+    <#
+    .SYNOPSIS
+        Run programm elevated 
+    .DESCRIPTION
+    .PARAMETER FilePath
+        Path to the programm
+    .PARAMETER Credential
+    .PARAMETER ArgumentList
+    .PARAMETER $NamedArguments
+    .INPUTS
+    .OUTPUTS
+    .EXAMPLE
+    .EXAMPLE
+    .EXAMPLE
+    .LINK
+    #>
     [CmdletBinding()]
     param(
         [Alias('PSPath')]

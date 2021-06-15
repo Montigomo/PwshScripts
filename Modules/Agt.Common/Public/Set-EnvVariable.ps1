@@ -1,21 +1,20 @@
 
-
-<#
-.SYNOPSIS
-	Get Is powershell session runned in admin mode 
-.DESCRIPTION
-.PARAMETER Name
-.PARAMETER Extension
-.INPUTS
-.OUTPUTS
-.EXAMPLE
-.EXAMPLE
-.EXAMPLE
-.LINK
-http://www.xxx.com
-#>
 function Set-EnvironmentVariable
 {
+    <#
+    .SYNOPSIS
+        Get Is powershell session runned in admin mode 
+    .DESCRIPTION
+    .PARAMETER Name
+    .PARAMETER Extension
+    .INPUTS
+    .OUTPUTS
+    .EXAMPLE
+    .EXAMPLE
+    .EXAMPLE
+    .LINK
+    #>
+    [CmdletBinding()]
     param(
         [Parameter(Mandatory=$true)]
         [string] $Value,

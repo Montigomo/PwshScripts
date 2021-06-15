@@ -17,12 +17,20 @@ New-Variable -Name Key
 New-Variable -Name PromptOnSecureDesktop_Name
 New-Variable -Name ConsentPromptBehaviorAdmin_Name
 
-Function Set-RegistryValue { 
-  [cmdletbinding(SupportsShouldProcess=$True,ConfirmImpact="Low")]
-  Param ($key, $name, $value, $type="Dword")
-  If ((Test-Path -Path $key) -Eq $false) { New-Item -ItemType Directory -Path $key | Out-Null } 
-  	If ($pscmdlet.ShouldProcess($value)) {
-       Set-ItemProperty -Path $key -Name $name -Value $value -Type $type 
+function Set-RegistryValue{
+
+	[CmdletBinding(SupportsShouldProcess=$True, ConfirmImpact="Low")]
+	Param ($key,
+		$name,
+		$value,
+		$type="Dword"
+	)
+	If ((Test-Path -Path $key) -Eq $false) 
+	{
+	New-Item -ItemType Directory -Path $key | Out-Null 
+	} 
+	If ($pscmdlet.ShouldProcess($value)) {
+		Set-ItemProperty -Path $key -Name $name -Value $value -Type $type 
 	}
 } 
 
@@ -35,6 +43,13 @@ $ConsentPromptBehaviorAdmin_Name = "ConsentPromptBehaviorAdmin"
 $PromptOnSecureDesktop_Name = "PromptOnSecureDesktop"
 
 Function Get-UACLevel(){
+	<#
+	.SYNOPSIS
+	# .PARAMETER Folder
+	# .PARAMETER Path
+	.NOTES
+	.EXAMPLE
+	#>
 	$ConsentPromptBehaviorAdmin_Value = Get-RegistryValue $Key $ConsentPromptBehaviorAdmin_Name
 	$PromptOnSecureDesktop_Value = Get-RegistryValue $Key $PromptOnSecureDesktop_Name
 	If($ConsentPromptBehaviorAdmin_Value -Eq 0 -And $PromptOnSecureDesktop_Value -Eq 0){
