@@ -1,5 +1,5 @@
 
-function Config-Natwork
+function Config-Network
 {  
     <#
     .SYNOPSIS

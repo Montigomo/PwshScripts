@@ -1,6 +1,6 @@
 
 
-function Config-OpenSsh
+function Edit-OpenSsh
 {  
     <#
     .SYNOPSIS

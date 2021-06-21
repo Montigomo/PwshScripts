@@ -1,17 +1,19 @@
 
 
-function Get-ReleaseUri
+function Get-GitReleaseUri
 {
     <#
     .SYNOPSIS
         Get github project release uri
     .DESCRIPTION
-    .PARAMETER Name
-    .PARAMETER Extension
+    .PARAMETER Repouri
+        Uri github project
+    .PARAMETER Pattern
+        Regex pattern for search release version
+    .PARAMETER Prerelease
+        [switch] Use prerelease or not
     .INPUTS
     .OUTPUTS
-    .EXAMPLE
-    .EXAMPLE
     .EXAMPLE
     .LINK
     #>

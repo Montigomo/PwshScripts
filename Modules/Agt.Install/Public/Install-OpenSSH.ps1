@@ -1,18 +1,16 @@
 
 
 
-function Open-Ssh
+function Install-Ssh
 {  
     <#
     .SYNOPSIS
-        
+        Install OpenSsh
     .DESCRIPTION
     .PARAMETER Name
     .PARAMETER Extension
     .INPUTS
     .OUTPUTS
-    .EXAMPLE
-    .EXAMPLE
     .EXAMPLE
     .LINK
     #>

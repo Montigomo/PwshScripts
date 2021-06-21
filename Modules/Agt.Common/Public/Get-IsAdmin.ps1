@@ -3,14 +3,11 @@ function Get-IsAdmin
 {  
     <#
     .SYNOPSIS
-        Get Is powershell session runned in admin mode 
+        Is powershell session runned in admin mode 
     .DESCRIPTION
     .PARAMETER Name
-    .PARAMETER Extension
     .INPUTS
     .OUTPUTS
-    .EXAMPLE
-    .EXAMPLE
     .EXAMPLE
     .LINK
     #>

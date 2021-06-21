@@ -1,6 +1,4 @@
 
-
-
 function Install-Powershell
 {  
     <#
@@ -16,7 +14,7 @@ function Install-Powershell
     .EXAMPLE
     .LINK
     #>
-    
+
     # this script install powershell 7
 
     #

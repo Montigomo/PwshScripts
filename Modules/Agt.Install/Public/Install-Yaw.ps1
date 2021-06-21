@@ -1,6 +1,4 @@
 
-
-
 function Install-Yaw
 {  
     <#
@@ -11,8 +9,6 @@ function Install-Yaw
     .PARAMETER Extension
     .INPUTS
     .OUTPUTS
-    .EXAMPLE
-    .EXAMPLE
     .EXAMPLE
     .LINK
     #>

@@ -12,8 +12,6 @@ function Install-MsiPackage
     .INPUTS
     .OUTPUTS
     .EXAMPLE
-    .EXAMPLE
-    .EXAMPLE
     .LINK
     #>
     Param

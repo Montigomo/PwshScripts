@@ -5,12 +5,16 @@ function Set-EnvironmentVariable
     .SYNOPSIS
         Get Is powershell session runned in admin mode 
     .DESCRIPTION
+    .PARAMETER Value
+        Environment variable value
     .PARAMETER Name
-    .PARAMETER Extension
+        Environment variable name [ValidateSet('Path', 'PSModulePath')]
+    .PARAMETER Scope
+        Scope  [ValidateSet('User', 'Process', 'Machine')]
+    .PARAMETER Action
+        Action [ValidateSet('Add', 'Remove')]
     .INPUTS
     .OUTPUTS
-    .EXAMPLE
-    .EXAMPLE
     .EXAMPLE
     .LINK
     #>
@@ -20,7 +24,7 @@ function Set-EnvironmentVariable
         [string] $Value,
         [Parameter(Mandatory=$false)]
         [ValidateSet('Path', 'PSModulePath')]
-        $VariableName = "Path",
+        $Name = "Path",
         [Parameter(Mandatory=$false)]
         [ValidateSet('User', 'Process', 'Machine')]
         [string] $Scope = "User",
@@ -36,13 +40,13 @@ function Set-EnvironmentVariable
             if(!($items.Contains($Value)))
             {
                 $NewItem = $items + ";$Value"
-                [Environment]::SetEnvironmentVariable($VariableName, $NewItem, $Scope)
+                [Environment]::SetEnvironmentVariable($Name, $NewItem, $Scope)
             }
         }
         "Remove" {
-            $oev = [Environment]::GetEnvironmentVariable($VariableName, $Scope).Split(";")
+            $oev = [Environment]::GetEnvironmentVariable($Name, $Scope).Split(";")
             $oevNew = ($oev -notlike $Value -notlike "" -join ";")
-            [Environment]::SetEnvironmentVariable($VariableName, $oevNew, $Scope) 
+            [Environment]::SetEnvironmentVariable($Name, $oevNew, $Scope) 
         }     
     }
 }
