@@ -12,10 +12,10 @@ function Install-Modules
     .EXAMPLE
     .LINK
     #>
-    [CmdletBinding()]
-    param(
-        [string]$Folder
-    )
+    # [CmdletBinding()]
+    # param(
+    #     [string]$Folder
+    # )
 
     $outSrting = '
     $modules = @(
@@ -33,7 +33,7 @@ function Install-Modules
     #C:\Program Files\WindowsPowerShell\Modules
     $modulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
     $profilePath = $profile.AllUsersAllHosts;
-6
+
     $ScriptPath = $MyInvocation.MyCommand.Path
     $items = Get-ChildItem -Path $PSScriptRoot -Recurse | Where-Object {$_.FullName -ne $ScriptPath}
 
@@ -61,3 +61,5 @@ function Install-Modules
     $outputFileText | Out-File -FilePath $profilePath
 
 }
+
+Install-Modules

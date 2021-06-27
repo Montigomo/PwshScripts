@@ -1,17 +1,11 @@
 
-
-#region Variables & Internal Function 
-$debug = $false
-
-# (?<!\s*[\#]\s*)
-$regexip4 = "(?<ip>(((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))";
-$RegexEntry = "(?<!#.*)$regexip4\s*(?<host>[^\s]+)(\s*\#.*)?";
-
-#$hostPath = "D:\temp\hosts";
-
-$hostPath = "$env:windir\System32\drivers\etc\hosts";
-
 function Get-Hosts{
+
+    $regexip4 = "(?<ip>(((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))";
+    
+    $RegexEntry = "(?<!#.*)$regexip4\s*(?<host>[^\s]+)(\s*\#.*)?";
+    
+    $hostsPath = "$env:windir\System32\drivers\etc\hosts";
 
     $hostsDictionary = New-Object System.Collections.Specialized.OrderedDictionary
 
@@ -40,30 +34,91 @@ function Write-Hosts
 {
     param
     (
+        [Parameter(Mandatory=$true)]
+        [System.Collections.Specialized.OrderedDictionary]$Hosts,
+        [Parameter(Mandatory=$true)]
         [ValidateNotNullOrEmpty()]
-        [string]$fileName
+        [string]$FileName
     )   
 
-    $hosts =  Get-Hosts;
     $arrayList = New-Object System.Collections.ArrayList;
-    foreach($item in $hosts.GetEnumerator())
+    foreach($item in $Hosts.GetEnumerator())
     {
         $arrayList.Add($item.Value["line"]) | Out-Null
     }
-    $arrayList | Out-File "D:\temp\hosts"
+    $arrayList | Out-File $FileName
 }
 
-
-function Remove-Host([string]$hostname)
+function Add-Host
 {
+    param
+    (
+        [Parameter(Mandatory=$true)]        
+        [string]$HostIp,
+        [Parameter(Mandatory=$true)]        
+        [string]$HostName,
+        [string]$HeaderLine,
+        [string]$Comment
+    )
 
+    $hosts = New-Object System.Collections.Specialized.OrderedDictionary
+    $hosts = Get-Hosts;
+    [ipaddress]$IpAddress = New-Object System.Net.IPAddress(0x7FFFFFFF)
+    if([ipaddress]::TryParse($HostIp, [ref]$IpAddress))
+    {
+        $ExHosts = ($hosts.GetEnumerator() | Where-Object {$_.Value["ip"] -eq $HostIp -and $_.Value["host"] -eq $HostName})
+        if($ExHosts.Count -eq 0)
+        {
+            if($HeaderLine)
+            {
+                $hosts.Add($count, @{"line" = $line; "host" = $null; "ip" = $null});
+            }
+            if($Comment.StartsWith("#")){
+                $line = "$HostIp $HostName  $Comment"
+            }
+            else {
+                $line = "$HostIp $HostName"                
+            }
+            $count = $hosts.Count + 1
+            $hosts.Add($count, @{"line" = $line; "host" = $hosts; "ip" = $ip});
+            Write-Hosts -Hosts $hosts -FileName "D:\temp\hosts"
+        }
+    }
+}
+
+function Remove-Host
+{
+    param
+    (
+        [Parameter(Mandatory=$true)]        
+        [string]$HostIp,
+        [Parameter(Mandatory=$true)]        
+        [string]$HostName
+    )
+
+    $hosts = New-Object System.Collections.Specialized.OrderedDictionary
+    $hosts = Get-Hosts;
+    [ipaddress]$IpAddress = New-Object System.Net.IPAddress(0x7FFFFFFF)
+    if([ipaddress]::TryParse($HostIp, [ref]$IpAddress))
+    {
+        $ExHosts = ($hosts.GetEnumerator() | Where-Object {$_.Value["ip"] -eq $HostIp -and $_.Value["host"] -eq $HostName})
+        if($ExHosts.Count -gt 0)
+        {
+            foreach($item in $ExHosts)
+            {
+                $hosts.Remove($item.Key);
+            }
+            Write-Hosts -Hosts $hosts -FileName "D:\temp\hosts"
+        }
+    }
 }
 
 #$hosts = Get-Hosts;
-# $hosts.GetType()
-# ($hosts.GetEnumerator() | Where-Object {$_.Value["ip"]}).Count
 
+# 163.172.167.207 bt.t-ru.org
+#Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.test.org"
 
-Write-Hosts
+Remove-Host  -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
+#Write-Hosts
 
 exit
