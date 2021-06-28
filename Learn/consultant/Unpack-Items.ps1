@@ -51,5 +51,3 @@
         #$ps.WaitForExit()
     }
 }
-
-Unpack-items -DestinationFolder "E:\Консультант\RECEIVE" -SourceFolder "Y:\Consultant\Updates"
