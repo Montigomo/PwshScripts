@@ -44,8 +44,8 @@ function Set-EnvironmentVariable
             }
         }
         "Remove" {
-            $oev = [Environment]::GetEnvironmentVariable($Name, $Scope).Split(";")
-            $oevNew = ($oev -notlike $Value -notlike "" -join ";")
+            $items = [Environment]::GetEnvironmentVariable($Name, $Scope).Split(";")
+            $oevNew = ($items -notlike $Value -notlike "" -join ";")
             [Environment]::SetEnvironmentVariable($Name, $oevNew, $Scope) 
         }     
     }

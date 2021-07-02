@@ -39,6 +39,24 @@ function Install-Modules
 
     $modules = Get-ChildItem -Path $PSScriptRoot -Recurse -Filter *.psd1 | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };
 
+    foreach($item in $modules)
+    {
+        if(Get-Module -Name $item)
+        {
+            $modulePath = (get-module $item).ModuleBase
+            if($modulePath.StartsWith($PSScriptRoot))
+            {
+                continue
+            }
+
+            # Get-Childitem $modulePath -Recurse | ForEach-Object { 
+            #     Remove-Item $_.FullName -Force
+            # }
+            Remove-Item -Path "$modulePath" -Force -Recurse
+        }
+    }
+    
+
     New-Item -ItemType Directory -Force -Path $modulesPath
 
     $arraystr = ""
