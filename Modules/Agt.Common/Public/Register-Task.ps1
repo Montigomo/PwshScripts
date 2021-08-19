@@ -18,8 +18,8 @@ function Register-Task
         [string]$TaskName,
         [Parameter(Mandatory)]
         [xml]$XmlDefinition,
-        [ValidateSet('system', 'author')]
-        [string]$Principal = 'author'
+        [ValidateSet('system', 'author', 'none')]
+        [string]$Principal = 'none'
     )
 
     if(Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue)
@@ -34,6 +34,10 @@ function Register-Task
 
     switch ($principal)
     {
+        'none'
+        {
+            Register-ScheduledTask -Xml $XmlDefinition.OuterXml -TaskName $TaskName
+        }
         'system'
         {
             Register-ScheduledTask -Xml $XmlDefinition.OuterXml -TaskName $TaskName -User System

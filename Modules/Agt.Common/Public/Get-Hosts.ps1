@@ -59,7 +59,7 @@ function Add-Host
         [string]$HostName,
         [string]$HeaderLine,
         [string]$Comment,
-        [string]$HostFileDestination
+        [string]$HostFileDestination = "D:\temp\hosts" #$env:windir + "\system32\drivers\etc"
     )
 
     $hosts = New-Object System.Collections.Specialized.OrderedDictionary
@@ -95,7 +95,7 @@ function Remove-Host
         [string]$HostIp,
         [Parameter(Mandatory=$true)]        
         [string]$HostName,
-        [string]$HostFileDestination
+        [string]$HostFileDestination  = "D:\temp\hosts" #$env:windir + "\system32\drivers\etc"
     )
 
     $hosts = New-Object System.Collections.Specialized.OrderedDictionary
@@ -120,7 +120,10 @@ function Remove-Host
 # 163.172.167.207 bt.t-ru.org
 #Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.test.org"
 
-Remove-Host  -HostIp "163.172.167.207" -HostName "bt.t-ru.org" -HostFileDestination "D:\temp\hosts"
+#Remove-Host  -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
+
+Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
+
 #Write-Hosts
 
 exit
