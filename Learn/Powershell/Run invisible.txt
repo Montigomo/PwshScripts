@@ -9,14 +9,14 @@
 
 
 
-  #$execCommand = '"C:\Program Files\PowerShell\7\pwsh.exe"';
-  #$execArguments = "-ExecutionPolicy Bypass -NoLogo -NonInteractive -WindowStyle Hidden -NoProfile -File $script -Verb RunAs"
+#$execCommand = '"C:\Program Files\PowerShell\7\pwsh.exe"';
+#$execArguments = "-ExecutionPolicy Bypass -NoLogo -NonInteractive -WindowStyle Hidden -NoProfile -File $script -Verb RunAs"
 
-  #$execCommand = 'mshta vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $script + '''"""""", 0 : window.close")'
+#$execCommand = 'mshta vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $script + '''"""""", 0 : window.close")'
   
   
-  $execCommand = "mshta.exe"
-  $execArguments = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $script + '''"""""", 0 : window.close")'
+$execCommand = "mshta.exe"
+$execArguments = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $script + '''"""""", 0 : window.close")'
   
   
   

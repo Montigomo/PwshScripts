@@ -52,4 +52,4 @@
     }
 }
 
-Unpack-items -DestinationFolder "D:\Консультант\RECEIVE" -SourceFolder "Y:\Consultant\Updates"
+Unpack-items -DestinationFolder "E:\Консультант\RECEIVE" -SourceFolder "E:\ConsultantService\Updates"
