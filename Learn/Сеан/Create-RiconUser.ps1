@@ -16,7 +16,7 @@ $SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
 # Проверка наличия и моздание в случае отсутствия папки C:\Users\[CurrentUser]\Desctop\RiconScan
 if(!(Test-Path $RiconScanFolder))
 {
-    
+    New-Item -Path $RiconScanFolder -ItemType Directory -Force
 }
 
 #Set-LocalUser -Name "12345" -Password $SecurePassword
