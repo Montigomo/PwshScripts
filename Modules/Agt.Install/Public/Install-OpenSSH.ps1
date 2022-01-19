@@ -47,7 +47,7 @@ function Install-Ssh
     #create dir for result of extraction
     #New-Item -ItemType Directory -Path "c:\temp\c" -Force
 
-    if((get-service sshd).Status -eq "Running")
+    if((get-service sshd -ErrorAction SilentlyContinue).Status -eq "Running")
     {
         Stop-Service sshd
     }
@@ -65,7 +65,7 @@ function Install-Ssh
 
     # set environment path vartiable
     #[Environment]::SetEnvironmentVariable("Path",[Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\OpenSSH",[EnvironmentVariableTarget]::Machine)
-    Set-EnvironmentVariable -VariableName 'Path' -Scope 'Machine' -Value $destPath
+    Set-EnvironmentVariable -Name 'Path' -Scope 'Machine' -Value $destPath
 
     # remove temporary file
     $tmp | Remove-Item
@@ -110,3 +110,5 @@ function Install-Ssh
     }
 
 }
+
+#Install-Ssh

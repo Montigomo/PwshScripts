@@ -36,7 +36,7 @@ function Set-EnvironmentVariable
     switch($Action)
     {        
         "Add" {
-            $items = [Environment]::GetEnvironmentVariable($VariableName, $Scope)
+            $items = [Environment]::GetEnvironmentVariable($Name, $Scope)
             if(!($items.Contains($Value)))
             {
                 $NewItem = $items + ";$Value"
@@ -50,3 +50,5 @@ function Set-EnvironmentVariable
         }     
     }
 }
+
+#Set-EnvironmentVariable -Name 'Path' -Scope 'Machine' -Value "c:\Program Files\OpenSSH\"

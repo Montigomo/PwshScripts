@@ -2,7 +2,9 @@
 
 
 
-$excludeFolders = @("D:\_software\media\FastStone\_drugs")
+$items = @("D:\_software\")
 
-
-Add-MpPreference -ExclusionPath “E:\Консультант”
+foreach($item in $items)
+{
+    Add-MpPreference -ExclusionPath $item
+}

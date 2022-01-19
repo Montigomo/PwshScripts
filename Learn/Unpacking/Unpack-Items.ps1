@@ -80,7 +80,7 @@
     if($first -gt 0)
     {
         $items = $items | Select-Object -First $first
-    }
+    }A
     if($last -gt 0)
     {
         $items = $items | Select-Object -Last $last
