@@ -14,7 +14,7 @@ foreach ($feature in $features)
     Enable-WindowsOptionalFeature -Online -FeatureName $feature
 };
 
-New-SelfSignedCertificate -DnsName odrive-self-signed -CertStoreLocation cert:\LocalMachine\My;
+New-SelfSignedCertificate -DnsName odrive-self-signed -CertStoreLocation "cert:\LocalMachine\My";
 
 #& "$env:windir\system32\inetsrv\InetMgr.exe";
 

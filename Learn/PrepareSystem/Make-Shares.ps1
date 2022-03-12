@@ -5,28 +5,32 @@
 fdPHost
 #>
 
-# Инициалтзация переменых
-$UserName = "LibraryReader"
-$Password = "fubntx1791"
-$Description = "LibraryReader"
-# $DeskTopFolder = [Environment]::GetFolderPath("Desktop");
-# $RiconFolderName = "RiconScan"
-# $RiconScanFolder = "$DeskTopFolder\$RiconFolderName"
-$SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
-
-# Проверка наличия и моздание в случае отсутствия папки C:\Users\[CurrentUser]\Desctop\RiconScan
-# if(!(Test-Path $RiconScanFolder))
-# {
-#     New-Item -Path $RiconScanFolder -ItemType Directory -Force
-# }
-
-# Проверка наличия учетной записи
-if(!(Get-LocalUser -Name $UserName -ErrorAction SilentlyContinue))
+# Инициалbзация переменых
+$users = @(@{ UserName = "LibraryReader"; Password = "fubntx1791"; Description = "LibraryReader"},
+            @{ UserName = "SmbAgitech"; Password = "fubntx17cfv,f91"; Description = "SmbAgitech"});
+foreach($user in $users)
 {
-    New-LocalUser -Name $UserName -Description $Description -Password $SecurePassword
+    # $DeskTopFolder = [Environment]::GetFolderPath("Desktop");
+    # $RiconFolderName = "RiconScan"
+    # $RiconScanFolder = "$DeskTopFolder\$RiconFolderName"
+    $Password = $user["Password"]; $UserName = $user["UserName"]; $Description = $user["Description"];
+
+    $SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
+
+    # Проверка наличия и моздание в случае отсутствия папки C:\Users\[CurrentUser]\Desctop\RiconScan
+    # if(!(Test-Path $RiconScanFolder))
+    # {
+    #     New-Item -Path $RiconScanFolder -ItemType Directory -Force
+    # }
+
+    # Проверка наличия учетной записи
+    if(!(Get-LocalUser -Name $UserName -ErrorAction SilentlyContinue))
+    {
+        New-LocalUser -Name $UserName -Description $Description -Password $SecurePassword
+    }
+    $SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
+    Set-LocalUser -Name $UserName -Password $SecurePassword
 }
-$SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
-Set-LocalUser -Name $UserName -Password $SecurePassword
 
 exit
 
@@ -66,10 +70,17 @@ if($flag)
 
 
 # Проверка наличия, режима запуска и включие необходимых служб
+# If none of those work, make sure all networking services are running. The following services should all be set to Automatic and be currently running:
+# DNS Client
+# Function Discovery Provider Host
+# Function Discovery Resource Publication
+# HomeGroup Provider
+# HomeGroup Listener
+# Peer Networking Grouping
 # SSDP Discovery
 # UPnP Device Host
-# Список служб
-$items = @("ssdpsrv")
+
+$items = @("dnscache", "fdphost", "FDResPub", "p2psvc", "ssdpsrv", "upnphost")
 foreach($item in $items)
 {
     if(($service = Get-Service -Name $item -ErrorAction SilentlyContinue))

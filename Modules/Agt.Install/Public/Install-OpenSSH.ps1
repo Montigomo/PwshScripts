@@ -109,6 +109,13 @@ function Install-Ssh
         Start-Service sshd
     }
 
+    #setup ssh-agent service startup type and start it
+    if(Get-Service  ssh-agent -ErrorAction SilentlyContinue)
+    {
+        # if((get-service ssh-agent).StartType -eq [System.ServiceProcess.ServiceStartMode]::Manual)
+        Get-Service -Name ssh-agent | Set-Service -StartupType 'Automatic'
+        Start-Service ssh-agent
+    }
 }
 
 #Install-Ssh
