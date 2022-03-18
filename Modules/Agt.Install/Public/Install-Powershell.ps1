@@ -3,7 +3,6 @@ function Install-Powershell
 {  
     <#
     .SYNOPSIS
-        
     .DESCRIPTION
     .PARAMETER Name
     .PARAMETER Extension
@@ -64,8 +63,8 @@ function Install-Powershell
 
         $logFile = '{0}-{1}.log' -f $tmp.FullName, (get-date -Format yyyyMMddTHHmmss)
         $arguments = "/i {0} ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 /qn /norestart /L*v {1}" -f $tmp.FullName, $logFile
-        Start-Process "msiexec.exe" -ArgumentList $arguments -Wait -NoNewWindow 
+        Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow 
     }
 }
 
-#Install-Powershell
+Install-Powershell

@@ -14,7 +14,5 @@ else
 {
   # query all public properties
   $properties = $type.GetProperties().Name
-  $properties | ForEach-Object -Begin { $hash = @{} } -Process { 
-$hash[$_] = $type::$_  
-} -End { $hash }
+  $properties | ForEach-Object -Begin { $hash = @{} } -Process { $hash[$_] = $type::$_ } -End { $hash }
 } 

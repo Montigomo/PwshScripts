@@ -1,0 +1,41 @@
+{
+	"version": "30",
+	"actions": [
+		{
+			"init": "init",
+			"value": "all",
+			"status": "succes",
+			"order": 1
+		},
+		{
+			"name": "download",
+			"value": "all",
+			"status": "notrun",
+			"order": 2
+		},
+		{
+			"name": "download",
+			"value": "AdobeUpdater.xml",
+			"status": "succes",
+			"order": 2
+		},
+		{
+			"name": "self-update",
+			"value": "",
+			"status": "succes",
+			"order": 3
+		},		
+		{
+			"name": "run-script",
+			"value": "modules\\Install-Modules.ps1",
+			"status": "notrun",
+			"order": 4
+		},
+		{
+			"name": "register-task",
+			"value": { "taskname" : "AdobeUpdater" , "definitionName" : "AdobeUpdater.xml", "principal" : "none"},
+			"status": "notrun",
+			"order": 5
+		}
+	]
+}
