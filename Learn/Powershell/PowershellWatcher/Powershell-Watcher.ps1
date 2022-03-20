@@ -5,7 +5,7 @@ param
     #[Parameter(Mandatory)]
     [ValidateNotNullOrEmpty()]
     [ValidateSet('init','watcher', 'download', 'run-script', 'register-task', 'self-update', "update-pwsh")]
-    [string]$action = "update-pwsh"
+    [string]$action
 )
 #### Variables (defenitions)
 
@@ -329,12 +329,14 @@ if(-not (Test-Path $jsonInfoFile))
 {
   $jsonInfoString | ConvertTo-Json -Depth 5 | Out-File $jsonInfoFile
 }
+
 $jsonObject = Get-Content $jsonInfoFile | ConvertFrom-Json -Depth 5;
 
 ### check action and try to resolve it
 if(-not ($action))
 {
-  $uriConfig = $uri+"/GetConfig?name=version";
+  
+  $uriConfig = $serviceUri + "/GetConfig?name=version";
 
   [int]$versionRemote = Invoke-RestMethod -Uri $uriConfig
 
