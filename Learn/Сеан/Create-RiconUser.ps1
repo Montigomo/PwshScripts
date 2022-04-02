@@ -14,7 +14,7 @@ $RiconFolderName = "RiconScan"
 $RiconScanFolder = "$DeskTopFolder\$RiconFolderName"
 $SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
 
-# Проверка наличия и моздание в случае отсутствия папки C:\Users\[CurrentUser]\Desctop\RiconScan
+# Проверка наличия и создание в случае отсутствия папки C:\Users\[CurrentUser]\Desctop\RiconScan
 if(!(Test-Path $RiconScanFolder))
 {
     New-Item -Path $RiconScanFolder -ItemType Directory -Force
@@ -53,6 +53,12 @@ if($flag)
     Grant-SmbShareAccess -Name $RiconFolderName -AccountName "RiconUser" -AccessRight Full -Force
 }
 
+# Предоставление полного доступа к папке для поьзователя
+$Acl = Get-Acl $RiconScanFolder 
+$Ar = New-Object System.Security.AccessControl.FileSystemAccessRule("RiconUser", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow")
+$Acl.SetAccessRule($Ar)
+Set-Acl $RiconScanFolder $Acl
+
 # Настройка параметров общего доступа к сети
 
 
@@ -83,3 +89,6 @@ foreach($item in $items)
     }
 }
 
+
+#вывод информации
+"\\$env:COMPUTERNAME\$RiconFolderName"
