@@ -4,20 +4,20 @@ function Set-AtStartup {
         [Parameter(Mandatory = $true)]
         [string]$ProgrammPath
     )
-    
-
-    $A = New-ScheduledTaskAction -Execute "Taskmgr.exe"
+    # Biltin/administrators   S-1-5-32-544  
+    $A = New-ScheduledTaskAction -Execute $ProgrammPath
     $T = New-ScheduledTaskTrigger -AtLogon
-    $P = New-ScheduledTaskPrincipal "Contoso\Administrator"
+    #$P = New-ScheduledTaskPrincipal -UserID "NT AUTHORITY\SYSTEM" -LogonType ServiceAccount -RunLevel Highest
+    $P = New-ScheduledTaskPrincipal -GroupId "S-1-5-32-544" -RunLevel Highest
     $S = New-ScheduledTaskSettingsSet
     $D = New-ScheduledTask -Action $A -Principal $P -Trigger $T -Settings $S
     Register-ScheduledTask T1 -InputObject $D
 
 
 
-    $trigger = New-JobTrigger -AtStartup -RandomDelay 00:00:30
+    # $trigger = New-JobTrigger -AtStartup -RandomDelay 00:00:30
 
-    Register-ScheduledJob -Trigger $trigger -FilePath C:\fso\Get-BatteryStatus.ps1 -Name GetBatteryStatus
+    # Register-ScheduledJob -Trigger $trigger -FilePath C:\fso\Get-BatteryStatus.ps1 -Name GetBatteryStatus
 
 }
 

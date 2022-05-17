@@ -75,7 +75,7 @@ function Send-MagicPacket
      
   #формируем "магический пакет"
       
-  $target=0,2,4,6,8,10 | % {[convert]::ToByte($mac.substring($_,2),16)} 
+  $target=0,2,4,6,8,10 | ForEach-Object {[convert]::ToByte($mac.substring($_,2),16)} 
   $packet = (,[byte]255 * 6) + ($target * 16)
      
   #отправляем "магический пакет"

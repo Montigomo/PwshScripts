@@ -110,6 +110,9 @@ function Update-SmbServices
 $users = @(@{ UserName = "SmbLibrary"; Password = "fubntx1791"; Description = "LibraryReader"},
            @{ UserName = "SmbAgitech"; Password = "fubntx17cfv,f91"; Description = "SmbAgitech"});
 
-Add-SmbUsers -Users $users
-Set-AccessSharedFolder -UserName "SmbLibrary" -AccessRight "Read" -ShareName "Library" -Folder "D:\Library"
-Update-SmbServices
+#Add-SmbUsers -Users $users
+#Set-AccessSharedFolder -UserName "SmbLibrary" -AccessRight "Read" -ShareName "Library" -Folder "D:\Library"
+#Update-SmbServices
+
+
+Set-AccessSharedFolder -UserName "SmbAgitech" -AccessRight "Full" -ShareName "DLib" -Folder "D:"

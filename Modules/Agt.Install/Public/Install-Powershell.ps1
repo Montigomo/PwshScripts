@@ -36,7 +36,7 @@ function Install-Powershell
     $pattern = (@("PowerShell-(?<version>\d?\d.\d?\d.\d?\d)-win-x64.zip","v(?<version>\d?\d.\d?\d.\d?\d)"))[1]
     $remoteVersion = [System.Version]::Parse("0.0.0")
 
-    $pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName.Contains("C:\Program Files\PowerShell\7\pwsh.exe");
+    #$pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName.Contains("C:\Program Files\PowerShell\7\pwsh.exe");
     
     $latestRelease = (Invoke-RestMethod -Method Get -Uri $gitUriReleasesLatest)
     
@@ -57,12 +57,19 @@ function Install-Powershell
         Invoke-WebRequest -OutFile $tmp $pwshUri
 
         # command line arguments
+        # USE_MU - This property has two possible values:
+        #   1 (default) - Opts into updating through Microsoft Update, WSUS, or Configuration Manager
+        #   0 - Do not opt into updating through Microsoft Update, WSUS, or Configuration Manager
+        # ENABLE_MU
+        #   1 (default) - Opts into using Microsoft Update for Automatic Updates
+        #   0 - Do not opt into using Microsoft Update
         # ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL - This property controls the option for adding the Open PowerShell item to the context menu in Windows Explorer.
+        # ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL - This property controls the option for adding the Run with PowerShell item to the context menu in Windows Explorer.
         # ENABLE_PSREMOTING - This property controls the option for enabling PowerShell remoting during installation.
         # REGISTER_MANIFEST - This property controls the option for registering the Windows Event Logging manifest.
 
         $logFile = '{0}-{1}.log' -f $tmp.FullName, (get-date -Format yyyyMMddTHHmmss)
-        $arguments = "/i {0} ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 /qn /norestart /L*v {1}" -f $tmp.FullName, $logFile
+        $arguments = "/i {0} ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 /qn /norestart /L*v {1}" -f $tmp.FullName, $logFile
         Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow 
     }
 }
