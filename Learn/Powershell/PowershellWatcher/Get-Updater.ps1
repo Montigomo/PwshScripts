@@ -78,6 +78,28 @@ $TasksDefinitions = @{
 
 ################################
 ######## Local functions
+function _GetIsAdmin  
+{  
+    <#
+    .SYNOPSIS
+        Is powershell session runned in admin mode 
+    .DESCRIPTION
+    .PARAMETER Name
+    .INPUTS
+    .OUTPUTS
+    .EXAMPLE
+    .LINK
+    #>
+    # $user = [Security.Principal.WindowsIdentity]::GetCurrent();
+    # [bool](New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
+    # Determine if admin powershell process
+    # ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
+    $wid=[System.Security.Principal.WindowsIdentity]::GetCurrent()
+    $prp=new-object System.Security.Principal.WindowsPrincipal($wid)
+    $adm=[System.Security.Principal.WindowsBuiltInRole]::Administrator
+    [bool]$prp.IsInRole($adm)
+
+}
 
 function _Unpack {
   param(
@@ -101,7 +123,7 @@ function _InstallPwsh {
     [Parameter()]
     [switch]$CheckUpdate
   )
-  if (!(Get-IsAdmin)) {
+  if (!(_GetIsAdmin)) {
     Write-Error "Run as administrator"
     exit
     $pswPath = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName;

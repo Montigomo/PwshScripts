@@ -23,7 +23,7 @@ function Add-SmbUsers
         # Проверка наличия учетной записи
         if(!(Get-LocalUser -Name $UserName -ErrorAction SilentlyContinue))
         {
-            New-LocalUser -Name $UserName -Description $Description -Password $SecurePassword
+            New-LocalUser -Name $UserName -Description $Description -Password $SecurePassword -PasswordNeverExpires $true
         }
         $SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
         Set-LocalUser -Name $UserName -Password $SecurePassword
