@@ -1,7 +1,7 @@
 
 
 
-function Install-Ssh
+function Install-OpenSsh
 {  
     <#
     .SYNOPSIS

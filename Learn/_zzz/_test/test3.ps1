@@ -1,18 +1,12 @@
-# this is the URL we got:
-#$URLRaw = 'http://go.microsoft.com/fwlink/?LinkID=135173'
-# we do not allow automatic redirection and instead read the information
-# returned by the webserver ourselves:
-#$page = Invoke-WebRequest -Uri $URLRaw -UseBasicParsing -MaximumRedirection 0 -ErrorAction Ignore
-#$target = $page.Headers.Location
- 
-#"$URLRaw -> $target" 
 
 
-$URLRaw = 'https://github.com/PowerShell/PowerShell/releases/latest'
-# we do not allow automatic redirection and instead read the information
-# returned by the webserver ourselves:
-$page = Invoke-WebRequest -Uri $URLRaw -UseBasicParsing #-MaximumRedirection 0 -ErrorAction Ignore
-$realURL = $page.Headers.Location
-$version = Split-Path -Path $realURL -Leaf 
- 
-"PowerShell 7 latest version: $version"
+
+$filePath = "C:\Program Files (x86)\K-Lite Codec Pack\MPC-HC64\mpc-hc64.exe"
+#$arguments = "\\192.168.1.70\wdc\Media\zzz\Doctor Strange in the Multiverse of Madness (2022) WEB-DLRip.mkv"
+#$arguments = "X:\Media\zzz\Doctor Strange in the Multiverse of Madness (2022) WEB-DLRip.mkv"
+$arguments = "\\KEENETICULTRA2\wdc\Media\zzz\Doctor Strange in the Multiverse of Madness (2022) WEB-DLRip.mkv"
+#$arguments = "D:\Videos\04 - Мстители. Финал.mkv"
+
+#Start-Process     -FilePath $filePath `    -ArgumentList $arguments
+
+& 'C:\Program Files (x86)\K-Lite Codec Pack\MPC-HC64\mpc-hc64.exe' "\\KEENETICULTRA2\wdc\Media\zzz\Doctor Strange in the Multiverse of Madness (2022) WEB-DLRip.mkv" /fullscreen

@@ -73,5 +73,3 @@ function Install-Powershell
         Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow 
     }
 }
-
-Install-Powershell
