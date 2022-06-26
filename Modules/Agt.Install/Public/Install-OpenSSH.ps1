@@ -15,6 +15,12 @@ function Install-OpenSsh
     .LINK
     #>
 
+    if(!(Get-IsAdmin))
+    {
+        Write-Error "Run as administrator"
+        exit
+    }
+    
     ### Download OpenSSH archive from github and try to install it
 
     $osuri = "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v8.1.0.0p1-Beta/OpenSSH-Win64.zip"
