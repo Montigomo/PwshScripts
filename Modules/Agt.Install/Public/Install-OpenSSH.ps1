@@ -124,4 +124,4 @@ function Install-OpenSsh
     }
 }
 
-#Install-Ssh
+Install-OpenSsh

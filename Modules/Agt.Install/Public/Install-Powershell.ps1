@@ -50,7 +50,9 @@ function Install-Powershell
     
     if($localVersion -lt $remoteVersion)
     {
-        $pwshUri = ((Invoke-RestMethod -Method GET -Uri $gitUriReleases)[0].assets | Where-Object name -match "PowerShell-\d.\d.\d-win-x64.msi").browser_download_url
+        $wrq = Invoke-RestMethod -Method GET -Uri $gitUriReleases
+        $releases = $wrq | Where-Object {$_.prerelease -eq $false} | Sort-Object -Property published_at -Descending 
+        $pwshUri = ($releases[0].assets | Where-Object name -match "PowerShell-\d.\d.\d-win-x64.msi").browser_download_url
 
         # create temp file
         $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
@@ -74,3 +76,5 @@ function Install-Powershell
         Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow 
     }
 }
+
+Install-Powershell
