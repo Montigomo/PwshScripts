@@ -1,6 +1,5 @@
 
-function Install-Far
-{  
+function Install-Far {  
     <#
     .SYNOPSIS
         Install far
@@ -21,24 +20,22 @@ function Install-Far
 
     $farPath = "C:\Program Files\Far Manager\Far.exe";
     $farFolder = [System.IO.Path]::GetDirectoryName($farPath);
-    [version]$localVersion = New-Object System.Version -ArgumentList "0.0.0"
-    if(Test-Path $farPath)
-    {
-        $localVersion =([System.Diagnostics.FileVersionInfo]::GetVersionInfo($farPath)).ProductVersion.Split(" ")[0]
+    #[version]$localVersion = New-Object System.Version -ArgumentList "0.0.0"
+    $localVersion = [System.Version]::new(0, 0, 0)
+    if (Test-Path $farPath) {
+        $localVersion = ([System.Diagnostics.FileVersionInfo]::GetVersionInfo($farPath)).ProductVersion.Split(" ")[0]
     }
 
     (((Invoke-RestMethod -Method GET -Uri  "https://api.github.com/repos/FarGroup/FarManager/releases").tag_name | Select-Object -First 1) -match "ci\/v(?<version>\d\.\d\.\d\d\d\d\.\d\d\d\d)")
     
     [version]$remoteVersion = $matches["version"];
 
+    if ($localVersion -ge $remoteVersion) { exit; }
+
     $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
-
     Invoke-WebRequest -OutFile $tmp $requestUri
-
     #   Far msi package installation options
-
     Install-MsiPackage -FilePath $tmp.FullName -PackageParams ""
-
     #   set path environment variable
     Set-EnvironmentVariable -Value $farFolder -Scope "Machine" -Action "Add"
 }
