@@ -77,4 +77,4 @@ function Install-Powershell
     }
 }
 
-Install-Powershell
+#Install-Powershell
