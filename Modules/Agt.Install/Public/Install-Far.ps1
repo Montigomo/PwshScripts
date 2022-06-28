@@ -21,9 +21,12 @@ function Install-Far
 
     $farPath = "C:\Program Files\Far Manager\Far.exe";
     $farFolder = [System.IO.Path]::GetDirectoryName($farPath);
+    [version]$localVersion = New-Object System.Version -ArgumentList "0.0.0"
+    if(Test-Path $farPath)
+    {
+        $localVersion =([System.Diagnostics.FileVersionInfo]::GetVersionInfo($farPath)).ProductVersion.Split(" ")[0]
+    }
 
-    [version]$localVersion =([System.Diagnostics.FileVersionInfo]::GetVersionInfo($farPath)).ProductVersion.Split(" ")[0]
-    
     (((Invoke-RestMethod -Method GET -Uri  "https://api.github.com/repos/FarGroup/FarManager/releases").tag_name | Select-Object -First 1) -match "ci\/v(?<version>\d\.\d\.\d\d\d\d\.\d\d\d\d)")
     
     [version]$remoteVersion = $matches["version"];
@@ -39,3 +42,4 @@ function Install-Far
     #   set path environment variable
     Set-EnvironmentVariable -Value $farFolder -Scope "Machine" -Action "Add"
 }
+
