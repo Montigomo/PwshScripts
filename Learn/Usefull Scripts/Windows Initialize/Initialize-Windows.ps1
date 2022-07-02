@@ -43,7 +43,7 @@ $sshPublicKey = $sshPublicKeys[[Computer]$computer];
 $sshPrivateKey = $sshPrivateKeys[[Computer]$computer];
 
 
-Edit-OpenSSH -PublicKeys $sshPublicKeys -PrivateKeys $sshPrivateKey -DisablePassword $true
+Edit-OpenSSH -PublicKeys $sshPublicKeys.Values -PrivateKeys $sshPrivateKey -DisablePassword $true
 
 
 # If none of those work, make sure all networking services are running. The following services should all be set to Automatic and be currently running:

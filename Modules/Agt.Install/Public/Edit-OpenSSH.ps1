@@ -1,7 +1,6 @@
 
 
-function Edit-OpenSsh
-{  
+function Edit-OpenSsh {  
     <#
     .SYNOPSIS
         
@@ -17,18 +16,17 @@ function Edit-OpenSsh
     #>
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [System.Array]$PublicKeys,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [System.Array]$PrivateKeys,
-        [Parameter(Mandatory=$false)]
+        [Parameter(Mandatory = $false)]
         [bool]$DisablePassword = $false
     )
     #configure and tuning ssh on windows 10
 
     # set ssh-agent service startup type
-    if(Get-Service  ssh-agent -ErrorAction SilentlyContinue)
-    {
+    if (Get-Service  ssh-agent -ErrorAction SilentlyContinue) {
         # if((get-service sshd).StartType -eq [System.ServiceProcess.ServiceStartMode]::Manual)
         Get-Service -Name ssh-agent | Set-Service -StartupType 'Automatic' 
         Start-Service ssh-agent
@@ -46,29 +44,26 @@ function Edit-OpenSsh
     $sshUseLocalAdminKeyFile = $true
 
     $sshAuthorizedKeys = @{
-        local = "$env:USERPROFILE\.ssh\authorized_keys";
+        local       = "$env:USERPROFILE\.ssh\authorized_keys";
         globalAdmin = "$env:ProgramData\ssh\administrators_authorized_keys"
     }
 
     $sshAuthKeys = $sshAuthorizedKeys["local"]
 
-    if(!(Test-Path $sshAuthKeys))
-    {
+    if (!(Test-Path $sshAuthKeys)) {
         new-item -Path $sshAuthKeys  -itemtype File -Force
     }
 
-    foreach($sshPublicKey in $PublicKeys)
-    {
-        If (!(Select-String -Path $sshAuthKeys -pattern $sshPublicKey -SimpleMatch))
-        {
-            Add-Content $sshAuthKeys $sshPublicKey
+    if ($sshPublicKey -is [System.Array]) {
+        foreach ($sshPublicKey in $PublicKeys) {
+            If (!(Select-String -Path $sshAuthKeys -pattern $sshPublicKey -SimpleMatch)) {
+                Add-Content $sshAuthKeys $sshPublicKey
+            }
         }
     }
-
-    foreach($privateKey in $PrivateKeys)
-    {
-        if( (Test-Path $privateKey) -and  !((ssh-add -l).Contains($privateKey)))
-        {
+    
+    foreach ($privateKey in $PrivateKeys) {
+        if ( (Test-Path $privateKey) -and !((ssh-add -l).Contains($privateKey))) {
             ssh-add  $privateKey
         }
     }
@@ -77,34 +72,26 @@ function Edit-OpenSsh
     #Match Group administrators
     #       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
     $replaceSshConfigContent = $false
-    if($sshUseLocalAdminKeyFile)
-    {
+    if ($sshUseLocalAdminKeyFile) {
         $content = Get-Content $sshConfigFile;
         $inAdminMatchGroup = $false
-        for($cnt = 0; $cnt -lt $content.Count; $cnt++)
-        {
+        for ($cnt = 0; $cnt -lt $content.Count; $cnt++) {
             $line = $content[$cnt]
-            if($inAdminMatchGroup)
-            {
-                if($line -match "\AMatch ")
-                {
+            if ($inAdminMatchGroup) {
+                if ($line -match "\AMatch ") {
                     $inAdminMatchGroup = $false
                 }
-                elseif($line -match "\A\s*AuthorizedKeysFile")
-                {
+                elseif ($line -match "\A\s*AuthorizedKeysFile") {
                     $content[$cnt] = ("#" + $line)
                     $replaceSshConfigContent = $true
                 }
             }
-            elseif($line -match "\AMatch Group administrators\z")
-            {
+            elseif ($line -match "\AMatch Group administrators\z") {
                 $inAdminMatchGroup = $true
             }
             # PasswordAuthentication
-            if($DisablePassword)
-            {
-                if($line -match "\A\#?PasswordAuthentication no|PasswordAuthentication yes")
-                {
+            if ($DisablePassword) {
+                if ($line -match "\A\#?PasswordAuthentication no|PasswordAuthentication yes") {
                     $content[$cnt] = "PasswordAuthentication no"
                     $replaceSshConfigContent = $true
                 }
@@ -112,20 +99,17 @@ function Edit-OpenSsh
             # PermitEmptyPasswords no
             
         }
-        if($replaceSshConfigContent)
-        {
+        if ($replaceSshConfigContent) {
             Set-Content -Path $sshConfigFile -Value $content
         }
     }
 
     ### Config firewall
 
-    if((get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue))
-    {
+    if ((get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue)) {
         Remove-NetFirewallRule -Name "OpenSSH-Server-In-TCP"
     }
-    if(-not (get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue))
-    {
+    if (-not (get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue)) {
         New-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
     }
 }
