@@ -15,7 +15,7 @@ function Install-Powershell
     #>
     [CmdletBinding()]
     param(
-        [string]$Parameter
+        [switch]$IsWait
     )
 
     if(!(Get-IsAdmin))
@@ -73,7 +73,9 @@ function Install-Powershell
 
         $logFile = '{0}-{1}.log' -f $tmp.FullName, (get-date -Format yyyyMMddTHHmmss)
         $arguments = "/i {0} ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 /qn /norestart /L*v {1}" -f $tmp.FullName, $logFile
-        Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow 
+        
+        Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow -Wait:$IsWait
+        
     }
 }
 

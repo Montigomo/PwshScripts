@@ -1,5 +1,5 @@
 
-function Get-IsAdmin  
+function Get-IsAdmin
 {  
     <#
     .SYNOPSIS
@@ -23,6 +23,4 @@ function Get-IsAdmin
     $prp=new-object System.Security.Principal.WindowsPrincipal($wid)
     $adm=[System.Security.Principal.WindowsBuiltInRole]::Administrator
     [bool]$prp.IsInRole($adm)
-
 }
-Write-Host "test"
