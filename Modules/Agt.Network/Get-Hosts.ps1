@@ -41,11 +41,19 @@ function Write-Hosts
         [string]$FileName
     )   
 
+    $directory = [System.IO.Path]::GetDirectoryName($FileName)
+    
+    if(!(Test-Path $directory))
+    {
+        return
+    }
+    
     $arrayList = New-Object System.Collections.ArrayList;
     foreach($item in $Hosts.GetEnumerator())
     {
         $arrayList.Add($item.Value["line"]) | Out-Null
     }
+    
     $arrayList | Out-File $FileName
 }
 
