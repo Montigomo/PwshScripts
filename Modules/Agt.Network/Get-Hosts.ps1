@@ -67,7 +67,7 @@ function Add-Host
         [string]$HostName,
         [string]$HeaderLine,
         [string]$Comment,
-        [string]$HostFileDestination = "D:\temp\hosts" #$env:windir + "\system32\drivers\etc"
+        [string]$HostFileDestination = "D:\temp1\hosts" #$env:windir + "\system32\drivers\etc"
     )
 
     $hosts = New-Object System.Collections.Specialized.OrderedDictionary
@@ -103,7 +103,7 @@ function Remove-Host
         [string]$HostIp,
         [Parameter(Mandatory=$true)]        
         [string]$HostName,
-        [string]$HostFileDestination  = "D:\temp\hosts" #$env:windir + "\system32\drivers\etc"
+        [string]$HostFileDestination  = "D:\temp1\hosts" #$env:windir + "\system32\drivers\etc"
     )
 
     $hosts = New-Object System.Collections.Specialized.OrderedDictionary
