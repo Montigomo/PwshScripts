@@ -1,4 +1,3 @@
-
 function Install-Powershell
 {  
     <#
