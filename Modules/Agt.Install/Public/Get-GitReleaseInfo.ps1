@@ -58,10 +58,10 @@ function Get-GitReleaseInfo
 
 # $patterns = (@("PowerShell-(?<version>\d?\d.\d?\d.\d?\d)-win-x64.zip", "PowerShell-\d.\d.\d-win-x64.msi", "v(?<version>\d?\d.\d?\d.\d?\d)"))
 
-# $vera = Get-GitReleaseUri $uri2 -Version
-# $uria = Get-GitReleaseUri $uri2 -Pattern "PowerShell-\d.\d.\d-win-x64.msi"
+# $vera = Get-GitReleaseInfo $uri2 -Version
+# $uria = Get-GitReleaseInfo $uri2 -Pattern "PowerShell-\d.\d.\d-win-x64.msi"
 
-# $verb = Get-GitReleaseUri $uri1 -Version
-# $urib = Get-GitReleaseUri $uri1 -Pattern "OpenSSH-Win32-v\d.\d.\d.\d.msi"
+# $verb = Get-GitReleaseInfo $uri1 -Version
+# $urib = Get-GitReleaseInfo $uri1 -Pattern "OpenSSH-Win32-v\d.\d.\d.\d.msi"
 
 # exit

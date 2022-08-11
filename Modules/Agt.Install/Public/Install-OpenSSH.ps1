@@ -21,7 +21,9 @@ function Install-OpenSsh
     
     ### Download OpenSSH archive from github and try to install it
 
-    $osuri = "https://github.com/PowerShell/Win32-OpenSSH/releases/download/v8.1.0.0p1-Beta/OpenSSH-Win64.zip"
+    $gitUri = "https://api.github.com/repos/powershell/Win32-OpenSSH"
+    $version = Get-GitReleaseInfo $gitUri -Version
+    $releaseUri = Get-GitReleaseInfo $gitUri -Pattern "OpenSSH-Win32-v\d.\d.\d.\d.msi"
 
     $destPath = "c:\Program Files\OpenSSH\"
 
@@ -35,7 +37,7 @@ function Install-OpenSsh
     $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'zip' } –PassThru
 
     # download
-    Invoke-WebRequest -OutFile $tmp $osuri
+    Invoke-WebRequest -OutFile $tmp $releaseUri
 
     # exract to destination folder
 
