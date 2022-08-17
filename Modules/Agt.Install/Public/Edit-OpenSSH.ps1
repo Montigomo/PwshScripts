@@ -1,5 +1,3 @@
-
-
 function Edit-OpenSsh {  
     <#
     .SYNOPSIS
@@ -18,7 +16,7 @@ function Edit-OpenSsh {
     param(
         [Parameter(Mandatory = $true)]
         [System.Array]$PublicKeys,
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [System.Array]$PrivateKeys,
         [Parameter(Mandatory = $false)]
         [bool]$DisablePassword = $false
@@ -54,10 +52,10 @@ function Edit-OpenSsh {
         new-item -Path $sshAuthKeys  -itemtype File -Force
     }
 
-    if ($sshPublicKey -is [System.Array]) {
-        foreach ($sshPublicKey in $PublicKeys) {
-            If (!(Select-String -Path $sshAuthKeys -pattern $sshPublicKey -SimpleMatch)) {
-                Add-Content $sshAuthKeys $sshPublicKey
+    if ($sshPublicKeys -is [System.Array]) {
+        foreach ($key in $PublicKeys) {
+            If (!(Select-String -Path $sshAuthKeys -pattern $key -SimpleMatch)) {
+                Add-Content $sshAuthKeys $key
             }
         }
     }
