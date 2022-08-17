@@ -87,7 +87,10 @@ function Edit-OpenSsh {
             elseif ($line -match "\AMatch Group administrators\z") {
                 $inAdminMatchGroup = $true
             }
-            # PasswordAuthentication
+            if ($line -match "\#PubkeyAuthentication yes") {
+                $content[$cnt] = "PubkeyAuthentication yes"
+                $replaceSshConfigContent = $true
+            }            # PasswordAuthentication
             if ($DisablePassword) {
                 if ($line -match "\A\#?PasswordAuthentication no|PasswordAuthentication yes") {
                     $content[$cnt] = "PasswordAuthentication no"
@@ -95,7 +98,6 @@ function Edit-OpenSsh {
                 }
             }
             # PermitEmptyPasswords no
-            
         }
         if ($replaceSshConfigContent) {
             Set-Content -Path $sshConfigFile -Value $content
