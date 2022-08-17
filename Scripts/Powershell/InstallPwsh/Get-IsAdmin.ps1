@@ -1,5 +1,5 @@
 
-function Get-IsAdmin
+function Get-IsAdmin  
 {  
     <#
     .SYNOPSIS
@@ -11,10 +11,6 @@ function Get-IsAdmin
     .EXAMPLE
     .LINK
     #>
-    [CmdletBinding()]
-    param(
-        [string]$Parameter
-    )
     # $user = [Security.Principal.WindowsIdentity]::GetCurrent();
     # [bool](New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
     # Determine if admin powershell process
@@ -23,4 +19,5 @@ function Get-IsAdmin
     $prp=new-object System.Security.Principal.WindowsPrincipal($wid)
     $adm=[System.Security.Principal.WindowsBuiltInRole]::Administrator
     [bool]$prp.IsInRole($adm)
+
 }

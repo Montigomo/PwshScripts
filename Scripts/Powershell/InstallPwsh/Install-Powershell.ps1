@@ -1,4 +1,3 @@
-
 function Install-Powershell
 {  
     <#
@@ -34,14 +33,13 @@ function Install-Powershell
     $gitUri = "https://api.github.com/repos/powershell/powershell"
     $gitUriReleases = "$gitUri/releases"
     $gitUriReleasesLatest = "$gitUri/releases/latest"
-    $pattern = (@("PowerShell-(?<version>\d?\d.\d?\d.\d?\d)-win-x64.zip","v(?<version>\d?\d.\d?\d.\d?\d)"))[1]
     $remoteVersion = [System.Version]::Parse("0.0.0")
 
     #$pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName.Contains("C:\Program Files\PowerShell\7\pwsh.exe");
     
     $latestRelease = (Invoke-RestMethod -Method Get -Uri $gitUriReleasesLatest)
     
-    if($latestRelease.tag_name -match $pattern)
+    if($latestRelease.tag_name -match "v(?<version>\d?\d.\d?\d.\d?\d)")
     {
         $remoteVersion = [System.Version]::Parse($Matches["version"]);
     }
@@ -75,7 +73,6 @@ function Install-Powershell
         $arguments = "/i {0} ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 /qn /norestart /L*v {1}" -f $tmp.FullName, $logFile
         
         Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow -Wait:$IsWait
-        
     }
 }
 

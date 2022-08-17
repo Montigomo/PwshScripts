@@ -5,9 +5,10 @@ $uri = "https://goog1e.com"
 
 $TasksDefinitions = @{
   "PwshWatcher"      = @{
-    "Name"          = "";
-    "Values"        = @{"/ns:Task/ns:Actions/ns:Exec/ns:Command" = "mshta.exe";
-      "/ns:Task/ns:Actions/ns:Exec/ns:Arguments"          = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''{ScriptFile}''"""""", 0 : window.close")'
+    "Name"          = "PwshWatcher";
+    "Values"        = @{
+      "/ns:Task/ns:Actions/ns:Exec/ns:Command" = "mshta.exe";
+      "/ns:Task/ns:Actions/ns:Exec/ns:Arguments" = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''{ScriptFile}''"""""", 0 : window.close")'
     };
     "XmlDefinition" = @"
 <?xml version="1.0" encoding="UTF-16"?>
@@ -69,28 +70,6 @@ $TasksDefinitions = @{
 }
 
 ######## Local functions
-function _GetIsAdmin  
-{  
-    <#
-    .SYNOPSIS
-        Is powershell session runned in admin mode 
-    .DESCRIPTION
-    .PARAMETER Name
-    .INPUTS
-    .OUTPUTS
-    .EXAMPLE
-    .LINK
-    #>
-    # $user = [Security.Principal.WindowsIdentity]::GetCurrent();
-    # [bool](New-Object Security.Principal.WindowsPrincipal $user).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)
-    # Determine if admin powershell process
-    # ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")
-    $wid=[System.Security.Principal.WindowsIdentity]::GetCurrent()
-    $prp=new-object System.Security.Principal.WindowsPrincipal($wid)
-    $adm=[System.Security.Principal.WindowsBuiltInRole]::Administrator
-    [bool]$prp.IsInRole($adm)
-
-}
 
 function _Unpack {
   param(
@@ -107,61 +86,6 @@ function _Unpack {
     $dpath = Join-Path -Path $DestinationFolder -ChildPath $entry.Name
     [IO.Compression.ZipFileExtensions]::ExtractToFile($entry, $dpath, $true)
   }
-}
-
-function _InstallPwsh {
-  param(
-    [Parameter()]
-    [switch]$CheckUpdate
-  )
-  if (!(_GetIsAdmin)) {
-    Write-Error "Run as administrator"
-    exit
-    $pswPath = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName;
-    #$pp = $MyInvocation.MyCommand.Path
-    if (((New-Object -TypeName System.Diagnostics.ProcessStartInfo -ArgumentList $pswPath).Verbs).Contains("runas")) {
-      Start-Process -FilePath $pswPath -ArgumentList "-File $PSCommandPath" -Verb RunAs
-    }
-  }
-  $gitUri = "https://api.github.com/repos/powershell/powershell"
-  $gitUriReleases = "$gitUri/releases"
-  $gitUriReleasesLatest = "$gitUri/releases/latest"
-
-  $pattern = (@("PowerShell-(?<version>\d?\d.\d?\d.\d?\d)-win-x64.zip","v(?<version>\d?\d.\d?\d.\d?\d)"))[1]
-  $remoteVersion = [System.Version]::Parse("0.0.0")    
-  $latestRelease = (Invoke-RestMethod -Method Get -Uri $gitUriReleasesLatest)
-  if ($latestRelease.tag_name -match $pattern) {
-    $remoteVersion = [System.Version]::Parse($Matches["version"]);
-  }
-
-  if($CheckUpdate)
-  {
-    $localVersion = $PSVersionTable.PSVersion
-    return ($localVersion -lt $remoteVersion)
-  }
-
-  $pwshUri = ((Invoke-RestMethod -Method GET -Uri $gitUriReleases).assets | Where-Object name -match "PowerShell-$remoteVersion-win-x64.msi").browser_download_url
-
-  # create temp file
-  $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
-
-  Invoke-WebRequest -OutFile $tmp $pwshUri
-
-  # command line arguments
-  # USE_MU - This property has two possible values:
-  #   1 (default) - Opts into updating through Microsoft Update, WSUS, or Configuration Manager
-  #   0 - Do not opt into updating through Microsoft Update, WSUS, or Configuration Manager
-  # ENABLE_MU
-  #   1 (default) - Opts into using Microsoft Update for Automatic Updates
-  #   0 - Do not opt into using Microsoft Update
-  # ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL - This property controls the option for adding the Open PowerShell item to the context menu in Windows Explorer.
-  # ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL - This property controls the option for adding the Run with PowerShell item to the context menu in Windows Explorer.
-  # ENABLE_PSREMOTING - This property controls the option for enabling PowerShell remoting during installation.
-  # REGISTER_MANIFEST - This property controls the option for registering the Windows Event Logging manifest.
-
-  $logFile = '{0}-{1}.log' -f $tmp.FullName, (get-date -Format yyyyMMddTHHmmss)
-  $arguments = "/i {0} ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 /qn /norestart /L*v {1}" -f $tmp.FullName, $logFile
-  Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow 
 }
 
 function _PwshContextMenu {
@@ -197,7 +121,8 @@ function _RegisterTask {
     [string]$TaskName
   )
   
-  $xml = [xml]$TasksDefinitions[$TaskName]["XmlDefinition"]
+  $taskData = $TasksDefinitions[$TaskName];
+  $xml = [xml]$taskData["XmlDefinition"]
   $ns = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
   $ns.AddNamespace("ns", $xml.DocumentElement.NamespaceURI)
   foreach ($item in $TasksDefinitions[$TaskName]["Values"].Keys) {
@@ -207,10 +132,11 @@ function _RegisterTask {
       $xmlNode.InnerText = $innerText
     }
   }
-  try {
-    Register-ScheduledTask -Xml $xml.OuterXml -TaskName $TaskName
-  }
-  catch {}
+  $taskData["XmlDefinition"] = $xml.OuterXml;
+  #try {
+    Register-Task -TaskData $taskData -Force
+  #}
+  #catch {}
 }
 
 function _CheckTask {
@@ -220,14 +146,7 @@ function _CheckTask {
     [Parameter()]
     [switch]$Register = $false
   )
-  # load task definition
-  # $xmlDef = New-Object -TypeName System.Xml.XmlDocument;
-  # $xmlDef.LoadXml($XmlTaskDefinition);
-  # $script = [System.IO.Path]::Combine($PSScriptRoot, $thisFileName) ; #+ " -Action watcher";
-  # $execCommand = 'mshta.exe' 
-  # $execArguments = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $script + '''"""""", 0 : window.close")'
-  # $xmlDef.Task.Actions.Exec.Command = $execCommand
-  # $xmlDef.Task.Actions.Exec.Arguments = $execArguments
+
   $scheduledTask = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
   $needRegister = $false
 
@@ -260,6 +179,34 @@ function _CheckServerConnection
   }
 }
 
+function Import-Command
+{
+  [CmdletBinding()]
+  param (
+      [Parameter()]
+      [string]
+      [ValidateSet("Get-IsAdmin", "Register-Task", "Install-Powershell")]
+      $CommandName
+  )
+  [hashtable]$commands = @{
+    "Get-IsAdmin" = "$PSScriptRoot\..\..\..\Modules\Agt.Common\Public\Get-IsAdmin.ps1"
+    "Register-Task" = "$PSScriptRoot\..\..\..\Modules\Agt.Common\Public\Register-Task.ps1"
+    "Install-Powershell" = "$PSScriptRoot\..\..\..\Modules\Agt.Install\Public\Install-Powershell.ps1"
+  }
+  if(!(Get-Command -Name $ -ErrorAction SilentlyContinue)){
+    Import-Module (Resolve-Path $commands[$CommandName])
+  }
+}
+
+try{
+  Import-Command -CommandName "Get-IsAdmin"
+  Import-Command -CommandName "Register-Task"
+  Import-Command -CommandName "Install-Powershell"
+}
+catch {
+  Write-Output "Not all modules imopted."
+}
+
 ########  Variables
 
 $TaskName = "PwshWatcher"
@@ -270,6 +217,7 @@ $scriptFile = [System.IO.Path]::Combine($PSScriptRoot, $thisFileName)
 $debugger = $false; #($PSBoundParameters.ContainsKey("Debug")) -or ($DebugPreference  -eq "SilentlyContinue")
 
 ######## Check task
+
 if(-not $debugger)
 {
   $taskExist = _CheckTask -TaskName $TaskName -Register;
@@ -278,7 +226,4 @@ if(-not $debugger)
   }
 }
 
-if((_InstallPwsh -CheckUpdate))
-{
-  _InstallPwsh
-}
+Install-Powershell

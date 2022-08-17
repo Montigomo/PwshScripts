@@ -1,7 +1,7 @@
 
 
-Import-Module $PSScriptRoot\Get-IsAdmin.psm1
-Import-Module $PSScriptRoot\Install-Powershell.psm1
+Import-Module $PSScriptRoot\Get-IsAdmin.ps1
+Import-Module $PSScriptRoot\Install-Powershell.ps1
 
 Install-Powershell -IsWait
 

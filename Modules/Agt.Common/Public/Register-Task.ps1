@@ -15,16 +15,25 @@ function Register-Task
     param
     (
         [Parameter(Mandatory)]
-        [string]$TaskName,
-        [Parameter(Mandatory)]
-        [xml]$XmlDefinition,
+        [hashtable]$TaskData,
         [ValidateSet('system', 'author', 'none')]
-        [string]$Principal = 'none'
+        [string]$Principal = 'none',
+        [switch]$Force
     )
 
-    if(Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue)
+    $taskName = $TaskData["Name"];
+
+    $xmlDefinition = [xml]$TaskData["XmlDefinition"];
+
+    if((Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) )
     {
-        Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false
+      if(-not $Force)
+      {
+        return
+      }
+      else {
+        Unregister-ScheduledTask -TaskName $taskName -Confirm:$false;
+      }
     }
 
     $principals = @{"author" = '<Principal id="Author"><GroupId>S-1-1-0</GroupId><RunLevel>HighestAvailable</RunLevel></Principal>'};
@@ -36,17 +45,17 @@ function Register-Task
     {
         'none'
         {
-            Register-ScheduledTask -Xml $XmlDefinition.OuterXml -TaskName $TaskName
+            Register-ScheduledTask -Xml $xmlDefinition.OuterXml -TaskName $taskName
         }
         'system'
         {
-            Register-ScheduledTask -Xml $XmlDefinition.OuterXml -TaskName $TaskName -User System
+            Register-ScheduledTask -Xml $xmlDefinition.OuterXml -TaskName $taskName -User System
         }
         'author'
         {
-            $xmlDef.Task.Principals.InnerXml = $principals["author"];
-            $xmlDef.Task.Actions.SetAttribute("Context", $contexts["author"])
-            Register-ScheduledTask -Xml $xmlDef.OuterXml -TaskName $TaskName
+            $xmlDefinition.Task.Principals.InnerXml = $principals["author"];
+            $xmlDefinition.Task.Actions.SetAttribute("Context", $contexts["author"])
+            Register-ScheduledTask -Xml $xmlDefinition.OuterXml -TaskName $TaskName
         }    
     }
 }
