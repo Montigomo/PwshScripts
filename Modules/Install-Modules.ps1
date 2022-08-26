@@ -17,18 +17,24 @@ function Install-Modules
     #     [string]$Folder
     # )
 
-    $outSrting = '
-    $modules = @(
-        {1}
-    )
+$outSrting = @'
+$modules = @(
+    {0}
+)
 
-    foreach($item in $modules)
+foreach($item in $modules)
+{{
+    if(!(Get-Module $item))
     {{
-        if(!(Get-Module $item))
-        {{
-            Import-Module -Name $item
-        }}
-    }}'
+        Import-Module -Name $item
+    }}
+}}
+function prompt {{
+    $(if (Test-Path variable:/PSDebugContext) {{ '[DBG]: ' }}
+        else {{ '' }}) + 'PS ' + $(Get-Location) +
+        $(if ($NestedPromptLevel -ge 1) {{ '>>' }}) + '> '
+}}
+'@
 
     #C:\Program Files\WindowsPowerShell\Modules
     $modulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
@@ -75,7 +81,7 @@ function Install-Modules
         }
     }
 
-    $outputFileText = ( $outSrting -f $destinatinFunctionFolder, $arraystr) 
+    $outputFileText = ( $outSrting -f $arraystr) 
     $outputFileText | Out-File -FilePath $profilePath
 
 }
