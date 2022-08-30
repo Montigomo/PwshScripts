@@ -34,14 +34,14 @@ function Install-OpenSsh
     #New-Item -ItemType Directory -Path $destPath -Force
 
     # create temp with zip extension (or Expand will complain)
-    $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'zip' } –PassThru
+    $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'zip' } -PassThru
 
     # download
     Invoke-WebRequest -OutFile $tmp $releaseUri
 
     # exract to destination folder
 
-    $tmp | Expand-Archive -DestinationPath $destPath -Force
+    #$tmp | Expand-Archive -DestinationPath $destPath -Force
 
     Add-Type -Assembly System.IO.Compression.FileSystem
 

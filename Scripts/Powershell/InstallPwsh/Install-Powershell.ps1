@@ -14,7 +14,8 @@ function Install-Powershell
     #>
     [CmdletBinding()]
     param(
-        [switch]$IsWait
+        [switch]$IsWait,
+        [switch]$UsePreview
     )
 
     if(!(Get-IsAdmin))
@@ -22,6 +23,7 @@ function Install-Powershell
         Write-Error "Run as administrator"
         exit
     }
+    
     # Rerun (not complited)
     # $pswPath = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName;
     # $pp = $MyInvocation.MyCommand.Path
@@ -37,7 +39,10 @@ function Install-Powershell
 
     #$pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName.Contains("C:\Program Files\PowerShell\7\pwsh.exe");
     
-    $latestRelease = (Invoke-RestMethod -Method Get -Uri $gitUriReleasesLatest)
+    $wrq = (Invoke-RestMethod -Method Get -Uri $gitUriReleases)
+    $releases = $wrq | Where-Object { $_.prerelease -eq $UsePreview.ToBool() } | Sort-Object -Property published_at -Descending
+  
+    $latestRelease = $releases | Select-Object -First 1
     
     if($latestRelease.tag_name -match "v(?<version>\d?\d.\d?\d.\d?\d)")
     {
@@ -45,12 +50,12 @@ function Install-Powershell
     }
     
     $localVersion = $PSVersionTable.PSVersion
-    
+    $ReleasePattern = "PowerShell-\d.\d.\d-win-x64.msi"
+
     if($localVersion -lt $remoteVersion)
     {
-        $wrq = Invoke-RestMethod -Method GET -Uri $gitUriReleases
-        $releases = $wrq | Where-Object {$_.prerelease -eq $false} | Sort-Object -Property published_at -Descending 
-        $pwshUri = ($releases[0].assets | Where-Object name -match "PowerShell-\d.\d.\d-win-x64.msi").browser_download_url
+        $assets = $latestRelease.assets | Where-Object name -match $ReleasePattern | Select-Object -First 1
+        $pwshUri =  $assets.browser_download_url
 
         # create temp file
         $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
@@ -70,7 +75,7 @@ function Install-Powershell
         # REGISTER_MANIFEST - This property controls the option for registering the Windows Event Logging manifest.
 
         $logFile = '{0}-{1}.log' -f $tmp.FullName, (get-date -Format yyyyMMddTHHmmss)
-        $arguments = "/i {0} ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 /qn /norestart /L*v {1}" -f $tmp.FullName, $logFile
+        $arguments = "/i {0} /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 ADD_PATH=1 /norestart /L*v {1}" -f $tmp.FullName, $logFile
         
         Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow -Wait:$IsWait
     }
