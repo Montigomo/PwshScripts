@@ -1,3 +1,41 @@
+
+function ReplaceString{
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [string]$SrcFile,
+        [Parameter()]
+        [string]$DstFile,
+        [Parameter()]
+        [string[]]$Patterns
+    )
+
+    $FileContent = Get-Content $SrcFile
+    $NewFileContent = @()
+    foreach ($itemj in $Patterns) {
+        $tmp = $itemj.Split("|")        
+        foreach ($itemi in $FileContent) {
+            if ($itemi -match $tmp[0]) {
+                switch ($tmp[2]) {
+                    "replace" {
+                        $NewFileContent += $tmp[1]
+                    }
+                    "append" {
+                        $NewFileContent += $itemi
+                        $NewFileContent += $tmp[1]
+                    }
+                }
+            }
+            else {
+                $NewFileContent += $itemi
+            }    
+        }
+        $FileContent = $NewFileContent
+        $NewFileContent = @()
+    }
+    $FileContent |  Out-File $DstFile
+}
+
 function Edit-OpenSsh {  
     <#
     .SYNOPSIS
@@ -66,6 +104,16 @@ function Edit-OpenSsh {
         }
     }
 
+    # uncoment add replace config sile
+    $patterns = @(
+    "^\#PubkeyAuthentication yes|PubkeyAuthentication yes|replace",
+    "^\#PasswordAuthentication no|PasswordAuthentication no|replace",
+    "^\#PasswordAuthentication yes|PasswordAuthentication no|replace",
+    "^PasswordAuthentication yes|PasswordAuthentication no|replace",
+    "^\# override default of no subsystems|Subsystem	powershell pwsh.exe -sshs -NoLogo -NoProfile|append"
+    )
+    ReplaceString -SrcFile $sshConfigFile -DstFile $sshConfigFile -Patterns $patterns
+
     #comment admin group match in ssh config file
     #Match Group administrators
     #       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
@@ -75,6 +123,8 @@ function Edit-OpenSsh {
         $inAdminMatchGroup = $false
         for ($cnt = 0; $cnt -lt $content.Count; $cnt++) {
             $line = $content[$cnt]
+            
+            # Match group
             if ($inAdminMatchGroup) {
                 if ($line -match "\AMatch ") {
                     $inAdminMatchGroup = $false
@@ -87,17 +137,7 @@ function Edit-OpenSsh {
             elseif ($line -match "\AMatch Group administrators\z") {
                 $inAdminMatchGroup = $true
             }
-            if ($line -match "\#PubkeyAuthentication yes") {
-                $content[$cnt] = "PubkeyAuthentication yes"
-                $replaceSshConfigContent = $true
-            }            # PasswordAuthentication
-            if ($DisablePassword) {
-                if ($line -match "\A\#?PasswordAuthentication no|PasswordAuthentication yes") {
-                    $content[$cnt] = "PasswordAuthentication no"
-                    $replaceSshConfigContent = $true
-                }
-            }
-            # PermitEmptyPasswords no
+
         }
         if ($replaceSshConfigContent) {
             Set-Content -Path $sshConfigFile -Value $content
@@ -111,5 +151,10 @@ function Edit-OpenSsh {
     }
     if (-not (get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue)) {
         New-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+    }
+
+    # Restart service
+    if (Get-Service  sshd -ErrorAction SilentlyContinue) {
+        Get-Service -Name ssh-agent | Restart-Service 
     }
 }

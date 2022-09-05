@@ -24,17 +24,10 @@ function Install-Powershell
         exit
     }
     
-    # Rerun (not complited)
-    # $pswPath = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName;
-    # $pp = $MyInvocation.MyCommand.Path
-    # if(((New-Object -TypeName System.Diagnostics.ProcessStartInfo -ArgumentList $pswPath).Verbs).Contains("runas"))
-    # {
-    #     Start-Process -FilePath $pswPath -ArgumentList "-File $PSCommandPath" -Verb RunAs
-    # }
 
     $gitUri = "https://api.github.com/repos/powershell/powershell"
     $gitUriReleases = "$gitUri/releases"
-    $gitUriReleasesLatest = "$gitUri/releases/latest"
+    #$gitUriReleasesLatest = "$gitUri/releases/latest"
     $remoteVersion = [System.Version]::Parse("0.0.0")
 
     #$pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName.Contains("C:\Program Files\PowerShell\7\pwsh.exe");
@@ -73,10 +66,10 @@ function Install-Powershell
         # ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL - This property controls the option for adding the Run with PowerShell item to the context menu in Windows Explorer.
         # ENABLE_PSREMOTING - This property controls the option for enabling PowerShell remoting during installation.
         # REGISTER_MANIFEST - This property controls the option for registering the Windows Event Logging manifest.
+        # ADD_PATH - This property controls the option for adding PowerShell to the Windows PATH environment variable.
 
         $logFile = '{0}-{1}.log' -f $tmp.FullName, (get-date -Format yyyyMMddTHHmmss)
         $arguments = "/i {0} /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 ADD_PATH=1 /norestart /L*v {1}" -f $tmp.FullName, $logFile
-        
         Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow -Wait:$IsWait
     }
 }
