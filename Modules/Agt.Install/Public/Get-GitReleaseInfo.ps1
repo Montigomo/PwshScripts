@@ -29,7 +29,7 @@ function Get-GitReleaseInfo
 
     if($Version)
     {
-        $Pattern = "v(?<version>\d?\d.\d?\d.\d?\d)"
+        $Pattern ??= "v(?<version>\d?\d.\d?\d.\d?\d)"
         $ver = [System.Version]::Parse("0.0.0")
         if($json.tag_name -match $pattern)
         {
@@ -64,4 +64,13 @@ function Get-GitReleaseInfo
 # $verb = Get-GitReleaseInfo $uri1 -Version
 # $urib = Get-GitReleaseInfo $uri1 -Pattern "OpenSSH-Win32-v\d.\d.\d.\d.msi"
 
-# exit
+# [version]$remoteVersion = [System.Version]::new(0, 0, 0)
+
+# $repoUri = "https://api.github.com/repos/FarGroup/FarManager"
+# $versionPattern = "ci\/v(?<version>\d\.\d\.\d\d\d\d\.\d\d\d\d)"
+# $remoteVersion = Get-GitReleaseInfo -Repouri $repoUri  -Pattern $versionPattern -Version
+
+# $pattern = "Far.x64.\d.\d.\d\d\d\d.\d\d\d\d.[a-z0-9]{40}.msi"
+# $requestUri = Get-GitReleaseInfo -Repouri $repoUr -Pattern $pattern
+
+exit

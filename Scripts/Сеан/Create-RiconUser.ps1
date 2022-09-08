@@ -12,7 +12,6 @@ $Description = "RiconUser"
 $DeskTopFolder = [Environment]::GetFolderPath("Desktop");
 $RiconFolderName = "RiconScan"
 $RiconScanFolder = "$DeskTopFolder\$RiconFolderName"
-$SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
 
 # Проверка наличия и создание в случае отсутствия папки C:\Users\[CurrentUser]\Desctop\RiconScan
 if(!(Test-Path $RiconScanFolder))
@@ -20,12 +19,12 @@ if(!(Test-Path $RiconScanFolder))
     New-Item -Path $RiconScanFolder -ItemType Directory -Force
 }
 
+$SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
 # Проверка наличия учетной записи
 if(!(Get-LocalUser -Name $UserName -ErrorAction SilentlyContinue))
 {
-    New-LocalUser -Name $UserName -Description $Description -Password $SecurePassword
+    New-LocalUser -Name $UserName -Description $Description -Password $SecurePassword -AccountNeverExpires
 }
-$SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
 Set-LocalUser -Name $UserName -Password $SecurePassword
 
 # Предоставление общего доступа к папке
