@@ -1,4 +1,3 @@
-
 function Install-Far {  
     <#
     .SYNOPSIS
@@ -39,5 +38,3 @@ function Install-Far {
     #   set path environment variable
     Set-EnvironmentVariable -Value $farFolder -Scope "Machine" -Action "Add"
 }
-
-#Install-Far
