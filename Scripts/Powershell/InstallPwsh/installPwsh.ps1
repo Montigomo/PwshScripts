@@ -1,9 +1,25 @@
 
 
-Import-Module $PSScriptRoot\Get-IsAdmin.ps1
-Import-Module $PSScriptRoot\Install-Powershell.ps1
+#+++ import modules
 
-Install-Powershell -IsWait
+$modulePathBase = "$PSScriptRoot\..\..\..\Modules"
 
-Write-Host -NoNewLine 'Press any key to continue...';
-$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+$pathArray = $( (Resolve-Path "$modulePathBase\Agt.Common\Public\").Path, `
+            (Resolve-Path "$modulePathBase\Agt.Install\Public\").Path, `
+            (Resolve-Path "$modulePathBase\Agt.Network\").Path)
+
+foreach($path in $pathArray)
+{
+    foreach($item in (Get-ChildItem "$path\*.ps1"))
+    {
+        . "$($item.FullName)"
+    }
+}
+
+
+Get-IsAdmin
+Install-Far
+#Install-Powershell -IsWait
+
+Write-Host -NoNewLine 'All task completed successfully...';
+#$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');

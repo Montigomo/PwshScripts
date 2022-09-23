@@ -43,7 +43,7 @@ function prompt {{
     $ScriptPath = $MyInvocation.MyCommand.Path
     $items = Get-ChildItem -Path $PSScriptRoot -Recurse | Where-Object {$_.FullName -ne $ScriptPath}
 
-    $modules = Get-ChildItem -Path $PSScriptRoot -Recurse -Filter *.psd1 | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };
+    $modules = Get-ChildItem -Exclude "Agt.Install.psd1", "Agt.Common.psd1", "Agt.Network.psd1" -Path $PSScriptRoot -Recurse -Filter *.psd1 | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };
 
     foreach($item in $modules)
     {

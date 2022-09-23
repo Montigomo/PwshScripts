@@ -52,3 +52,4 @@ function Set-EnvironmentVariable
 }
 
 #Set-EnvironmentVariable -Name 'Path' -Scope 'Machine' -Value "c:\Program Files\OpenSSH\"
+#Set-EnvironmentVariable -Name 'Path' -Scope 'Machine' -Value "C:\Program Files\Far Manager" -Action "Remove"
