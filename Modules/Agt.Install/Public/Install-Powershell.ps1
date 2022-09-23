@@ -24,7 +24,6 @@ function Install-Powershell
         exit
     }
     
-
     $gitUri = "https://api.github.com/repos/powershell/powershell"
     $gitUriReleases = "$gitUri/releases"
     #$gitUriReleasesLatest = "$gitUri/releases/latest"
