@@ -41,26 +41,26 @@ function prompt {{
     $profilePath = $profile.AllUsersAllHosts;
 
     $ScriptPath = $MyInvocation.MyCommand.Path
-    $items = Get-ChildItem -Path $PSScriptRoot -Recurse | Where-Object {$_.FullName -ne $ScriptPath}
+    $items = Get-ChildItem -Path $PSScriptRoot -Directory
 
-    $modules = Get-ChildItem -Exclude "Agt.Install.psd1", "Agt.Common.psd1", "Agt.Network.psd1" -Path $PSScriptRoot -Recurse -Filter *.psd1 | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };
+    # $modules = Get-ChildItem -Exclude "Agt.Install.psd1", "Agt.Common.psd1", "Agt.Network.psd1" -Path $PSScriptRoot -Recurse -Filter *.psd1 | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };
 
-    foreach($item in $modules)
-    {
-        if(Get-Module -Name $item)
-        {
-            $modulePath = (get-module $item).ModuleBase
-            if($modulePath.StartsWith($PSScriptRoot))
-            {
-                continue
-            }
+    # foreach($item in $modules)
+    # {
+    #     if(Get-Module -Name $item)
+    #     {
+    #         $modulePath = (get-module $item).ModuleBase
+    #         if($modulePath.StartsWith($PSScriptRoot))
+    #         {
+    #             continue
+    #         }
 
-            # Get-Childitem $modulePath -Recurse | ForEach-Object { 
-            #     Remove-Item $_.FullName -Force
-            # }
-            Remove-Item -Path "$modulePath" -Force -Recurse
-        }
-    }
+    #         # Get-Childitem $modulePath -Recurse | ForEach-Object { 
+    #         #     Remove-Item $_.FullName -Force
+    #         # }
+    #         Remove-Item -Path "$modulePath" -Force -Recurse
+    #     }
+    # }
     
 
     New-Item -ItemType Directory -Force -Path $modulesPath
