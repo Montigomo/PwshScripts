@@ -30,6 +30,7 @@ function Remove-Module
         }
     }
 }
+
 function Install-Modules
 {  
     <#
@@ -43,23 +44,13 @@ function Install-Modules
     .EXAMPLE
     .LINK
     #>
-    # [CmdletBinding()]
-    # param(
-    #     [string]$Folder
-    # )
+    [CmdletBinding()]
+    param(
+        [switch]$ImportModules
+    )
 
-$outSrting = @'
-$modules = @(
-    {0}
-)
-
-foreach($item in $modules)
-{{
-    if(!(Get-Module $item))
-    {{
-        #Import-Module -Name $item
-    }}
-}}
+$outputFileText = @'
+{0}
 function prompt {{
     $(if (Test-Path variable:/PSDebugContext) {{ '[DBG]: ' }}
         else {{ '' }}) + 'PS ' + $(Get-Location) +
@@ -82,21 +73,36 @@ function prompt {{
     $items = Get-ChildItem -Path $PSScriptRoot -Directory
     Copy-Item $items -Destination $modulesPath -Recurse -Force
 
-    $arraystr = ""
+    $importString = @'
+foreach($item in @({0}))
+{{
+    if(!(Get-Module $item))
+    {{
+        Import-Module -Name $item
+    }}
+}}
+'@
 
-    foreach($item in $modules)
+    if($ImportModules)
     {
-        if($arraystr.Length -eq 0)
+        $arraystr = ""
+        foreach($item in $modules)
         {
-            $arraystr += ('"{0}"' -f $item)
+            if($arraystr.Length -eq 0)
+            {
+                $arraystr += ('"{0}"' -f $item)
+            }
+            else
+            {
+                $arraystr += (', "{0}"' -f $item)
+            }
         }
-        else
-        {
-            $arraystr += (', "{0}"' -f $item)
-        }
+        $outputFileText = ($outputFileText -f ( $importString -f $arraystr))
+    }
+    else {
+        $outputFileText = ($outputFileText -f "")
     }
 
-    $outputFileText = ( $outSrting -f $arraystr) 
     $outputFileText | Out-File -FilePath $profilePath
 
 }

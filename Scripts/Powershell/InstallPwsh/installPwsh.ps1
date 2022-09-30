@@ -1,5 +1,4 @@
 
-
 #+++ import modules
 
 $modulePathBase = "$PSScriptRoot\..\..\..\Modules"
@@ -16,10 +15,9 @@ foreach($path in $pathArray)
     }
 }
 
-
 Get-IsAdmin
 Install-Far
-#Install-Powershell -IsWait
+Install-Powershell
 
 Write-Host -NoNewLine 'All task completed successfully...';
 #$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
