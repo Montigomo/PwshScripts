@@ -1,4 +1,35 @@
 
+
+function Remove-Module
+{
+    <#
+    
+    #>
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [array]$Modules
+    )
+
+    $modulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
+
+    foreach($item in $Modules)
+    {
+        if(Get-Module -Name $item)
+        {
+            $modulePath = (get-module $item).ModuleBase
+            if($modulePath.StartsWith($PSScriptRoot))
+            {
+                continue
+            }
+
+            # Get-Childitem $modulePath -Recurse | ForEach-Object { 
+            #     Remove-Item $_.FullName -Force
+            # }
+            Remove-Item -Path "$modulePath" -Force -Recurse
+        }
+    }
+}
 function Install-Modules
 {  
     <#
@@ -26,7 +57,7 @@ foreach($item in $modules)
 {{
     if(!(Get-Module $item))
     {{
-        Import-Module -Name $item
+        #Import-Module -Name $item
     }}
 }}
 function prompt {{
@@ -40,34 +71,18 @@ function prompt {{
     $modulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
     $profilePath = $profile.AllUsersAllHosts;
 
-    $ScriptPath = $MyInvocation.MyCommand.Path
-    $items = Get-ChildItem -Path $PSScriptRoot -Directory
+    #$ScriptPath = $MyInvocation.MyCommand.Path
 
-    # $modules = Get-ChildItem -Exclude "Agt.Install.psd1", "Agt.Common.psd1", "Agt.Network.psd1" -Path $PSScriptRoot -Recurse -Filter *.psd1 | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };
+    $modules = Get-ChildItem -Path $PSScriptRoot -Recurse -Filter *.psd1 `
+               | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };
 
-    # foreach($item in $modules)
-    # {
-    #     if(Get-Module -Name $item)
-    #     {
-    #         $modulePath = (get-module $item).ModuleBase
-    #         if($modulePath.StartsWith($PSScriptRoot))
-    #         {
-    #             continue
-    #         }
-
-    #         # Get-Childitem $modulePath -Recurse | ForEach-Object { 
-    #         #     Remove-Item $_.FullName -Force
-    #         # }
-    #         Remove-Item -Path "$modulePath" -Force -Recurse
-    #     }
-    # }
-    
+    Remove-Module -Modules $modules
 
     New-Item -ItemType Directory -Force -Path $modulesPath
+    $items = Get-ChildItem -Path $PSScriptRoot -Directory
+    Copy-Item $items -Destination $modulesPath -Recurse -Force
 
     $arraystr = ""
-
-    Copy-Item $items -Destination $modulesPath -Recurse -Force
 
     foreach($item in $modules)
     {
