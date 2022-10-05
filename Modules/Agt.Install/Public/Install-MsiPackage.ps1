@@ -17,20 +17,18 @@ function Install-MsiPackage
     Param
     (   
         [Parameter(Mandatory=$true)]
-        [string]
-        $FilePath,
-        [string]
-        $PackageParams
+        [string]$FilePath,
+        [string]$PackageParams = ""
     )
 
     $DataStamp = get-date -Format yyyyMMddTHHmmss
 
     $logFile = '{0}-{1}.log' -f $FilePath,$DataStamp
-    
+
     $MSIArguments = @(
         "/i"
         ('"{0}"' -f $FilePath)
-        ($PackageParams ?? "")
+        $PackageParams
         "/qn"
         "/norestart"
         "/L*v"

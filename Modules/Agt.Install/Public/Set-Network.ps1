@@ -1,5 +1,5 @@
 
-function Edit-Natwork
+function Set-Network
 {  
     <#
     .SYNOPSIS

@@ -18,6 +18,8 @@ foreach($path in $pathArray)
 Get-IsAdmin
 Install-Far
 Install-Powershell
+Install-OpenSsh 
+Set-OpenSsh
 
 Write-Host -NoNewLine 'All task completed successfully...';
 #$null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');

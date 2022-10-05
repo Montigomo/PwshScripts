@@ -17,7 +17,7 @@ function Get-GitReleaseInfo
     #>
     param(
         [Parameter(Mandatory=$true)] [string] $Repouri,
-        [Parameter(Mandatory=$false)] [string] $Pattern,
+        [Parameter(Mandatory=$false)] [string] $Pattern = "v(?<version>\d?\d.\d?\d.\d?\d)",
         [Parameter(Mandatory=$false)] [switch] $Version
     )
 
@@ -29,7 +29,7 @@ function Get-GitReleaseInfo
 
     if($Version)
     {
-        $Pattern ??= "v(?<version>\d?\d.\d?\d.\d?\d)"
+        #$Pattern = if($Pattern) {"v(?<version>\d?\d.\d?\d.\d?\d)"} else {$Pattern}
         $ver = [System.Version]::Parse("0.0.0")
         if($json.tag_name -match $pattern)
         {
@@ -53,13 +53,13 @@ function Get-GitReleaseInfo
 }
 
 # debug section
-# $uri1 = "https://api.github.com/repos/powershell/Win32-OpenSSH"
-# $uri2 = "https://api.github.com/repos/powershell/powershell"
+$uri1 = "https://api.github.com/repos/powershell/Win32-OpenSSH"
+$uri2 = "https://api.github.com/repos/powershell/powershell"
 
-# $patterns = (@("PowerShell-(?<version>\d?\d.\d?\d.\d?\d)-win-x64.zip", "PowerShell-\d.\d.\d-win-x64.msi", "v(?<version>\d?\d.\d?\d.\d?\d)"))
+$patterns = (@("PowerShell-(?<version>\d?\d.\d?\d.\d?\d)-win-x64.zip", "PowerShell-\d.\d.\d-win-x64.msi", "v(?<version>\d?\d.\d?\d.\d?\d)"))
 
-# $vera = Get-GitReleaseInfo $uri2 -Version
-# $uria = Get-GitReleaseInfo $uri2 -Pattern "PowerShell-\d.\d.\d-win-x64.msi"
+$vera = Get-GitReleaseInfo $uri2 -Version
+$uria = Get-GitReleaseInfo $uri2 -Pattern "PowerShell-\d.\d.\d-win-x64.msi"
 
 # $verb = Get-GitReleaseInfo $uri1 -Version
 # $urib = Get-GitReleaseInfo $uri1 -Pattern "OpenSSH-Win32-v\d.\d.\d.\d.msi"
@@ -72,5 +72,4 @@ function Get-GitReleaseInfo
 
 # $pattern = "Far.x64.\d.\d.\d\d\d\d.\d\d\d\d.[a-z0-9]{40}.msi"
 # $requestUri = Get-GitReleaseInfo -Repouri $repoUr -Pattern $pattern
-
 exit

@@ -1,5 +1,5 @@
 ﻿
-function Edit-Powershell
+function Set-Powershell
 {  
     <#
     .SYNOPSIS

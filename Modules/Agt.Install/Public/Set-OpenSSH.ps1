@@ -36,7 +36,7 @@ function ReplaceString{
     $FileContent |  Out-File $DstFile
 }
 
-function Edit-OpenSsh {  
+function Set-OpenSsh {  
     <#
     .SYNOPSIS
         
