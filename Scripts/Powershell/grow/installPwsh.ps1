@@ -4,6 +4,7 @@ $Logfile = "$PSScriptRoot\cupdater.log"
 
 function WriteLog {
     Param ([string]$LogString)
+    Write-Host $LogString
     $Stamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss")
     $LogMessage = "$Stamp $LogString"
     Add-content $LogFile -value $LogMessage
@@ -28,14 +29,14 @@ foreach($path in $pathArray)
 if(Get-IsAdmin)
 {
     try{
-        Write-Host "Runned as admin"
-        Write-Host "Installing far ..."
+        WriteLog "Runned as admin"
+        WriteLog "Installing far ..."
         Install-Far
-        Write-Host "Installing pwsh ..."
+        WriteLog "Installing pwsh ..."
         Install-Powershell
-        Write-Host "Installing ssh ..."
+        WriteLog "Installing ssh ..."
         Install-OpenSsh 
-        Write-Host "Config ssh ..."
+        WriteLog "Config ssh ..."
         Set-OpenSsh
     }catch{
         WriteLog "GetFiles Error: $_"
