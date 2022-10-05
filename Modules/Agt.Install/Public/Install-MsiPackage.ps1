@@ -25,15 +25,7 @@ function Install-MsiPackage
 
     $logFile = '{0}-{1}.log' -f $FilePath,$DataStamp
 
-    $MSIArguments = @(
-        "/i"
-        ('"{0}"' -f $FilePath)
-        $PackageParams
-        "/qn"
-        "/norestart"
-        "/L*v"
-        $logFile
-    )
+    $MSIArguments = '/i "{0}" {1} /qn /norestart /L*v $logFile' -f $FilePath, $PackageParams
 
     Start-Process "msiexec.exe" -ArgumentList $MSIArguments -Wait -NoNewWindow 
 }
