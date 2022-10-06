@@ -73,7 +73,7 @@ function Install-OpenSsh
     {
         $releaseUri = Get-GitReleaseInfo $gitUri -Pattern "OpenSSH-Win32-v\d.\d.\d.\d.msi"
         $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
-        Invoke-WebRequest -OutFile $tmp $requestUri
+        Invoke-WebRequest -OutFile $tmp $releaseUri
         Install-MsiPackage -FilePath $tmp.FullName -PackageParams ""
     }
 
