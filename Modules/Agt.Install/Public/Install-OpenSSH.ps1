@@ -12,6 +12,11 @@ function Install-OpenSsh
     .EXAMPLE
     .LINK
     #>
+    [CmdletBinding()]
+    param (
+        [Parameter()]
+        [switch]$Zip
+    )
 
     if(!(Get-IsAdmin))
     {
@@ -22,59 +27,56 @@ function Install-OpenSsh
     ### Download OpenSSH archive from github and try to install it
 
     $gitUri = "https://api.github.com/repos/powershell/Win32-OpenSSH"
+
     $version = Get-GitReleaseInfo $gitUri -Version
-    $releaseUri = Get-GitReleaseInfo $gitUri -Pattern "OpenSSH-Win32-v\d.\d.\d.\d.msi"
 
-    $destPath = "c:\Program Files\OpenSSH\"
-
-    $installScriptPath = Join-Path $destPath "install-sshd.ps1"
-
-    # create target directory
-    [System.IO.Directory]::CreateDirectory($destPath)
-    #New-Item -ItemType Directory -Path $destPath -Force
-
-    # create temp with zip extension (or Expand will complain)
-    $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'zip' } -PassThru
-
-    # download
-    Invoke-WebRequest -OutFile $tmp $releaseUri
-
-    # exract to destination folder
-
-    #$tmp | Expand-Archive -DestinationPath $destPath -Force
-
-    Add-Type -Assembly System.IO.Compression.FileSystem
-
-    # extract list entries for dir 
-    $zip = [IO.Compression.ZipFile]::OpenRead($tmp.FullName)
-
-    $entries = $zip.Entries | Where-Object {-not [string]::IsNullOrWhiteSpace($_.Name) } #| where {$_.FullName -like 'myzipdir/c/*' -and $_.FullName -ne 'myzipdir/c/'} 
-
-    #create dir for result of extraction
-    #New-Item -ItemType Directory -Path "c:\temp\c" -Force
-
-    if((get-service sshd -ErrorAction SilentlyContinue).Status -eq "Running")
+    if($Zip)
     {
-        Stop-Service sshd
+        $releaseUri = Get-GitReleaseInfo $gitUri -Pattern "OpenSSH-Win64.zip"
+
+        $destPath = "c:\Program Files\OpenSSH\"
+    
+        $installScriptPath = Join-Path $destPath "install-sshd.ps1"
+    
+        [System.IO.Directory]::CreateDirectory($destPath)
+    
+        $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'zip' } -PassThru
+    
+        Invoke-WebRequest -OutFile $tmp $releaseUri
+    
+        Add-Type -Assembly System.IO.Compression.FileSystem
+    
+        $zip = [IO.Compression.ZipFile]::OpenRead($tmp.FullName)
+    
+        $entries = $zip.Entries | Where-Object {-not [string]::IsNullOrWhiteSpace($_.Name) } #| where {$_.FullName -like 'myzipdir/c/*' -and $_.FullName -ne 'myzipdir/c/'} 
+
+        if((get-service sshd -ErrorAction SilentlyContinue).Status -eq "Running")
+        {
+            Stop-Service sshd
+        }
+
+        foreach($entry in $entries)
+        {
+            $dpath = $destPath + $entry.Name
+            [IO.Compression.ZipFileExtensions]::ExtractToFile( $entry, $dpath, $true)
+        }
+
+        $zip.Dispose()
+    
+        # set environment path vartiable
+        #[Environment]::SetEnvironmentVariable("Path",[Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\OpenSSH",[EnvironmentVariableTarget]::Machine)
+        Set-EnvironmentVariable -Name 'Path' -Scope 'Machine' -Value $destPath
+    
+        # remove temporary file
+        $tmp | Remove-Item
+    }else
+    {
+        $releaseUri = Get-GitReleaseInfo $gitUri -Pattern "OpenSSH-Win32-v\d.\d.\d.\d.msi"
+        $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
+        Invoke-WebRequest -OutFile $tmp $requestUri
+        Install-MsiPackage -FilePath $tmp.FullName -PackageParams ""
     }
 
-    # extraction
-    foreach($entry in $entries)
-    {
-        $dpath = $destPath + $entry.Name
-        [IO.Compression.ZipFileExtensions]::ExtractToFile( $entry, $dpath, $true)
-    }
-    #$entries | ForEach-Object {[IO.Compression.ZipFileExtensions]::ExtractToFile( $_, $destPath + $_.Name, $true) }
-
-    #free object
-    $zip.Dispose()
-
-    # set environment path vartiable
-    #[Environment]::SetEnvironmentVariable("Path",[Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\OpenSSH",[EnvironmentVariableTarget]::Machine)
-    Set-EnvironmentVariable -Name 'Path' -Scope 'Machine' -Value $destPath
-
-    # remove temporary file
-    $tmp | Remove-Item
 
 
     # remove old capabilities
@@ -124,4 +126,4 @@ function Install-OpenSsh
     }
 }
 
-#Install-OpenSsh
+Install-OpenSsh

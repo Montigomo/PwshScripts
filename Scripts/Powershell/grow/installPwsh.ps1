@@ -31,9 +31,9 @@ if(Get-IsAdmin)
     try{
         WriteLog "Runned as admin"
         WriteLog "Installing far ..."
-        Install-Far
+        #Install-Far
         WriteLog "Installing pwsh ..."
-        Install-Powershell
+        #Install-Powershell
         WriteLog "Installing ssh ..."
         Install-OpenSsh 
         WriteLog "Config ssh ..."
