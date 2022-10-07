@@ -77,8 +77,6 @@ function Install-OpenSsh
         Install-MsiPackage -FilePath $tmp.FullName -PackageParams ""
     }
 
-
-
     # remove old capabilities
     if((Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*").State -eq "Installed")
     {
@@ -103,12 +101,6 @@ function Install-OpenSsh
         New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value $pwshPath -PropertyType String -Force
     }
 
-    # try to run installation script
-    if(Get-IsAdmin)
-    {
-        & $installScriptPath
-    }
-
     #setup sshd service startup type and start it
     if(Get-Service  sshd -ErrorAction SilentlyContinue)
     {
@@ -126,4 +118,4 @@ function Install-OpenSsh
     }
 }
 
-Install-OpenSsh
+#Install-OpenSsh
