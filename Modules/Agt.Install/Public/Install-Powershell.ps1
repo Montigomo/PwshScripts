@@ -1,5 +1,4 @@
-function Install-Powershell
-{  
+function Install-Powershell {  
     <#
     .SYNOPSIS
     .DESCRIPTION
@@ -18,8 +17,7 @@ function Install-Powershell
         [switch]$UsePreview
     )
 
-    if(!(Get-IsAdmin))
-    {
+    if (!(Get-IsAdmin)) {
         Write-Error "Run as administrator"
         exit
     }
@@ -28,6 +26,7 @@ function Install-Powershell
     $gitUriReleases = "$gitUri/releases"
     #$gitUriReleasesLatest = "$gitUri/releases/latest"
     $remoteVersion = [System.Version]::Parse("0.0.0")
+    $localVersion = [System.Version]::Parse("0.0.0")
 
     #$pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName.Contains("C:\Program Files\PowerShell\7\pwsh.exe");
     
@@ -36,18 +35,25 @@ function Install-Powershell
   
     $latestRelease = $releases | Select-Object -First 1
     
-    if($latestRelease.tag_name -match "v(?<version>\d?\d.\d?\d.\d?\d)")
-    {
+    if ($latestRelease.tag_name -match "v(?<version>\d?\d.\d?\d.\d?\d)") {
         $remoteVersion = [System.Version]::Parse($Matches["version"]);
     }
     
-    $localVersion = $PSVersionTable.PSVersion
-    $ReleasePattern = "PowerShell-\d.\d.\d-win-x64.msi"
+    # check pwsh and get it version
+    $pwshPath = "C:\Program Files\PowerShell\7\pwsh.exe"
+    if (Test-Path $pwshPath) {
+        $localVersion = ([System.Diagnostics.FileVersionInfo]::GetVersionInfo($pwshPath)).ProductVersion.Split(" ")[0]
+    }
+    else {
+        $localVersion = $PSVersionTable.PSVersion
+    }
 
-    if($localVersion -lt $remoteVersion)
-    {
+
+
+    if ($localVersion -lt $remoteVersion) {
+        $ReleasePattern = "PowerShell-\d.\d.\d-win-x64.msi"      
         $assets = $latestRelease.assets | Where-Object name -match $ReleasePattern | Select-Object -First 1
-        $pwshUri =  $assets.browser_download_url
+        $pwshUri = $assets.browser_download_url
 
         # create temp file
         $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
@@ -72,5 +78,3 @@ function Install-Powershell
         Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow -Wait:$IsWait
     }
 }
-
-#Install-Powershell

@@ -31,26 +31,23 @@ if(Get-IsAdmin)
 {
     try{
         WriteLog "Runned as admin"
-        WriteLog "Installing far ..."
-        #Install-Far
+
         WriteLog "Installing pwsh ..."
-        #Install-Powershell
+        Install-Powershell
+
+        WriteLog "Installing far ..."
+        Install-Far
+
         WriteLog "Installing ssh ..."
         Install-OpenSsh 
-        WriteLog "Config ssh ..."
         
+        WriteLog "Config ssh ..."
         Set-OpenSSH -PublicKeys $sshPublicKeys -DisablePassword $true
 
-         # DNS Client
-        # Function Discovery Provider Host
-        # Function Discovery Resource Publication
-        # HomeGroup Provider
-        # HomeGroup Listener
-        # Peer Networking Grouping
-        # SSDP Discovery
-        # UPnP Device Host
+        # Check services
+        # DNS Client, Function Discovery Provider Host, Function Discovery Resource Publication, HomeGroup Provider, HomeGroup Listener, Peer Networking Grouping, SSDP Discovery, UPnP Device Host
         
-        $items = @("dnscache", "fdphost", "FDResPub", "p2psvc", "ssdpsrv", "upnphost")
+        $items = @("sshd", "dnscache", "fdphost", "FDResPub", "p2psvc", "ssdpsrv", "upnphost")
         foreach($item in $items)
         {
             if(($service = Get-Service -Name $item -ErrorAction SilentlyContinue))
@@ -63,6 +60,9 @@ if(Get-IsAdmin)
                 if($service.Status -ne "Running")
                 {
                     $service | Start-Service
+                }
+                else {
+                    $service | Restart-Service
                 }
             }
         }       
