@@ -194,7 +194,8 @@ function Import-Command
     "Install-Powershell" = "$PSScriptRoot\..\..\..\Modules\Agt.Install\Public\Install-Powershell.ps1"
   }
   if(!(Get-Command -Name $ -ErrorAction SilentlyContinue)){
-    Import-Module (Resolve-Path $commands[$CommandName])
+    $path = (Resolve-Path $commands[$CommandName]);
+    Import-Module "$($path.Path)"
   }
 }
 

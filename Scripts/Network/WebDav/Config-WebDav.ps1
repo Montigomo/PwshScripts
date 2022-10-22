@@ -52,6 +52,6 @@ New-NetFirewallRule -Name IISWebDav -DisplayName "IISWebDav 4433" -Description "
 $users = @{"WebDavGazIsa"="webdavisa"}
 
 foreach($item in $users.Keys){
-    Create-LocalUser -UserName $item -Pwd $users[$item]
+    #Create-LocalUser -UserName $item -Pwd $users[$item]
 }
 

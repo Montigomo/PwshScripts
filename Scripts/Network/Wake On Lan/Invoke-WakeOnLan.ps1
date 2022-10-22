@@ -34,7 +34,10 @@ function Send-MagicPacket
   .LINK
   www.galkov.pro/powershell_script_for_turning_on_computers_using_wol
   #>
- 
+  # Enabling WOL from BIOS (Power by PCI-PCIE)
+  # Disabling fast boot from both Windows 10 and BIOS
+  # Enabling Magic Packet in device manager
+  # Disabling "allow the computer to turn off this device for the ethernet adapter" after enabling both options for "allow this device to wake the computer".
   [CmdletBinding()]
  
   Param
