@@ -179,33 +179,43 @@ function _CheckServerConnection
   }
 }
 
-function Import-Command
-{
+function FindModules {
   [CmdletBinding()]
   param (
       [Parameter()]
-      [string]
-      [ValidateSet("Get-IsAdmin", "Register-Task", "Install-Powershell")]
-      $CommandName
+      [string]$ModulesFolder
   )
-  [hashtable]$commands = @{
-    "Get-IsAdmin" = "$PSScriptRoot\..\..\..\Modules\Agt.Common\Public\Get-IsAdmin.ps1"
-    "Register-Task" = "$PSScriptRoot\..\..\..\Modules\Agt.Common\Public\Register-Task.ps1"
-    "Install-Powershell" = "$PSScriptRoot\..\..\..\Modules\Agt.Install\Public\Install-Powershell.ps1"
+  $deep = 5;
+  $folders = New-Object System.Collections.Generic.List[string]
+  $modulesPathes = $PSScriptRoot
+
+  for($i=0; $i -le $deep; $i++){
+      $folders.Add("$PSScriptRoot\$('..\'*$i)Modules");
   }
-  if(!(Get-Command -Name $ -ErrorAction SilentlyContinue)){
-    $path = (Resolve-Path $commands[$CommandName]);
-    Import-Module "$($path.Path)"
+  foreach($item in $folders)
+  {
+      if(Test-Path $item -PathType Container){
+          $modulePathBase = $item;
+          break;
+      }
+  }
+
+  $pathArray = $( (Resolve-Path "$modulePathBase\Agt.Common\Public\").Path, `
+      (Resolve-Path "$modulePathBase\Agt.Install\Public\").Path, `
+      (Resolve-Path "$modulePathBase\Agt.Network\").Path)
+
+  foreach ($path in $pathArray) {
+      foreach ($item in (Get-ChildItem "$path\*.ps1")) {
+          Import-Module "$($item.FullName)"
+      }
   }
 }
 
 try{
-  Import-Command -CommandName "Get-IsAdmin"
-  Import-Command -CommandName "Register-Task"
-  Import-Command -CommandName "Install-Powershell"
+  FindModules
 }
 catch {
-  Write-Output "Not all modules imopted."
+  Write-Output "Not all modules imported."
 }
 
 ########  Variables

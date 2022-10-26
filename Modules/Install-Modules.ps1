@@ -1,5 +1,9 @@
 
 
+
+#$modulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
+$modulesPath = "C:\Program Files\WindowsPowerShell\Modules"
+
 function Remove-Module
 {
     <#
@@ -10,8 +14,6 @@ function Remove-Module
         [Parameter()]
         [array]$Modules
     )
-
-    $modulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
 
     foreach($item in $Modules)
     {
@@ -58,11 +60,7 @@ function prompt {{
 }}
 '@
 
-    #C:\Program Files\WindowsPowerShell\Modules
-    $modulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
     $profilePath = $profile.AllUsersAllHosts;
-
-    #$ScriptPath = $MyInvocation.MyCommand.Path
 
     $modules = Get-ChildItem -Path $PSScriptRoot -Recurse -Filter *.psd1 `
                | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };

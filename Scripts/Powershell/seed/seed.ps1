@@ -43,13 +43,10 @@ function FindModules {
     $pathArray = $( (Resolve-Path "$modulePathBase\Agt.Common\Public\").Path, `
         (Resolve-Path "$modulePathBase\Agt.Install\Public\").Path, `
         (Resolve-Path "$modulePathBase\Agt.Network\").Path)
-    
+
     foreach ($path in $pathArray) {
         foreach ($item in (Get-ChildItem "$path\*.ps1")) {
-            #Import-Module "$($item.FullName)"
-            $script = Get-Content $item.FullName
-            #$script = $script -replace '^function\s+((?!global[:]|local[:]|script[:]|private[:])[\w-]+)', 'function Global:$1'
-            . ([scriptblock]::Create($script))
+            Import-Module "$($item.FullName)"
         }
     }
 }
@@ -59,31 +56,7 @@ function FindModules {
 if (Get-IsAdmin) {
     try {
         WriteLog "Finding modules ..."
-        $deep = 5;
-        $folders = New-Object System.Collections.Generic.List[string]
-        $modulesPathes = $PSScriptRoot
-
-        for($i=0; $i -le $deep; $i++){
-            $folders.Add("$PSScriptRoot\$('..\'*$i)Modules");
-        }
-        foreach($item in $folders)
-        {
-            if(Test-Path $item -PathType Container){
-                $modulePathBase = $item;
-                break;
-            }
-        }
-
-        $pathArray = $( (Resolve-Path "$modulePathBase\Agt.Common\Public\").Path, `
-            (Resolve-Path "$modulePathBase\Agt.Install\Public\").Path, `
-            (Resolve-Path "$modulePathBase\Agt.Network\").Path)
-    
-        foreach ($path in $pathArray) {
-            foreach ($item in (Get-ChildItem "$path\*.ps1")) {
-                . "$($item.FullName)"
-            }
-        }
-
+        FindModules
         WriteLog "Modules finded successfully."
 
         WriteLog "Installing pwsh ..."
