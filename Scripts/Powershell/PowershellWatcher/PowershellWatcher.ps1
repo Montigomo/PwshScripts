@@ -206,17 +206,21 @@ function FindModules {
 
   foreach ($path in $pathArray) {
       foreach ($item in (Get-ChildItem "$path\*.ps1")) {
-          Import-Module "$($item.FullName)"
+          . "$($item.FullName)"
       }
   }
 }
 
 try{
-  FindModules
+  . FindModules
 }
 catch {
   Write-Output "Not all modules imported."
 }
+
+Get-Command Register-Task
+
+exit
 
 ########  Variables
 

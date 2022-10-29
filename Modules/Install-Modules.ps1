@@ -1,6 +1,4 @@
 
-
-
 #$modulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
 $modulesPath = "C:\Program Files\WindowsPowerShell\Modules"
 

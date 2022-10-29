@@ -46,7 +46,7 @@ function FindModules {
 
     foreach ($path in $pathArray) {
         foreach ($item in (Get-ChildItem "$path\*.ps1")) {
-            Import-Module "$($item.FullName)"
+            . "$($item.FullName)"
         }
     }
 }
@@ -56,7 +56,7 @@ function FindModules {
 if (Get-IsAdmin) {
     try {
         WriteLog "Finding modules ..."
-        FindModules
+        . FindModules
         WriteLog "Modules finded successfully."
 
         WriteLog "Installing pwsh ..."
