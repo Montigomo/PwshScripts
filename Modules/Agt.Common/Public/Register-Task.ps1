@@ -1,6 +1,5 @@
 
-function Register-Task
-{  
+function Register-Task {  
     <#
     .SYNOPSIS
         Is powershell session runned in admin mode 
@@ -18,44 +17,64 @@ function Register-Task
         [hashtable]$TaskData,
         [ValidateSet('system', 'author', 'none')]
         [string]$Principal = 'none',
+        [switch]$OnlyCheck,
         [switch]$Force
     )
 
     $taskName = $TaskData["Name"];
 
-    $xmlDefinition = [xml]$TaskData["XmlDefinition"];
+    $xml = [xml]$TaskData["XmlDefinition"];
 
-    if((Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) )
-    {
-      if(-not $Force)
-      {
-        return
-      }
-      else {
-        Unregister-ScheduledTask -TaskName $taskName -Confirm:$false;
-      }
+    $ns = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
+    $ns.AddNamespace("ns", $xml.DocumentElement.NamespaceURI)
+
+    $registredTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
+
+    $needRegister = $false;
+
+    if ($registredTask) {
+        $registrationInfo = $xml.SelectSingleNode("/ns:Task/ns:RegistrationInfo/ns:Version", $ns);
+        if ($registrationInfo) {
+   
+                $currentVersion = [System.Version]::Parse("0.0.0")
+                [System.Version]::TryParse($registrationInfo.InnerText, [ref]$currentVersion)
+                $installedVersion = [System.Version]::Parse("0.0.0")
+                [System.Version]::TryParse($registredTask.Version, [ref]$installedVersion)
+                $needRegister = ($currentVersion -gt $installedVersion)
+
+        }
+        $needRegister = $needRegister || (registredTask.State -eq "Disabled");
     }
 
-    $principals = @{"author" = '<Principal id="Author"><GroupId>S-1-1-0</GroupId><RunLevel>HighestAvailable</RunLevel></Principal>'};
-    $contexts = @{"author" = "Author"}
+    if ($OnlyCheck) {
+        return $needRegister
+    }
+
+    if (!$needRegister) {
+        return $needRegister
+    }
+
+    if($registredTask){
+        Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
+    }
+
+    $principals = @{"author" = '<Principal id="Author"><GroupId>S-1-1-0</GroupId><RunLevel>HighestAvailable</RunLevel></Principal>' };
+    $contexts = @{"author" = "Author" }
 
     #<Principal id="Author" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task"><GroupId>S-1-1-0</GroupId><RunLevel>HighestAvailable</RunLevel></Principal>
 
-    switch ($principal)
-    {
-        'none'
-        {
-            Register-ScheduledTask -Xml $xmlDefinition.OuterXml -TaskName $taskName
+    switch ($principal) {
+        'none' {
+            Register-ScheduledTask -Xml $xml.OuterXml -TaskName $taskName
         }
-        'system'
-        {
-            Register-ScheduledTask -Xml $xmlDefinition.OuterXml -TaskName $taskName -User System
+        'system' {
+            Register-ScheduledTask -Xml $xml.OuterXml -TaskName $taskName -User System
         }
-        'author'
-        {
-            $xmlDefinition.Task.Principals.InnerXml = $principals["author"];
-            $xmlDefinition.Task.Actions.SetAttribute("Context", $contexts["author"])
-            Register-ScheduledTask -Xml $xmlDefinition.OuterXml -TaskName $TaskName
+        'author' {
+            $xml.Task.Principals.InnerXml = $principals["author"];
+            $xml.Task.Actions.SetAttribute("Context", $contexts["author"])
+            Register-ScheduledTask -Xml $xml.OuterXml -TaskName $TaskName
         }    
     }
+    return $true
 }
