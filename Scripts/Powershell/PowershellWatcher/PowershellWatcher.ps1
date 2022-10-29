@@ -1,3 +1,4 @@
+
 #Requires -Version 5
 
 $taskVersion = "1.0"
@@ -16,7 +17,7 @@ $TasksDefinitions = @{
   <RegistrationInfo>
     <Date>1971-08-31T00:00:00.0000000</Date>
     <Author>Adobe Systems Incorporated</Author>
-    <Description>Adobe watcher</Description>
+    <Description>Pswh watcher</Description>
     <Version>' + $taskVersion + '</Version>
     <URI>\Adobe_Watcher</URI>
   </RegistrationInfo>
@@ -133,10 +134,7 @@ function _RegisterTask {
     }
   }
   $taskData["XmlDefinition"] = $xml.OuterXml;
-  #try {
-    Register-Task -TaskData $taskData -Force
-  #}
-  #catch {}
+  Register-Task -TaskData $taskData -Force
 }
 
 function _CheckTask {
@@ -187,7 +185,7 @@ function FindModules {
   )
   $deep = 5;
   $folders = New-Object System.Collections.Generic.List[string]
-  $modulesPathes = $PSScriptRoot
+  #$modulesPathes = $PSScriptRoot
 
   for($i=0; $i -le $deep; $i++){
       $folders.Add("$PSScriptRoot\$('..\'*$i)Modules");
@@ -217,10 +215,6 @@ try{
 catch {
   Write-Output "Not all modules imported."
 }
-
-Get-Command Register-Task
-
-exit
 
 ########  Variables
 
