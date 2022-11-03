@@ -20,18 +20,28 @@ function Register-Task {
         [switch]$OnlyCheck,
         [switch]$Force
     )
-
+  
     $taskName = $TaskData["Name"];
-
+  
     $xml = [xml]$TaskData["XmlDefinition"];
-
+  
     $ns = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
     $ns.AddNamespace("ns", $xml.DocumentElement.NamespaceURI)
-
+  
+    if($TaskData["Values"]){
+        foreach ($item in $TaskData["Values"].Keys) {
+            $xmlNode = $xml.SelectSingleNode($item, $ns);
+            if ($xmlNode) {
+                $innerText = $TaskData["Values"][$item]
+                $xmlNode.InnerText = $innerText
+            }
+        }
+    }
+  
     $registredTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
-
+  
     $needRegister = $false;
-
+  
     if ($registredTask) {
         $registrationInfo = $xml.SelectSingleNode("/ns:Task/ns:RegistrationInfo/ns:Version", $ns);
         if ($registrationInfo) {
@@ -41,28 +51,30 @@ function Register-Task {
                 $installedVersion = [System.Version]::Parse("0.0.0")
                 [System.Version]::TryParse($registredTask.Version, [ref]$installedVersion)
                 $needRegister = ($currentVersion -gt $installedVersion)
-
+  
         }
         $needRegister = $needRegister || (registredTask.State -eq "Disabled");
+    }else{
+      $needRegister = $true
     }
-
+  
     if ($OnlyCheck) {
-        return $needRegister
+        return -not $needRegister
     }
-
+  
     if (!$needRegister) {
         return $needRegister
     }
-
+  
     if($registredTask){
         Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
     }
-
+  
     $principals = @{"author" = '<Principal id="Author"><GroupId>S-1-1-0</GroupId><RunLevel>HighestAvailable</RunLevel></Principal>' };
     $contexts = @{"author" = "Author" }
-
+  
     #<Principal id="Author" xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task"><GroupId>S-1-1-0</GroupId><RunLevel>HighestAvailable</RunLevel></Principal>
-
+  
     switch ($principal) {
         'none' {
             Register-ScheduledTask -Xml $xml.OuterXml -TaskName $taskName
@@ -77,4 +89,4 @@ function Register-Task {
         }    
     }
     return $true
-}
+  }
