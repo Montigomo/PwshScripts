@@ -53,7 +53,9 @@ function Register-Task {
                 $needRegister = ($currentVersion -gt $installedVersion)
   
         }
-        $needRegister = $needRegister || (registredTask.State -eq "Disabled");
+        if( (-not $needRegister) -and (registredTask.State -eq "Disabled")){
+            $needRegister = $true
+        }
     }else{
       $needRegister = $true
     }
