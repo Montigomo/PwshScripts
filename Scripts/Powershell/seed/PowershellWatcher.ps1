@@ -4,13 +4,12 @@
 [CmdletBinding()]
 param (
     [Parameter()]
-    [switch]$CheckPowershell,
-    [Parameter()]
-    [switch]$CheckSsh
+    [switch]$CheckPowershell
 )
 
-$taskVersion = "1.8"
+$taskVersion = "1.9"
 $uri = "https://goog1e.com"
+$Logfile = "$PSScriptRoot\seed.log"
 
 $TasksDefinitions = @{
   "PwshWatcher"      = @{
@@ -79,7 +78,13 @@ $TasksDefinitions = @{
 }
 
 ######## Local functions
-
+function WriteLog {
+  Param ([string]$LogString)
+  Write-Host $LogString
+  $Stamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss")
+  $LogMessage = "$Stamp $LogString"
+  Add-content $LogFile -value $LogMessage
+}
 
 function _PwshContextMenu {
   #$oldVarDefault = (Get-ItemProperty -path Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Open\Command)."(Default)"
@@ -157,6 +162,7 @@ try{
 }
 catch {
   Write-Output "Not all modules imported."
+  return
 }
 
 ########  Variables

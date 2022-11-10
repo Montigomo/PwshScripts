@@ -1,4 +1,15 @@
 
+
+#Requires -Version 5
+
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [switch]$CheckPowershell,
+    [Parameter()]
+    [switch]$CheckSsh
+)
+
 $Logfile = "$PSScriptRoot\seed.log"
        
 $sshPublicKeys = @(
