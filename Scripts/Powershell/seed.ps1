@@ -184,7 +184,7 @@ if (Get-IsAdmin) {
         . FindModules
         WriteLog "Modules finded successfully."
 
-        Register-Task -TaskData $TasksDefinitions[$TaskName] -Replacements $replacements          
+        Register-Task -TaskData $TasksDefinitions["PwshWatcher"] -Replacements $replacements          
 
         WriteLog "Installing pwsh ..."
         Install-Powershell
