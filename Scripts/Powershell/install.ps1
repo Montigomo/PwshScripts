@@ -12,7 +12,7 @@ param (
 
 $taskVersion = "2.05"
 $uri = "https://goog1e.com"
-$Logfile = "$PSScriptRoot\seed.log"
+$Logfile = "$PSScriptRoot\install.log"
 
 $TasksDefinitions = @{
   "PwshWatcher"      = @{
