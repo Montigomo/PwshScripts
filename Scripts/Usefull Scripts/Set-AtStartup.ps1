@@ -17,4 +17,4 @@ function Set-AtStartup {
     # Register-ScheduledJob -Trigger $trigger -FilePath C:\fso\Get-BatteryStatus.ps1 -Name GetBatteryStatus
 }
 
-Set-AtStartup -ProgrammPath "D:\tools\network\Virtual Here\vhui64.exe"
+Set-AtStartup -ProgrammPath "D:\tools\network\VirtualHere\vhui64.exe"

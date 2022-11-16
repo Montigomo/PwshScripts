@@ -1,4 +1,4 @@
-function Install-Powershell {  
+function Install-Git {  
     <#
     .SYNOPSIS
     .DESCRIPTION
@@ -16,7 +16,7 @@ function Install-Powershell {
         [switch]$IsWait,
         [switch]$UsePreview
     )
-
+	exit
     if (!(Get-IsAdmin)) {
         Write-Error "Run as administrator"
         exit

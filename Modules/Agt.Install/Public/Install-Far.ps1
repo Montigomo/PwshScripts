@@ -27,7 +27,9 @@ function Install-Far {
     $remoteVersion = Get-GitReleaseInfo -Repouri $repoUri  -Pattern $versionPattern -Version
     $remoteVersion = [System.Version]::new($remoteVersion.Major, $remoteVersion.Minor, $remoteVersion.Build)
 
-    if ($localVersion -ge $remoteVersion) { exit; }
+    if ($localVersion -ge $remoteVersion) {
+        return;
+    }
 
     $pattern = "Far.x64.\d.\d.\d\d\d\d.\d\d\d\d.[a-z0-9]{40}.msi"
     $requestUri = Get-GitReleaseInfo -Repouri $repoUri -Pattern $pattern

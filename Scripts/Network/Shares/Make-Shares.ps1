@@ -23,7 +23,7 @@ function Add-SmbUsers
         # Проверка наличия учетной записи
         if(!(Get-LocalUser -Name $UserName -ErrorAction SilentlyContinue))
         {
-            New-LocalUser -Name $UserName -Description $Description -Password $SecurePassword -PasswordNeverExpires $true
+            New-LocalUser -Name $UserName -Description $Description -Password $SecurePassword -PasswordNeverExpires:$true
         }
         $SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
         Set-LocalUser -Name $UserName -Password $SecurePassword
@@ -107,12 +107,13 @@ function Update-SmbServices
     }
 }
 
+Update-SmbServices
+
 $users = @(@{ UserName = "SmbLibrary"; Password = "fubntx1791"; Description = "LibraryReader"},
            @{ UserName = "SmbAgitech"; Password = "fubntx17cfv,f91"; Description = "SmbAgitech"});
 
-#Add-SmbUsers -Users $users
-#Set-AccessSharedFolder -UserName "SmbLibrary" -AccessRight "Read" -ShareName "Library" -Folder "D:\Library"
-#Update-SmbServices
+Add-SmbUsers -Users $users
 
+Set-AccessSharedFolder -UserName "SmbLibrary" -AccessRight "Read" -ShareName "Library" -Folder "D:\Library"
 
 Set-AccessSharedFolder -UserName "SmbAgitech" -AccessRight "Full" -ShareName "DLib" -Folder "D:"

@@ -15,28 +15,32 @@ function Register-Task {
     (
         [Parameter(Mandatory)]
         [hashtable]$TaskData,
+        [hashtable]$Replacements,
         [ValidateSet('system', 'author', 'none')]
         [string]$Principal = 'none',
         [switch]$OnlyCheck,
         [switch]$Force
     )
-  
+
     $taskName = $TaskData["Name"];
-  
+    
+    function Replaceitems([string]$text){
+        #
+        $outText = $text
+        foreach($item in $Replacements.Keys) {
+            $findtext = "{$item}"
+            $value = $Replacements[$item]
+            if($outText -match $findtext){
+                $outText = $outText -replace $findtext, $value
+            }
+        }
+        return $outText
+    }  
+
     $xml = [xml]$TaskData["XmlDefinition"];
   
     $ns = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
     $ns.AddNamespace("ns", $xml.DocumentElement.NamespaceURI)
-  
-    if($TaskData["Values"]){
-        foreach ($item in $TaskData["Values"].Keys) {
-            $xmlNode = $xml.SelectSingleNode($item, $ns);
-            if ($xmlNode) {
-                $innerText = $TaskData["Values"][$item]
-                $xmlNode.InnerText = $innerText
-            }
-        }
-    }
   
     $registredTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
   
@@ -46,18 +50,19 @@ function Register-Task {
         $registrationInfo = $xml.SelectSingleNode("/ns:Task/ns:RegistrationInfo/ns:Version", $ns);
         if ($registrationInfo) {
    
-                $currentVersion = [System.Version]::Parse("0.0.0")
-                [System.Version]::TryParse($registrationInfo.InnerText, [ref]$currentVersion)
-                $installedVersion = [System.Version]::Parse("0.0.0")
-                [System.Version]::TryParse($registredTask.Version, [ref]$installedVersion)
-                $needRegister = ($currentVersion -gt $installedVersion)
+            $currentVersion = [System.Version]::Parse("0.0.0")
+            [System.Version]::TryParse($registrationInfo.InnerText, [ref]$currentVersion)
+            $installedVersion = [System.Version]::Parse("0.0.0")
+            [System.Version]::TryParse($registredTask.Version, [ref]$installedVersion)
+            $needRegister = ($currentVersion -gt $installedVersion)
   
         }
-        if( (-not $needRegister)){
-            $needRegister = (registredTask.State -eq "Disabled")
+        if ( (-not $needRegister)) {
+            $needRegister = ($registredTask.State -eq "Disabled")
         }
-    }else{
-      $needRegister = $true
+    }
+    else {
+        $needRegister = $true
     }
   
     if ($OnlyCheck) {
@@ -68,7 +73,20 @@ function Register-Task {
         return $needRegister
     }
   
-    if($registredTask){
+    # replace values
+
+    if ($TaskData["Values"]) {
+        foreach ($item in $TaskData["Values"].Keys) {
+            $xmlNode = $xml.SelectSingleNode($item, $ns);
+            if ($xmlNode) {
+                $innerText = $TaskData["Values"][$item]
+                $innerText = Replaceitems -text $innerText
+                $xmlNode.InnerText = $innerText
+            }
+        }
+    }
+
+    if ($registredTask) {
         Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
     }
   
@@ -91,4 +109,4 @@ function Register-Task {
         }    
     }
     return $true
-  }
+}
