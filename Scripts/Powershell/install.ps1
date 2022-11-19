@@ -10,7 +10,7 @@ param (
     [switch]$Watch
 )
 
-$taskVersion = "2.05"
+$taskVersion = "2.07"
 $uri = "https://goog1e.com"
 $Logfile = "$PSScriptRoot\install.log"
 
@@ -184,7 +184,7 @@ if (Get-IsAdmin) {
         . FindModules
         WriteLog "Modules finded successfully."
 
-        Register-Task -TaskData $TasksDefinitions["PwshWatcher"] -Replacements $replacements          
+        $result = Register-Task -TaskData $TasksDefinitions["PwshWatcher"] -Replacements $replacements          
 
         WriteLog "Installing pwsh ..."
         Install-Powershell
@@ -197,7 +197,7 @@ if (Get-IsAdmin) {
         
         if($Install)
         {
-            WriteLog "Config ssh ..."
+            WriteLog "Configuring ssh ..."
             Set-OpenSSH -PublicKeys $sshPublicKeys -DisablePassword $true
 
             # Check services

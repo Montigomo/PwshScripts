@@ -51,9 +51,9 @@ function Register-Task {
         if ($registrationInfo) {
    
             $currentVersion = [System.Version]::Parse("0.0.0")
-            [System.Version]::TryParse($registrationInfo.InnerText, [ref]$currentVersion)
+            $result = [System.Version]::TryParse($registrationInfo.InnerText, [ref]$currentVersion)
             $installedVersion = [System.Version]::Parse("0.0.0")
-            [System.Version]::TryParse($registredTask.Version, [ref]$installedVersion)
+            $result = [System.Version]::TryParse($registredTask.Version, [ref]$installedVersion)
             $needRegister = ($currentVersion -gt $installedVersion)
   
         }
