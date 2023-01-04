@@ -8,7 +8,7 @@ function Set-StartUp {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [array]$ProgrammPath
+        [hashtable]$ProgrammPath
     )
     
     # Biltin/administrators   S-1-5-32-544
@@ -27,11 +27,14 @@ function Set-StartUp {
     foreach ($item in $Actions){
         if($item.CimClass.CimClassName -eq "MSFT_TaskExecAction"){
             if(-not $ProgrammPath.Contains($item.Execute)){
-                $ProgrammPath += $item.Execute
+                #$ProgrammPath += $item.Execute
+                $ProgrammPath.Add($item.Execute, $item.Arguments)
             }
         }
     }
-    $Actions = $ProgrammPath | ForEach-Object {New-ScheduledTaskAction -Execute $_}
+
+    $Actions = $ProgrammPath.Keys | ForEach-Object {if($ProgrammPath[$_]) { New-ScheduledTaskAction -Execute $_ -Argument $ProgrammPath[$_]} else {New-ScheduledTaskAction -Execute $_}}
+    
     $Trigers = New-ScheduledTaskTrigger -AtLogon
     $Principal = New-ScheduledTaskPrincipal -GroupId "S-1-5-32-544" -RunLevel Highest
     $Settings = New-ScheduledTaskSettingsSet

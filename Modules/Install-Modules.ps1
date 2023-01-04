@@ -49,7 +49,7 @@ function Install-Modules
         [switch]$ImportModules
     )
 
-$outputFileText = @'
+	$outputFileText = @'
 {0}
 function prompt {{
     $(if (Test-Path variable:/PSDebugContext) {{ '[DBG]: ' }}

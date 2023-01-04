@@ -143,12 +143,17 @@ function FindModules {
         [Parameter()]
         [string]$ModulesFolder
     )
+	
     $deep = 5;
+	
     $folders = New-Object System.Collections.Generic.List[string]
-    $modulesPathes = $PSScriptRoot
+	
+	if(!$ModulesFolder){
+		$ModulesFolder = $PSScriptRoot
+	}
 
     for($i=0; $i -le $deep; $i++){
-        $folders.Add("$PSScriptRoot\$('..\'*$i)Modules");
+        $folders.Add("$ModulesFolder\$('..\'*$i)Modules");
     }
     foreach($item in $folders)
     {
