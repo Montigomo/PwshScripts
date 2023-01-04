@@ -1,4 +1,6 @@
 
+#[System.Collections.Specialized.OrderedDictionary]$Global:hostsDictionary = $null;
+
 function Get-Hosts{
 
     $regexip4 = "(?<ip>(((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))";
@@ -53,6 +55,8 @@ function Add-Host
 {
     param
     (
+        [Parameter(Mandatory=$true)]
+        [System.Collections.Specialized.OrderedDictionary]$Hosts,
         [Parameter(Mandatory=$true)]        
         [string]$HostIp,
         [Parameter(Mandatory=$true)]        
@@ -60,9 +64,6 @@ function Add-Host
         [string]$HeaderLine,
         [string]$Comment
     )
-
-    $hosts = New-Object System.Collections.Specialized.OrderedDictionary
-    $hosts = Get-Hosts;
     [ipaddress]$IpAddress = New-Object System.Net.IPAddress(0x7FFFFFFF)
     if([ipaddress]::TryParse($HostIp, [ref]$IpAddress))
     {
@@ -90,14 +91,13 @@ function Remove-Host
 {
     param
     (
+        [Parameter(Mandatory=$true)]
+        [System.Collections.Specialized.OrderedDictionary]$Hosts,
         [Parameter(Mandatory=$true)]        
         [string]$HostIp,
         [Parameter(Mandatory=$true)]        
         [string]$HostName
     )
-
-    $hosts = New-Object System.Collections.Specialized.OrderedDictionary
-    $hosts = Get-Hosts;
     [ipaddress]$IpAddress = New-Object System.Net.IPAddress(0x7FFFFFFF)
     if([ipaddress]::TryParse($HostIp, [ref]$IpAddress))
     {
@@ -112,15 +112,3 @@ function Remove-Host
         }
     }
 }
-
-#$hosts = Get-Hosts;
-
-# 163.172.167.207 bt.t-ru.org
-
-#Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.test.org"
-
-Remove-Host  -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
-
-#Write-Hosts
-
-exit
