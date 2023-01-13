@@ -3,14 +3,12 @@ param (
     [Parameter()][string]$UserProfilesFolder = $env:USERPROFILE
 )
 
-$debug = ($DebugPreference -eq "SilentlyContinue") -or ($PSBoundParameters.Debug.IsPresent) -or ($PSDebugContext)
-
 $userFolders = @{
     "Documents" = @{Handle = $false; FolderName = "Personal"; FolderClass = "{f42ee2d3-909f-4907-8871-4c22fc0bf756}" };
-    "Pictures" = @{Handle = $true; FolderName = "Pictures"; FolderClass = "{0DDD015D-B06C-45D5-8C4C-F59713854639}" };
+    "Pictures" = @{Handle = $true; FolderName = "My Pictures"; FolderClass = "{0DDD015D-B06C-45D5-8C4C-F59713854639}" };
     "Desktop" = @{Handle = $false; FolderName = "Desktop"; FolderClass = "{754AC886-DF64-4CBA-86B5-F7FBF4FBCEF5}" };
-    "Video" = @{Handle = $false; FolderName = "Video"; FolderClass = "{35286A68-3C57-41A1-BBB1-0EAE73D76C95}" };
-    "Music" = @{Handle = $false; FolderName = "Music"; FolderClass = "{A0C69A99-21C8-4671-8703-7934162FCF1D}" };
+    "Video" = @{Handle = $false; FolderName = "My Video"; FolderClass = "{35286A68-3C57-41A1-BBB1-0EAE73D76C95}" };
+    "Music" = @{Handle = $false; FolderName = "My Music"; FolderClass = "{A0C69A99-21C8-4671-8703-7934162FCF1D}" };
 }
 
 if(-not $debug){
@@ -46,3 +44,14 @@ foreach($key in $userFolders.Keys)
 if (!(get-process explorer -ErrorAction SilentlyContinue)) {
     Start-Process explorer
 }
+
+# {374DE290-123F-4565-9164-39C4925E467B} : C:\Users\nidal\Downloads
+# {24D89E24-2F19-4534-9DDE-6A6671FBB8FE} : C:\Users\nidal\OneDrive\Изображения\Документы
+# {754AC886-DF64-4CBA-86B5-F7FBF4FBCEF5} : D:\_users\nidaleb\Desktop
+# {F42EE2D3-909F-4907-8871-4C22FC0BF756} : C:\Users\nidal\OneDrive\Изображения\Документы
+# {0DDD015D-B06C-45D5-8C4C-F59713854639} : C:\Users\nidal\Pictures
+# {339719B5-8C47-4894-94C2-D8F77ADD44A6} : C:\Users\nidal\OneDrive\Изображения
+# {767E6811-49CB-4273-87C2-20F355E1085B} : C:\Users\nidal\OneDrive\Изображения\Пленка
+# {B7BEDE81-DF94-4682-A7D8-57A52620B86F} : C:\Users\nidal\OneDrive\Изображения\Снимки экрана
+# {AB5FB87B-7CE2-4F83-915D-550846C9537B} : C:\Users\nidal\OneDrive\Изображения\Пленка
+# {35286A68-3C57-41A1-BBB1-0EAE73D76C95} : D:\video
