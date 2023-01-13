@@ -2,11 +2,11 @@
 #
 #
 
-$userProfileFolder = "D:\___users\_ali" #$env:USERPROFILE
+$userProfileFolder = $env:USERPROFILE
 
 $userFolders = $(
-    "$userProfileFolder\Documents"
-    # "$userProfileFolder\Pictures",
+    #"$userProfileFolder\Documents"
+    "$userProfileFolder\Pictures"
     # "$userProfileFolder\Desktop",
     # "$userProfileFolder\Video"
     )
