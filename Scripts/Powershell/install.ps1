@@ -5,8 +5,6 @@
 [CmdletBinding()]
 param (
     [Parameter()]
-    [switch]$Install,
-    [Parameter()]
     [switch]$Watch
 )
 
