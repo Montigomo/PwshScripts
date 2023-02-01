@@ -33,24 +33,29 @@ function Set-StartUp {
     #     }
     # }
 
-    $Actions = $ProgrammPath.Keys | ForEach-Object {if($ProgrammPath[$_]) { New-ScheduledTaskAction -Execute $_ -Argument $ProgrammPath[$_]} else {New-ScheduledTaskAction -Execute $_}}
+    $Actions = $ProgrammPath.Keys | ForEach-Object { if ($ProgrammPath[$_]) { New-ScheduledTaskAction -Execute $_ -Argument $ProgrammPath[$_] } else { New-ScheduledTaskAction -Execute $_ } }
     
     $index = 0;
-    foreach($item in $Actions){
+    foreach ($item in $Actions) {
+
         $Trigers = New-ScheduledTaskTrigger -AtLogon
+
         $Principal = New-ScheduledTaskPrincipal -GroupId "S-1-5-32-544" -RunLevel Highest
+
         $Settings = New-ScheduledTaskSettingsSet
 
         $Task = New-ScheduledTask -Action $item -Principal $Principal -Trigger $Trigers -Settings $Settings
 
         $itemName = "$taskName{0:000}" -f $index
 
-        $existTask = Get-ScheduledTask -TaskName $itemName
+        $existTask = Get-ScheduledTask -TaskName $itemName -ErrorAction SilentlyContinue
 
-        if($existTask){
+        if ($existTask) {
             Unregister-ScheduledTask -TaskName $itemName -Confirm:$false
         }
+
         Register-ScheduledTask -TaskPath $taskPath -InputObject $Task -TaskName $itemName | Out-Null
+
         $index++;
     }
 }

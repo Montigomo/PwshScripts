@@ -190,10 +190,10 @@ if (Get-IsAdmin) {
         $result = Register-Task -TaskData $TasksDefinitions["PwshWatcher"] -Replacements $replacements          
 
         WriteLog "Installing pwsh ..."
-        Install-Powershell
+        #Install-Powershell
 
         WriteLog "Installing far ..."
-        Install-Far
+        #Install-Far
 
         WriteLog "Installing ssh ..."
         Install-OpenSsh 
