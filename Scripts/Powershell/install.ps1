@@ -4,8 +4,10 @@
 
 [CmdletBinding()]
 param (
-    [Parameter()]
-    [switch]$Watch
+  [Parameter()]
+  [switch]$Init,
+  [Parameter()]
+  [switch]$Watch
 )
 
 $taskVersion = "2.07"
@@ -173,21 +175,31 @@ function FindModules {
 }
 
 ########  Variables
-$destinationFolder = $PSScriptRoot
+#$destinationFolder = $PSScriptRoot
 $thisFileName = $MyInvocation.MyCommand.Name
 #$thisFileFullName = $MyInvocation.MyCommand.Path
 $scriptFile = [System.IO.Path]::Combine($PSScriptRoot, $thisFileName)
 $replacements = @{"ScriptFile" = "'$scriptFile' -Watch"}
-$debugger = $false; #($PSBoundParameters.ContainsKey("Debug")) -or ($DebugPreference  -eq "SilentlyContinue")
+#$debugger = $false; #($PSBoundParameters.ContainsKey("Debug")) -or ($DebugPreference  -eq "SilentlyContinue")
+$taskName = "PwshWatcher"
 
 if (Get-IsAdmin) {
     try {
-
         WriteLog "Finding modules ..."
         . FindModules
         WriteLog "Modules finded successfully."
 
-        $result = Register-Task -TaskData $TasksDefinitions["PwshWatcher"] -Replacements $replacements          
+        if($Init){
+          
+          if(Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue)
+          {
+            Unregister-ScheduledTask -TaskName $taskName
+          }
+
+          exit
+        }
+
+        $result = Register-Task -TaskData $TasksDefinitions[$taskName] -Replacements $replacements          
 
         WriteLog "Installing pwsh ..."
         #Install-Powershell
