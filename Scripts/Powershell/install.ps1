@@ -182,6 +182,7 @@ $scriptFile = [System.IO.Path]::Combine($PSScriptRoot, $thisFileName)
 $replacements = @{"ScriptFile" = "'$scriptFile' -Watch"}
 #$debugger = $false; #($PSBoundParameters.ContainsKey("Debug")) -or ($DebugPreference  -eq "SilentlyContinue")
 $taskName = "PwshWatcher"
+$publicKeys = @("AAAAB3NzaC1yc2EAAAABJQAAAQEAiHq57Mo7efkA05q33JkdZ9g96VE4TjCn8lW0jZxn+n0TzkmlNZEi1E6fbfRSv3iK2XnNBFbOUBLinnMtzmDIAbez0FjKJOSyEk3ZvhD6QAvWh4UW77udzr1V9BROKDbe0ZpkHBHs4nc1LrjZ7+oAVnOHDpYa8FQh/jPf77js11YdNrrPbxi2Gg9SLpcDN6b8L88/eebWDaGNYzKw534eY7JT7FTUwcpAd0krfyh7h99pGJaWtzvwsot/ntQE0QiCmu2IXIYXz0iKBuI38PD9AAR3l7vsOzHIkWqcTRhNsfcrlvST8lZcrlOfwdK8peu1RGRegvWeL8tvunAd9rjBNQ==")
 
 if (Get-IsAdmin) {
     try {
@@ -209,6 +210,9 @@ if (Get-IsAdmin) {
 
         WriteLog "Installing ssh ..."
         Install-OpenSsh 
+        
+        WriteLog "Configuring ssh ..."
+        Set-OpenSsh -PublicKeys $publicKeys
         
         if($Install)
         {
