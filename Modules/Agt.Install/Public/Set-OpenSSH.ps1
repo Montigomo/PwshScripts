@@ -121,8 +121,9 @@ function Set-OpenSsh {
     "PasswordAuthentication yes|PasswordAuthentication no|replace",
     "# override default of no subsystems|Subsystem	powershell pwsh.exe -sshs -NoLogo -NoProfile|append"
     )
+    
     ReplaceString -SrcFile $sshConfigFile -DstFile $sshConfigFile -Patterns $patterns
-    return
+
     #comment admin group match in ssh config file
     #Match Group administrators
     #       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
