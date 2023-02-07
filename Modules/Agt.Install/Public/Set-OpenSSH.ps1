@@ -10,30 +10,43 @@ function ReplaceString{
         [string[]]$Patterns
     )
 
-    $FileContent = Get-Content $SrcFile
-    $NewFileContent = @()
+    $Content = Get-Content $SrcFile
+
     foreach ($itemj in $Patterns) {
         $tmp = $itemj.Split("|")        
-        foreach ($itemi in $FileContent) {
-            if ($itemi -match $tmp[0]) {
-                switch ($tmp[2]) {
-                    "replace" {
-                        $NewFileContent += $tmp[1]
-                    }
-                    "append" {
-                        $NewFileContent += $itemi
-                        $NewFileContent += $tmp[1]
-                    }
+        switch ($tmp[2]) {
+            "replace" {
+                $index = [System.Array]::IndexOf($Content, $tmp[0])
+                if($index -lt 0)
+                {
+                    continue
                 }
+                $Content[$index] = $tmp[1]
             }
-            else {
-                $NewFileContent += $itemi
-            }    
+            "append" {
+                $index = [System.Array]::IndexOf($Content, $tmp[1])
+                # item already exists
+                if($index -gt -1)
+                {
+                    continue
+                }
+                #
+                $index = [System.Array]::IndexOf($Content, $tmp[0])
+                if($index -lt 0)
+                {
+                    $Content = $Content + $tmp[1] 
+                    continue
+                }
+                # find next section
+                #$index2 = [System.Array]::IndexOf($Content, "# ", $index)
+                $NewContent = $Content[0..$index]
+                $NewContent += $tmp[1]
+                $NewContent += $Content[($index + 1)..$Content.Length]
+            }
         }
-        $FileContent = $NewFileContent
-        $NewFileContent = @()
     }
-    $FileContent |  Out-File $DstFile
+
+    $Content |  Out-File $DstFile
 }
 
 function Set-OpenSsh {  
@@ -63,8 +76,10 @@ function Set-OpenSsh {
 
     # set ssh-agent service startup type
     if (Get-Service  ssh-agent -ErrorAction SilentlyContinue) {
-        # if((get-service sshd).StartType -eq [System.ServiceProcess.ServiceStartMode]::Manual)
-        Get-Service -Name ssh-agent | Set-Service -StartupType 'Automatic' 
+        if((get-service sshd).StartType -ne [System.ServiceProcess.ServiceStartMode]::Manual)
+        {
+            Get-Service -Name ssh-agent | Set-Service -StartupType 'Automatic'
+        }
         Start-Service ssh-agent
     }
 
@@ -113,7 +128,7 @@ function Set-OpenSsh {
     "^\# override default of no subsystems|Subsystem	powershell pwsh.exe -sshs -NoLogo -NoProfile|append"
     )
     ReplaceString -SrcFile $sshConfigFile -DstFile $sshConfigFile -Patterns $patterns
-
+    return
     #comment admin group match in ssh config file
     #Match Group administrators
     #       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
