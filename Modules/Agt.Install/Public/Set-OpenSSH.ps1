@@ -32,16 +32,10 @@ function ReplaceString{
                 }
                 #
                 $index = [System.Array]::IndexOf($Content, $tmp[0])
-                if($index -lt 0)
-                {
-                    $Content = $Content + $tmp[1] 
-                    continue
-                }
-                # find next section
-                #$index2 = [System.Array]::IndexOf($Content, "# ", $index)
                 $NewContent = $Content[0..$index]
                 $NewContent += $tmp[1]
                 $NewContent += $Content[($index + 1)..$Content.Length]
+                $Content = $NewContent
             }
         }
     }
@@ -121,11 +115,11 @@ function Set-OpenSsh {
 
     # uncoment add replace config sile
     $patterns = @(
-    "^\#PubkeyAuthentication yes|PubkeyAuthentication yes|replace",
-    "^\#PasswordAuthentication no|PasswordAuthentication no|replace",
-    "^\#PasswordAuthentication yes|PasswordAuthentication no|replace",
-    "^PasswordAuthentication yes|PasswordAuthentication no|replace",
-    "^\# override default of no subsystems|Subsystem	powershell pwsh.exe -sshs -NoLogo -NoProfile|append"
+    "#PubkeyAuthentication yes|PubkeyAuthentication yes|replace",
+    "#PasswordAuthentication no|PasswordAuthentication no|replace",
+    "#PasswordAuthentication yes|PasswordAuthentication no|replace",
+    "PasswordAuthentication yes|PasswordAuthentication no|replace",
+    "# override default of no subsystems|Subsystem	powershell pwsh.exe -sshs -NoLogo -NoProfile|append"
     )
     ReplaceString -SrcFile $sshConfigFile -DstFile $sshConfigFile -Patterns $patterns
     return
