@@ -202,8 +202,7 @@ function Set-Services {
     }
   }
 }
-Set-Services
-exit
+
 ########  Variables
 #$destinationFolder = $PSScriptRoot
 $thisFileName = $MyInvocation.MyCommand.Name
@@ -241,6 +240,8 @@ if (Get-IsAdmin) {
     WriteLog "Configuring ssh ..."
     Set-OpenSSH -PublicKeys $sshPublicKeys -DisablePassword $true
 
+    WriteLog "Config services ..."
+    Set-Services
 
   }
   catch {
