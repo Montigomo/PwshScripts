@@ -171,6 +171,39 @@ function FindModules {
   }
 }
 
+function Set-Services {
+  
+  # Check services
+  # sshd - ssh server; dnscache - DNS Client; fdphost - Function Discovery Provider Host
+  # FDResPub - Function Discovery Resource Publication; p2psvc - Peer Networking Grouping; ssdpsrv - SSDP Discovery
+  # upnphost - UPnP Device Host
+            
+  $items = @("sshd", "dnscache", "fdphost", "FDResPub", "p2psvc", "ssdpsrv", "upnphost")
+  foreach ($item in $items) {
+    try {
+      if (($service = Get-Service -Name $item -ErrorAction SilentlyContinue)) {
+
+        get-service -Name $item | Select-Object UserName, Name, RequiredServices, StartType, Status
+
+        if ($service.StartType -ne [System.ServiceProcess.ServiceStartMode]::Automatic) {
+          $service | Set-Service -StartupType ([System.ServiceProcess.ServiceStartMode]::Automatic)
+        }
+
+        if ($service.Status -ne "Running") {
+          $service | Start-Service
+        }
+        else {
+          $service | Restart-Service -Force
+        }
+      }
+    }
+    catch {
+      WriteLog "Set-Services Error: $_"
+    }
+  }
+}
+Set-Services
+exit
 ########  Variables
 #$destinationFolder = $PSScriptRoot
 $thisFileName = $MyInvocation.MyCommand.Name
@@ -208,24 +241,6 @@ if (Get-IsAdmin) {
     WriteLog "Configuring ssh ..."
     Set-OpenSSH -PublicKeys $sshPublicKeys -DisablePassword $true
 
-    # Check services
-    # DNS Client, Function Discovery Provider Host, Function Discovery Resource Publication, HomeGroup Provider, HomeGroup Listener, Peer Networking Grouping, SSDP Discovery, UPnP Device Host
-            
-    $items = @("sshd", "dnscache", "fdphost", "FDResPub", "p2psvc", "ssdpsrv", "upnphost")
-    foreach ($item in $items) {
-      if (($service = Get-Service -Name $item -ErrorAction SilentlyContinue)) {
-        # ($service.StartType) -eq [System.ServiceProcess.ServiceStartMode]::Manual 
-        if ($service.StartType -ne [System.ServiceProcess.ServiceStartMode]::Automatic) {
-          $service | Set-Service -StartupType ([System.ServiceProcess.ServiceStartMode]::Automatic)
-        }
-        if ($service.Status -ne "Running") {
-          $service | Start-Service
-        }
-        else {
-          $service | Restart-Service -ErrorAction SilentlyContinue
-        }
-      }
-    }
 
   }
   catch {
