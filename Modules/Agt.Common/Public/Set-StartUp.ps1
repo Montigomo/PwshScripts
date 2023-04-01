@@ -8,54 +8,43 @@ function Set-StartUp {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [hashtable]$ProgrammPath
+        [string]$Name,
+        [Parameter(Mandatory = $true)]
+        [string]$Path,
+        [Parameter(Mandatory = $false)]
+        [string]$Argument
+
     )
     
-    # Biltin/administrators   S-1-5-32-544
-    
-    $taskName = "AtStartup"
+    $taskNamePattern = "AtStartup"
     $taskPath = "T1000"
+    $taskName = "${taskNamePattern}_{0}" -f $Name
 
-    $Actions = @()
+    $existTask = Get-ScheduledTask -TaskPath "\$taskPath\" -ErrorAction SilentlyContinue
 
-    # $existTask = Get-ScheduledTask -TaskName $taskName
-
-    # if($existTask){
-    #     $Actions = $existTask.Actions
-    # }
-
-    # foreach ($item in $Actions){
-    #     if($item.CimClass.CimClassName -eq "MSFT_TaskExecAction"){
-    #         if(-not $ProgrammPath.Contains($item.Execute)){
-    #             #$ProgrammPath += $item.Execute
-    #             $ProgrammPath.Add($item.Execute, $item.Arguments)
-    #         }
-    #     }
-    # }
-
-    $Actions = $ProgrammPath.Keys | ForEach-Object { if ($ProgrammPath[$_]) { New-ScheduledTaskAction -Execute $_ -Argument $ProgrammPath[$_] } else { New-ScheduledTaskAction -Execute $_ } }
-    
-    $index = 0;
-    foreach ($item in $Actions) {
-
-        $Trigers = New-ScheduledTaskTrigger -AtLogon
-
-        $Principal = New-ScheduledTaskPrincipal -GroupId "S-1-5-32-544" -RunLevel Highest
-
-        $Settings = New-ScheduledTaskSettingsSet
-
-        $Task = New-ScheduledTask -Action $item -Principal $Principal -Trigger $Trigers -Settings $Settings
-
-        $itemName = "$taskName{0:000}" -f $index
-
-        $existTask = Get-ScheduledTask -TaskName $itemName -ErrorAction SilentlyContinue
-
-        if ($existTask) {
-            Unregister-ScheduledTask -TaskName $itemName -Confirm:$false
+    foreach ($task in $existTask) {
+        if ($task.Actions -and $task.Actions[0].Execute -eq $Action) {
+            Write-Output "Task with action $Action already exist."
+            Unregister-ScheduledTask -TaskName $task.TaskName -Confirm:$false
+            #return;
         }
-
-        Register-ScheduledTask -TaskPath $taskPath -InputObject $Task -TaskName $itemName | Out-Null
-
-        $index++;
     }
+
+    $Trigers = New-ScheduledTaskTrigger -AtLogon
+    $Principal = New-ScheduledTaskPrincipal -GroupId "S-1-5-32-544" -RunLevel Highest
+    $Settings = New-ScheduledTaskSettingsSet
+    $Action = if ($Parameter) { New-ScheduledTaskAction -Execute $Path -Argument $Argument } else { New-ScheduledTaskAction -Execute $Path } 
+
+    $Task = New-ScheduledTask -Action $Action -Principal $Principal -Trigger $Trigers -Settings $Settings
+
+
+    $existTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
+    if ($existTask) {
+        Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
+    }
+
+    Write-Output "Trying to register task $Name ..."
+    Register-ScheduledTask -TaskPath $taskPath -InputObject $Task -TaskName $taskName | Out-Null
+    Write-Output "Task $Name registered successefully."
+
 }

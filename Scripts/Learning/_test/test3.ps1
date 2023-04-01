@@ -1,12 +1,22 @@
 
 
 
-$filePath = "C:\Program Files (x86)\K-Lite Codec Pack\MPC-HC64\mpc-hc64.exe"
-#$arguments = "\\192.168.1.70\wdc\Media\zzz\Doctor Strange in the Multiverse of Madness (2022) WEB-DLRip.mkv"
-#$arguments = "X:\Media\zzz\Doctor Strange in the Multiverse of Madness (2022) WEB-DLRip.mkv"
-$arguments = "\\KEENETICULTRA2\wdc\Media\zzz\Doctor Strange in the Multiverse of Madness (2022) WEB-DLRip.mkv"
-#$arguments = "D:\Videos\04 - Мстители. Финал.mkv"
+$translation = @{
+    0 = 'SUCCESS'
+    1 = 'FAILURE'
+    2 = 'ERROR'
+}
 
-#Start-Process     -FilePath $filePath `    -ArgumentList $arguments
 
-& 'C:\Program Files (x86)\K-Lite Codec Pack\MPC-HC64\mpc-hc64.exe' "\\KEENETICULTRA2\wdc\Media\zzz\Doctor Strange in the Multiverse of Madness (2022) WEB-DLRip.mkv" /fullscreen
+1..255 | ForEach-Object { 
+    # create the IP address to ping
+    # make sure you adjust this to your segment!
+    $ip = "192.168.2.$_"
+    # execute ping.exe and disregard the text output
+    ping -n 1 -w 500 $ip > $null 
+    # instead return the translated return value found in $LASTEXITCODE
+    [PSCustomObject]@{ 
+         IpAddress = $ip
+        Status    = $translation[$LASTEXITCODE]
+    }
+    }

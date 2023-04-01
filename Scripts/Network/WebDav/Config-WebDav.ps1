@@ -1,4 +1,18 @@
 
+function WriteLog {
+    param (
+        [string]$LogString
+    )
+
+    if (-not (Get-Variable -Name "LogFile" -ErrorAction SilentlyContinue) -or (Test-Path -Path $LogFile)) {
+        $Logfile = "$PSScriptRoot\$($MyInvocation.MyCommand.Name).log"
+    }
+
+    Write-Host $LogString
+    #$Stamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss")
+    #$LogMessage = "$Stamp $LogString"
+    #Add-content $LogFile -value $LogMessage
+  }
 
 function Enable-Features {
     [CmdletBinding()]
@@ -8,20 +22,30 @@ function Enable-Features {
     )    
 
     $features = @(
-        "IIS-WebServerRole","IIS-WebServer","IIS-CommonHttpFeatures",
-        "IIS-HttpErrors","IIS-Security","IIS-RequestFiltering",
-        "IIS-WebServerManagementTools","IIS-DigestAuthentication",
-        "IIS-StaticContent","IIS-DefaultDocument","IIS-DirectoryBrowsing",
-        "IIS-WebDAV","IIS-BasicAuthentication","IIS-ManagementConsole"
+        "IIS-WebServerRole",
+        "IIS-WebServer",
+        "IIS-CommonHttpFeatures",
+        "IIS-HttpErrors",
+        "IIS-Security",
+        "IIS-RequestFiltering",
+        "IIS-WebServerManagementTools",
+        "IIS-DigestAuthentication",
+        "IIS-StaticContent",
+        "IIS-DefaultDocument",
+        "IIS-DirectoryBrowsing",
+        "IIS-WebDAV",
+        "IIS-BasicAuthentication",
+        "IIS-ManagementConsole"
         );
 
     foreach ($feature in $features)
     {
+        WriteLog "Enabling feature $feature"
         Enable-WindowsOptionalFeature -Online -FeatureName $feature
     };
 }
 
-function Create-LocalUser{
+function CreateLocalUser{
     [CmdletBinding()]
     param (
         [Parameter(Mandatory=$true)]
@@ -40,18 +64,19 @@ function Create-LocalUser{
     }
 }
 
-#Enable-Features
+Enable-Features
+
+#
 New-SelfSignedCertificate -DnsName odrive-self-signed -CertStoreLocation "cert:\LocalMachine\My";
 
 #& "$env:windir\system32\inetsrv\InetMgr.exe";
 
-### Add/Edit firewall rule
-#New-NetFirewallRule -Name TightVNC -DisplayName "IISWebDav 4433" -Description "IISWebDav 4433" -Program "C:\Program Files\TightVNC\tvnserver.exe" -Enabled True -Profile Any -Action Allow 
+# Add/Edit firewall rule
 New-NetFirewallRule -Name IISWebDav -DisplayName "IISWebDav 4433" -Description "IISWebDav 4433" -Direction Inbound -Enabled True -Profile Any -Action Allow -LocalPort 4433 -Protocol TCP
 
-$users = @{"WebDavGazIsa"="webdavisa"}
+# $users = @{"WebDavGazIsa"="webdavisa"}
 
-foreach($item in $users.Keys){
-    #Create-LocalUser -UserName $item -Pwd $users[$item]
-}
+# foreach($item in $users.Keys){
+#     Create-LocalUser -UserName $item -Pwd $users[$item]
+# }
 

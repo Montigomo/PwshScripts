@@ -88,7 +88,7 @@
 
     foreach($item in $items)
     {
-        $rarstr = [string]::Format('e "{0}\*.rar" "{1}"', $item.FullName, $DestinationFolder);
+        $rarstr = [string]::Format('e -o+ "{0}\*.rar" "{1}"', $item.FullName, $DestinationFolder);
         $ps = new-object System.Diagnostics.Process
         $ps.StartInfo.Filename = $RarPath
         $ps.StartInfo.Arguments = $rarstr
