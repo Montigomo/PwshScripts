@@ -1,4 +1,17 @@
 
+# $modulePathBase = "$PSScriptRoot"
+
+# $pathArray = $( (Resolve-Path "$modulePathBase\Agt.Common\Public\").Path, `
+#             (Resolve-Path "$modulePathBase\Agt.Install\Public\").Path, `
+#             (Resolve-Path "$modulePathBase\Agt.Network\").Path)
+
+# foreach($path in $pathArray)
+# {
+#     foreach($item in (Get-ChildItem "$path\*.ps1"))
+#     {
+#         . "$($item.FullName)"
+#     }
+# }
 #$modulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
 $modulesPath = "C:\Program Files\WindowsPowerShell\Modules"
 

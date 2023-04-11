@@ -24,7 +24,7 @@ function Set-EnvironmentVariable
         [string] $Value,
         [Parameter(Mandatory=$false)]
         [ValidateSet('Path', 'PSModulePath')]
-        $Name = "Path",
+        [string]$Name = "Path",
         [Parameter(Mandatory=$false)]
         [ValidateSet('User', 'Process', 'Machine')]
         [string] $Scope = "User",
@@ -51,5 +51,5 @@ function Set-EnvironmentVariable
     }
 }
 
-#Set-EnvironmentVariable -Name 'Path' -Scope 'Machine' -Value "c:\Program Files\OpenSSH\"
+Set-EnvironmentVariable -Name 'Path' -Value "C:\Program Files\Git\usr\bin" -Action Add -Scope Machine
 #Set-EnvironmentVariable -Name 'Path' -Scope 'Machine' -Value "C:\Program Files\Far Manager" -Action "Remove"
