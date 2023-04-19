@@ -1,0 +1,15 @@
+### help
++ PowerShell remoting over SSH
+https://learn.microsoft.com/en-us/powershell/scripting/learn/remoting/ssh-remoting-in-powershell-core?view=powershell-7.3
+
+
+
+### 
+
+Set-Item wsman:localhost\client\trustedhosts -value '192.168.1.100,AgiDesktop'
+
+Set-Item wsman:localhost\client\trustedhosts -value '192.168.1.104,AgiLaptop,192.168.1.108,NidalebLaptop'
+Get-Item WSMan:\localhost\Client\TrustedHosts
+
+$session = New-PSSession -HostName AgiLaptop -UserName agitech@outlook.com
+Enter-PSSession -Session $session

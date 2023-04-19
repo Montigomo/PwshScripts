@@ -1,4 +1,10 @@
 
+### help
+
+https://katystech.blog/powershell/ps-remotely-updating-devices
+
+
+###
 Install-Module PSWindowsUpdate
 
 Import-Module PSWindowsUpdate
