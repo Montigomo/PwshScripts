@@ -1,135 +1,53 @@
 
-function Get-Hosts{
-    param(
-        [string]$HostsFilePath = "$env:windir\System32\drivers\etc\hosts"
-    )
-    $regexip4 = "(?<ip>(((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))";
-    
-    $RegexEntry = "(?<!#.*)$regexip4\s*(?<host>[^\s]+)(\s*\#.*)?";
-
-    $hostsDictionary = New-Object System.Collections.Specialized.OrderedDictionary
-
-	$lines = Get-Content $HostsFilePath;
-
-    $count = 0;
-
-    $pattern = $RegexEntry
-
-	foreach ($line in  $lines)
-    {
-        $ip = $null;
-        $hosts = $null;
-        if($line -match $pattern)
-        {
-            $ip = $Matches["ip"];
-            $hosts =  $($Matches["host"]);
-        }
-        $hostsDictionary.Add($count, @{"line" = $line; "host" = $hosts; "ip" = $ip});
-        $count++;
-	}
-    return $hostsDictionary;
-}
-
-function Write-Hosts
+function Set-Audio {
+    Add-Type -TypeDefinition @'
+using System.Runtime.InteropServices;
+[Guid("5CDF2C82-841E-4546-9722-0CF74078229A"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface IAudioEndpointVolume
 {
-    param
-    (
-        [Parameter(Mandatory=$true)]
-        [System.Collections.Specialized.OrderedDictionary]$Hosts,
-        [Parameter(Mandatory=$true)]
-        [ValidateNotNullOrEmpty()]
-        [string]$FileName
-    )   
-
-    $directory = [System.IO.Path]::GetDirectoryName($FileName)
-    
-    if(!(Test-Path $directory))
-    {
-        return
-    }
-    
-    $arrayList = New-Object System.Collections.ArrayList;
-    foreach($item in $Hosts.GetEnumerator())
-    {
-        $arrayList.Add($item.Value["line"]) | Out-Null
-    }
-    
-    $arrayList | Out-File $FileName
+    // f(), g(), ... are unused COM method slots. Define these if you care
+    int f(); int g(); int h(); int i();
+    int SetMasterVolumeLevelScalar(float fLevel, System.Guid pguidEventContext);
+    int j();
+    int GetMasterVolumeLevelScalar(out float pfLevel);
+    int k(); int l(); int m(); int n();
+    int SetMute([MarshalAs(UnmanagedType.Bool)] bool bMute, System.Guid pguidEventContext);
+    int GetMute(out bool pbMute);
 }
-
-function Add-Host
+[Guid("D666063F-1587-4E43-81F1-B948E807363F"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface IMMDevice
 {
-    param
-    (
-        [Parameter(Mandatory=$true)]        
-        [string]$HostIp,
-        [Parameter(Mandatory=$true)]        
-        [string]$HostName,
-        [string]$HeaderLine,
-        [string]$Comment,
-        [string]$HostFileDestination = "D:\temp1\hosts" #$env:windir + "\system32\drivers\etc"
-    )
-
-    $hosts = New-Object System.Collections.Specialized.OrderedDictionary
-    $hosts = Get-Hosts;
-    [ipaddress]$IpAddress = New-Object System.Net.IPAddress(0x7FFFFFFF)
-    if([ipaddress]::TryParse($HostIp, [ref]$IpAddress))
-    {
-        $ExHosts = ($hosts.GetEnumerator() | Where-Object {$_.Value["ip"] -eq $HostIp -and $_.Value["host"] -eq $HostName})
-        if($ExHosts.Count -eq 0)
-        {
-            if($HeaderLine)
-            {
-                $hosts.Add($count, @{"line" = $line; "host" = $null; "ip" = $null});
-            }
-            if($Comment.StartsWith("#")){
-                $line = "$HostIp $HostName  $Comment"
-            }
-            else {
-                $line = "$HostIp $HostName"                
-            }
-            $count = $hosts.Count + 1
-            $hosts.Add($count, @{"line" = $line; "host" = $hosts; "ip" = $ip});
-            Write-Hosts -Hosts $hosts -FileName $HostFileDestination
-        }
-    }
+    int Activate(ref System.Guid id, int clsCtx, int activationParams, out IAudioEndpointVolume aev);
 }
-
-function Remove-Host
+[Guid("A95664D2-9614-4F35-A746-DE8DB63617E6"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+interface IMMDeviceEnumerator
 {
-    param
-    (
-        [Parameter(Mandatory=$true)]        
-        [string]$HostIp,
-        [Parameter(Mandatory=$true)]        
-        [string]$HostName,
-        [string]$HostFileDestination  = "D:\temp1\hosts" #$env:windir + "\system32\drivers\etc"
-    )
-
-    $hosts = New-Object System.Collections.Specialized.OrderedDictionary
-    $hosts = Get-Hosts;
-    [ipaddress]$IpAddress = New-Object System.Net.IPAddress(0x7FFFFFFF)
-    if([ipaddress]::TryParse($HostIp, [ref]$IpAddress))
+    int f(); // Unused
+    int GetDefaultAudioEndpoint(int dataFlow, int role, out IMMDevice endpoint);
+}
+[ComImport, Guid("BCDE0395-E52F-467C-8E3D-C4579291692E")] class MMDeviceEnumeratorComObject { }
+public class Audio
+{
+    static IAudioEndpointVolume Vol()
     {
-        $ExHosts = ($hosts.GetEnumerator() | Where-Object {$_.Value["ip"] -eq $HostIp -and $_.Value["host"] -eq $HostName})
-        if($ExHosts.Count -gt 0)
-        {
-            foreach($item in $ExHosts)
-            {
-                $hosts.Remove($item.Key);
-            }
-            Write-Hosts -Hosts $hosts -FileName $HostFileDestination
-        }
+        var enumerator = new MMDeviceEnumeratorComObject() as IMMDeviceEnumerator;
+        IMMDevice dev = null;
+        Marshal.ThrowExceptionForHR(enumerator.GetDefaultAudioEndpoint(/*eRender*/ 0, /*eMultimedia*/ 1, out dev));
+        IAudioEndpointVolume epv = null;
+        var epvid = typeof(IAudioEndpointVolume).GUID;
+        Marshal.ThrowExceptionForHR(dev.Activate(ref epvid, /*CLSCTX_ALL*/ 23, 0, out epv));
+        return epv;
+    }
+    public static float Volume
+    {
+        get { float v = -1; Marshal.ThrowExceptionForHR(Vol().GetMasterVolumeLevelScalar(out v)); return v; }
+        set { Marshal.ThrowExceptionForHR(Vol().SetMasterVolumeLevelScalar(value, System.Guid.Empty)); }
+    }
+    public static bool Mute
+    {
+        get { bool mute; Marshal.ThrowExceptionForHR(Vol().GetMute(out mute)); return mute; }
+        set { Marshal.ThrowExceptionForHR(Vol().SetMute(value, System.Guid.Empty)); }
     }
 }
-
-#$hosts = Get-Hosts;
-
-# 163.172.167.207 bt.t-ru.org
-#Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.test.org"
-
-#Remove-Host  -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
-
-#Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
-
-#Write-Hosts
+'@
+}

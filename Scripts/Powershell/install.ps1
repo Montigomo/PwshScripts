@@ -13,7 +13,11 @@ param (
   [Parameter(Mandatory = $true, ParameterSetName = 'PinCommand')]
   [string]$ModuleName,
   [Parameter(Mandatory = $true, ParameterSetName = 'PinCommand')]
-  [string]$CommandName
+  [string]$CommandName,
+  [Parameter(ParameterSetName = 'PinCommand')]
+  [switch]$InlineCommandCall,
+  [Parameter(ParameterSetName = 'PinCommand')]
+  [string]$Arguments
 )
 
 $taskVersion = "2.07"
@@ -253,8 +257,6 @@ function prompt {{
   $modules = Get-ChildItem -Path $ModulesPathBase -Recurse -Filter *.psd1 `
   | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };
 
-  Remove-Module -Modules $modules
-
   New-Item -ItemType Directory -Force -Path $destinationModulesPath
   $items = Get-ChildItem -Path $ModulesPathBase -Directory
   Copy-Item $items -Destination $destinationModulesPath -Recurse -Force
@@ -301,24 +303,30 @@ function Pin-Command {
     #   })]
     [string]$ModuleName,
     [Parameter(Mandatory = $true)]
-    [string]$MethodName
+    [string]$MethodName,
+    [switch]$InlineCommandCall,
+    [string]$Arguments
   )
 
   Import-Module $ModuleName -ErrorAction SilentlyContinue
 
-  if ( -not (Get-Module $ModuleName) -or $?) {
+  if ( -not (Get-Module $ModuleName) -or (-not $?)) {
     Write-Host -ForegroundColor DarkYellow "Module $ModuleName was not found."
     return
   }
 
-  $methodBody = (Get-Command -Module Agt.Common -Name $MethodName).Definition
-  $method = "`r`n$MethodName{`r`n$methodBody`r`n}"
+  $methodBody = (Get-Command -Module $ModuleName -Name $MethodName).Definition
+  $method = "`r`nfunction $MethodName{`r`n$methodBody`r`n}"
+
+  if($InlineCommandCall){
+    $method = $method + "`r`n$MethodName $Arguments"
+  }
 
   $profilePath = "$PSHOME\Profile.ps1"
 
   $profileContent = Get-Content -Path $profilePath
-
-  if (([string]::IsNullOrWhiteSpace($profileContent) -or (-not ($profileContent -match "^$([regex]::escape($MethodName)){")))) {
+  $regexString = "^function $([regex]::escape($MethodName)){"
+  if (([string]::IsNullOrWhiteSpace($profileContent) -or (-not ($profileContent -match $regexString)))) {
     $profileContent = ($profileContent + $method)
     $profileContent | Out-File -FilePath $profilePath -Force
   }
@@ -410,7 +418,7 @@ if (Get-IsAdmin) {
     }
     'Uninstall' {}
     'PinCommand' {
-      Pin-Command -ModuleName $ModuleName -MethodName $CommandName
+        Pin-Command -ModuleName $ModuleName -MethodName $CommandName -InlineCommandCall:$InlineCommandCall -Arguments $Arguments
     }
   }
 
