@@ -20,7 +20,7 @@ param (
   [string]$Arguments
 )
 
-$taskVersion = "2.07"
+$taskVersion = "2.08"
 $uri = "https://goog1e.com"
 $Logfile = "$PSScriptRoot\install.log"
 $modulesPath = ""
@@ -145,7 +145,6 @@ function WriteLog {
   Add-content $LogFile -value $LogMessage
 }
 
-# find modules
 function FindModules {
   [CmdletBinding()]
   param (
@@ -382,15 +381,17 @@ if (Get-IsAdmin) {
 
   switch ($Action ) {
     "UnregisterTasks" {
-
       if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
         Unregister-ScheduledTask -TaskName $taskName
       }
-  
       exit
     }
-    'RemoveModules' {}
-    'RegisterModules' {}
+    'RemoveModules' {
+
+    }
+    'RegisterModules' {
+
+    }
     "Install" {
 
       WriteLog "Finding modules ..."
