@@ -200,22 +200,25 @@ function Test-Ping {
 
 #1..255 | ForEach-Object { "192.168.1.$_" } | Invoke-Parallel { Test-Ping -ComputerName $_ -TimeoutMilliSec 500 } -ThrottleLimit 128 |  Select-Object -Property Status, Address, ComputerName | Where-Object Status -ne TimedOut
 
-1..255 | ForEach-Object { "192.168.0.$_" } | Invoke-Parallel { Test-RemotePort -ComputerName $_ -TimeoutMilliSec 1500 -Port 22 } -ThrottleLimit 128 | Select-Object -Property ComputerName, Port, Response | Where-Object Response
+#1..255 | ForEach-Object { "192.168.0.$_" } | Invoke-Parallel { Test-RemotePort -ComputerName $_ -TimeoutMilliSec 1500 -Port 22 } -ThrottleLimit 128 | Select-Object -Property ComputerName, Port, Response | Where-Object Response
 
 # scan printers
 
-# Test-RemotePort -ComputerName 192.168.0.220 -Port 9100 -TimeoutMilliSec 1000
-# Get-PrinterInfo -ComputerName 192.168.0.220
-# Test-RemotePort -ComputerName 192.168.0.110 -Port 9100 -TimeoutMilliSec 1000
+function Scan-Printers{
+  # Test-RemotePort -ComputerName 192.168.0.220 -Port 9100 -TimeoutMilliSec 1000
+  # Get-PrinterInfo -ComputerName 192.168.0.220
+  # Test-RemotePort -ComputerName 192.168.0.110 -Port 9100 -TimeoutMilliSec 1000
 
-# Get-PrinterInfo -ComputerName 192.168.1.140
+  # Get-PrinterInfo -ComputerName 192.168.1.140
 
 
-#New-IpRange -From 192.168.0.1 -To 192.168.0.255 | ForEach-Object { Test-RemotePort -ComputerName $_ -Port 9100 -TimeoutMilliSec 1000 } | Select-Object -Property ComputerName, Port, Response | Where-Object Response #| Get-PrinterInfo -ComputerName $_.ComputerName  | Export-Excel
+  #New-IpRange -From 192.168.0.1 -To 192.168.0.255 | ForEach-Object { Test-RemotePort -ComputerName $_ -Port 9100 -TimeoutMilliSec 1000 } | Select-Object -Property ComputerName, Port, Response | Where-Object Response #| Get-PrinterInfo -ComputerName $_.ComputerName  | Export-Excel
 
-#New-IpRange -From 192.168.0.1 -To 192.168.0.255 | Invoke-Parallel { Test-RemotePort -ComputerName $_ -Port 9100 -TimeoutMilliSec 1000 } -ThrottleLimit 128 | Where-Object Response | Invoke-Parallel { Get-PrinterInfo -ComputerName $_.ComputerName }
+  #New-IpRange -From 192.168.0.1 -To 192.168.0.255 | Invoke-Parallel { Test-RemotePort -ComputerName $_ -Port 9100 -TimeoutMilliSec 1000 } -ThrottleLimit 128 | Where-Object Response | Invoke-Parallel { Get-PrinterInfo -ComputerName $_.ComputerName }
 
-#New-IpRange -From 192.168.0.1 -To 192.168.0.255 | Invoke-Parallel { Test-RemotePort -ComputerName $_ -Port 22 -TimeoutMilliSec 1000 } -ThrottleLimit 128 | Where-Object Response | Invoke-Parallel { Get-PrinterInfo -ComputerName $_.ComputerName }
+  New-IpRange -From 192.168.1.1 -To 192.168.1.255 | Invoke-Parallel { Test-RemotePort -ComputerName $_ -Port 9100 -TimeoutMilliSec 1000 } -ThrottleLimit 128 | Where-Object Response | Invoke-Parallel { Get-PrinterInfo -ComputerName $_.ComputerName }
+}
 
+Scan-Printers
 
 exit

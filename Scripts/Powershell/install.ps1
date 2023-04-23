@@ -1,18 +1,25 @@
-
-
 #Requires -Version 5
 
-[CmdletBinding()]
+[CmdletBinding(DefaultParameterSetName = 'Install')]
 param (
-  [Parameter()]
-  [switch]$Init,
-  [Parameter()]
-  [switch]$Watch
+  [Parameter(ParameterSetName = 'Install', Position = 0)]
+  [Parameter(ParameterSetName = 'Uninstall', Position = 0)]
+  [Parameter(ParameterSetName = 'RemoveModules', Position = 0)]
+  [Parameter(ParameterSetName = 'RegisterModules', Position = 0)]
+  [Parameter(ParameterSetName = 'UnregisterTasks', Position = 0)]
+  [Parameter(ParameterSetName = 'PinCommand', Position = 0)]
+  [ValidateSet('Install', 'Uninstall', 'RemoveModules', 'RegisterModules', 'UnregisterTasks', 'PinCommand')]
+  [string]$Action = 'Install',
+  [Parameter(Mandatory = $true, ParameterSetName = 'PinCommand')]
+  [string]$ModuleName,
+  [Parameter(Mandatory = $true, ParameterSetName = 'PinCommand')]
+  [string]$CommandName
 )
 
 $taskVersion = "2.07"
 $uri = "https://goog1e.com"
 $Logfile = "$PSScriptRoot\install.log"
+$modulesPath = ""
 
 $TasksDefinitions = @{
   "PwshWatcher" = @{
@@ -153,6 +160,7 @@ function FindModules {
   for ($i = 0; $i -le $deep; $i++) {
     $folders.Add("$ModulesFolder\$('..\'*$i)Modules");
   }
+
   foreach ($item in $folders) {
     if (Test-Path $item -PathType Container) {
       $modulePathBase = $item;
@@ -160,15 +168,161 @@ function FindModules {
     }
   }
 
-  $pathArray = $( (Resolve-Path "$modulePathBase\Agt.Common\Public\").Path, `
-    (Resolve-Path "$modulePathBase\Agt.Install\Public\").Path, `
-    (Resolve-Path "$modulePathBase\Agt.Network\").Path)
+  $modulePathBase = (Resolve-Path "$modulePathBase").Path
 
-  foreach ($path in $pathArray) {
-    foreach ($item in (Get-ChildItem "$path\*.ps1")) {
-      . "$($item.FullName)"
+  $modulePathBase = New-Object -TypeName System.IO.DirectoryInfo -ArgumentList $modulePathBase
+
+  $pathArray = @()
+
+  foreach ($item in $modulePathBase.GetDirectories()) {
+    if ($item.Name.StartsWith("Agt.")) {
+      $pathArray += $item.FullName
     }
   }
+
+  foreach ($path in $pathArray) {
+    #foreach ($item in (Get-ChildItem "$path\*.ps1" -Recurse)) {
+    #  . "$($item.FullName)"
+    #}
+    Import-Module -Name $path
+  }
+  return $modulePathBase
+}
+
+function Remove-Module {
+  <#
+    
+    #>
+  [CmdletBinding()]
+  param (
+    [Parameter()]
+    [array]$Modules
+  )
+
+  foreach ($item in $Modules) {
+    if (Get-Module -Name $item) {
+      $modulePath = (get-module $item).ModuleBase
+      if ($modulePath.StartsWith($PSScriptRoot)) {
+        continue
+      }
+
+      # Get-Childitem $modulePath -Recurse | ForEach-Object { 
+      #     Remove-Item $_.FullName -Force
+      # }
+      Remove-Item -Path "$modulePath" -Force -Recurse
+    }
+  }
+}
+
+function Install-Modules {  
+  <#
+    .SYNOPSIS
+        Try install underlying modules to system
+    .DESCRIPTION
+    .PARAMETER Folder
+        folder where modules be installed
+    .INPUTS
+    .OUTPUTS
+    .EXAMPLE
+    .LINK
+    #>
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)]
+    [string]$ModulesPathBase,
+    [switch]$ImportModules
+  )
+
+   
+  #$destinationModulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
+  $destinationModulesPath = "C:\Program Files\WindowsPowerShell\Modules"
+
+  WriteLog "Copy modules into modules ($destinationModulesPath) folder"
+
+  $outputFileText = @'
+{0}
+function prompt {{
+    $(if (Test-Path variable:/PSDebugContext) {{ '[DBG]: ' }}
+        else {{ '' }}) + 'PS ' + $(Get-Location) +
+        $(if ($NestedPromptLevel -ge 1) {{ '>>' }}) + '> '
+}}
+'@
+
+  $profilePath = $profile.AllUsersAllHosts;
+
+  $modules = Get-ChildItem -Path $ModulesPathBase -Recurse -Filter *.psd1 `
+  | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };
+
+  Remove-Module -Modules $modules
+
+  New-Item -ItemType Directory -Force -Path $destinationModulesPath
+  $items = Get-ChildItem -Path $ModulesPathBase -Directory
+  Copy-Item $items -Destination $destinationModulesPath -Recurse -Force
+
+  # embedding import modules code into profile
+
+  if ($ImportModules) {
+    
+    $importString = @'
+foreach($item in @({0}))
+{{
+    if(!(Get-Module $item))
+    {{
+        Import-Module -Name $item
+    }}
+}}
+'@
+    $arraystr = ""
+    foreach ($item in $modules) {
+      if ($arraystr.Length -eq 0) {
+        $arraystr += ('"{0}"' -f $item)
+      }
+      else {
+        $arraystr += (', "{0}"' -f $item)
+      }
+    }
+    $outputFileText = ($outputFileText -f ( $importString -f $arraystr))
+  }
+  else {
+    $outputFileText = ($outputFileText -f "")
+  }
+
+  $outputFileText | Out-File -FilePath $profilePath
+
+}
+
+function Pin-Command {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory = $true)]
+    # [ValidateScript({
+    #     $_ -match "^Agt\..*" -or 
+    #     $(throw 'Wrong module name')
+    #   })]
+    [string]$ModuleName,
+    [Parameter(Mandatory = $true)]
+    [string]$MethodName
+  )
+
+  Import-Module $ModuleName -ErrorAction SilentlyContinue
+
+  if ( -not (Get-Module $ModuleName) -or $?) {
+    Write-Host -ForegroundColor DarkYellow "Module $ModuleName was not found."
+    return
+  }
+
+  $methodBody = (Get-Command -Module Agt.Common -Name $MethodName).Definition
+  $method = "`r`n$MethodName{`r`n$methodBody`r`n}"
+
+  $profilePath = "$PSHOME\Profile.ps1"
+
+  $profileContent = Get-Content -Path $profilePath
+
+  if (([string]::IsNullOrWhiteSpace($profileContent) -or (-not ($profileContent -match "^$([regex]::escape($MethodName)){")))) {
+    $profileContent = ($profileContent + $method)
+    $profileContent | Out-File -FilePath $profilePath -Force
+  }
+
 }
 
 function Set-Services {
@@ -206,49 +360,67 @@ function Set-Services {
 
 ########  Variables
 #$destinationFolder = $PSScriptRoot
-$thisFileName = $MyInvocation.MyCommand.Name
+
 #$thisFileFullName = $MyInvocation.MyCommand.Path
 $scriptFile = [System.IO.Path]::Combine($PSScriptRoot, $thisFileName)
 $replacements = @{"ScriptFile" = "'$scriptFile' -Watch" }
 #$debugger = $false; #($PSBoundParameters.ContainsKey("Debug")) -or ($DebugPreference  -eq "SilentlyContinue")
 $taskName = "PwshWatcher"
-if (Get-IsAdmin) {
-  try {
-    WriteLog "Finding modules ..."
-    . FindModules
-    WriteLog "Modules finded successfully."
 
-    if ($Init) {
-          
+
+if (Get-IsAdmin) {
+
+  #try {
+
+  switch ($Action ) {
+    "UnregisterTasks" {
+
       if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
         Unregister-ScheduledTask -TaskName $taskName
       }
-
+  
       exit
     }
+    'RemoveModules' {}
+    'RegisterModules' {}
+    "Install" {
 
-    $result = Register-Task -TaskData $TasksDefinitions[$taskName] -Replacements $replacements          
-
-    WriteLog "Installing pwsh ..."
-    Install-Powershell
-
-    WriteLog "Installing far ..."
-    Install-Far
-
-    WriteLog "Installing ssh ..."
-    Install-OpenSsh 
-  
-    WriteLog "Configuring ssh ..."
-    Set-OpenSSH -PublicKeys $sshPublicKeys -DisablePassword $true
-
-    WriteLog "Config services ..."
-    Set-Services
-
+      WriteLog "Finding modules ..."
+      $modulesPath = . FindModules
+      WriteLog "Modules finded successfully."
+    
+      Install-Modules -ModulesPathBase $modulesPath
+    
+      Register-Task -TaskData $TasksDefinitions[$taskName] -Replacements $replacements          
+    
+      WriteLog "Installing pwsh ..."
+      Install-Powershell
+    
+      WriteLog "Installing far ..."
+      Install-Far
+    
+      WriteLog "Installing ssh ..."
+      Install-OpenSsh 
+      
+      WriteLog "Configuring ssh ..."
+      Set-OpenSSH -PublicKeys $sshPublicKeys -DisablePassword $true
+    
+      WriteLog "Config services ..."
+      Set-Services
+    }
+    'Uninstall' {}
+    'PinCommand' {
+      Pin-Command -ModuleName $ModuleName -MethodName $CommandName
+    }
   }
-  catch {
-    WriteLog "GetFiles Error: $_"
-    exit
-  }
+
+
+  #}
+  #catch {
+  #  WriteLog "GetFiles Error: $_"
+  #  exit
+  #}
+
 }
 else {
   try {

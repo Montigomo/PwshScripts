@@ -1,4 +1,4 @@
-﻿function Unpack-items
+﻿function Expand-items
 {
     <#
     .SYNOPSIS
