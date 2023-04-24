@@ -8,7 +8,7 @@ param (
   [Parameter(ParameterSetName = 'RegisterModules', Position = 0)]
   [Parameter(ParameterSetName = 'UnregisterTasks', Position = 0)]
   [Parameter(ParameterSetName = 'PinCommand', Position = 0)]
-  [ValidateSet('Install', 'Uninstall', 'RemoveModules', 'RegisterModules', 'UnregisterTasks', 'PinCommand')]
+  [ValidateSet('Install', 'Uninstall', 'RemoveModules', 'InstallModules', 'UnregisterTasks', 'PinCommand')]
   [string]$Action = 'Install',
   [Parameter(Mandatory = $true, ParameterSetName = 'PinCommand')]
   [string]$ModuleName,
@@ -23,7 +23,8 @@ param (
 $taskVersion = "2.08"
 $uri = "https://goog1e.com"
 $Logfile = "$PSScriptRoot\install.log"
-$modulesPath = ""
+$systemModulesPath = "C:\Program Files\WindowsPowerShell\Modules"
+#$systemModulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
 
 $TasksDefinitions = @{
   "PwshWatcher" = @{
@@ -95,7 +96,7 @@ $sshPublicKeys = @(
   "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAiHq57Mo7efkA05q33JkdZ9g96VE4TjCn8lW0jZxn+n0TzkmlNZEi1E6fbfRSv3iK2XnNBFbOUBLinnMtzmDIAbez0FjKJOSyEk3ZvhD6QAvWh4UW77udzr1V9BROKDbe0ZpkHBHs4nc1LrjZ7+oAVnOHDpYa8FQh/jPf77js11YdNrrPbxi2Gg9SLpcDN6b8L88/eebWDaGNYzKw534eY7JT7FTUwcpAd0krfyh7h99pGJaWtzvwsot/ntQE0QiCmu2IXIYXz0iKBuI38PD9AAR3l7vsOzHIkWqcTRhNsfcrlvST8lZcrlOfwdK8peu1RGRegvWeL8tvunAd9rjBNQ== agitech"
 )
 
-function _PwshContextMenu {
+function Pwsh-ContextMenu {
   #$oldVarDefault = (Get-ItemProperty -path Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Open\Command)."(Default)"
   #$oldVarDefautValue = '%systemroot%\system32\WindowsPowerShell\v1.0\powershell.exe -Command "&''%1''"'
   
@@ -122,7 +123,7 @@ function _PwshContextMenu {
   Set-ItemProperty -Path "$keyName\Command" -Name "PowerShellPath" -Value $pwshPath -Type String
 }
   
-function _CheckServerConnection {
+function CheckServerConnection {
   try {
     Invoke-RestMethod -Uri "$uri/GetConfig";
     return $true;
@@ -192,28 +193,17 @@ function FindModules {
   return $modulePathBase
 }
 
-function Remove-Module {
-  <#
-    
-    #>
+function Remove-Modules {
   [CmdletBinding()]
   param (
     [Parameter()]
     [array]$Modules
   )
 
-  foreach ($item in $Modules) {
-    if (Get-Module -Name $item) {
-      $modulePath = (get-module $item).ModuleBase
-      if ($modulePath.StartsWith($PSScriptRoot)) {
-        continue
-      }
+  $items = Get-ChildItem -Path $systemModulesPath -Directory | Where-Object { $_.Name -match "^Agt\..?" }
 
-      # Get-Childitem $modulePath -Recurse | ForEach-Object { 
-      #     Remove-Item $_.FullName -Force
-      # }
-      Remove-Item -Path "$modulePath" -Force -Recurse
-    }
+  foreach ($item in $items) {
+    Remove-Item -Path "$($item.FullName)" -Force -Recurse
   }
 }
 
@@ -232,15 +222,11 @@ function Install-Modules {
   [CmdletBinding()]
   param(
     [Parameter(Mandatory = $true)]
-    [string]$ModulesPathBase,
+    [string]$ModulesPathSource,
     [switch]$ImportModules
   )
 
-   
-  #$destinationModulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
-  $destinationModulesPath = "C:\Program Files\WindowsPowerShell\Modules"
-
-  WriteLog "Copy modules into modules ($destinationModulesPath) folder"
+  WriteLog "Copy modules into modules ($systemModulesPath) folder"
 
   $outputFileText = @'
 {0}
@@ -256,9 +242,9 @@ function prompt {{
   $modules = Get-ChildItem -Path $ModulesPathBase -Recurse -Filter *.psd1 `
   | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };
 
-  New-Item -ItemType Directory -Force -Path $destinationModulesPath
-  $items = Get-ChildItem -Path $ModulesPathBase -Directory
-  Copy-Item $items -Destination $destinationModulesPath -Recurse -Force
+  New-Item -ItemType Directory -Force -Path $systemModulesPath
+  $items = Get-ChildItem -Path $ModulesPathSource -Directory
+  Copy-Item $items -Destination $systemModulesPath -Recurse -Force
 
   # embedding import modules code into profile
 
@@ -317,7 +303,7 @@ function Pin-Command {
   $methodBody = (Get-Command -Module $ModuleName -Name $MethodName).Definition
   $method = "`r`nfunction $MethodName{`r`n$methodBody`r`n}"
 
-  if($InlineCommandCall){
+  if ($InlineCommandCall) {
     $method = $method + "`r`n$MethodName $Arguments"
   }
 
@@ -387,10 +373,14 @@ if (Get-IsAdmin) {
       exit
     }
     'RemoveModules' {
-
+      Remove-Modules
     }
-    'RegisterModules' {
-
+    'InstallModules' {
+      WriteLog "Finding modules ..."
+      $modulesPath = . FindModules
+      WriteLog "Modules finded successfully."
+    
+      Install-Modules -ModulesPathSource $modulesPath
     }
     "Install" {
 
@@ -398,7 +388,7 @@ if (Get-IsAdmin) {
       $modulesPath = . FindModules
       WriteLog "Modules finded successfully."
     
-      Install-Modules -ModulesPathBase $modulesPath
+      Install-Modules -ModulesPathSource $modulesPath
     
       Register-Task -TaskData $TasksDefinitions[$taskName] -Replacements $replacements          
     
@@ -417,9 +407,11 @@ if (Get-IsAdmin) {
       WriteLog "Config services ..."
       Set-Services
     }
-    'Uninstall' {}
+    'Uninstall' {
+      
+    }
     'PinCommand' {
-        Pin-Command -ModuleName $ModuleName -MethodName $CommandName -InlineCommandCall:$InlineCommandCall -Arguments $Arguments
+      Pin-Command -ModuleName $ModuleName -MethodName $CommandName -InlineCommandCall:$InlineCommandCall -Arguments $Arguments
     }
   }
 
