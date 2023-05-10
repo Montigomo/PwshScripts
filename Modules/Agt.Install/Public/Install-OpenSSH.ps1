@@ -88,11 +88,15 @@ function Install-OpenSsh {
 
     # remove old capabilities
     if ((Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*").State -eq "Installed") {
-        Remove-WindowsCapability -Online  -Name  "OpenSSH.Server*"
+        foreach($item in (Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*")){
+            Remove-WindowsCapability -Online  -Name  $item.Name
+        }
     }
 
     if ((Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Client*").State -eq "Installed") {
-        Remove-WindowsCapability -Online  -Name  "OpenSSH.Client*"
+        foreach($item in (Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Client*")){
+            Remove-WindowsCapability -Online  -Name  $item.Name
+        }
     }
 
     # change default ssh shell to powershell
@@ -120,3 +124,10 @@ function Install-OpenSsh {
         Start-Service ssh-agent
     }
 }
+
+
+#. "D:\_software\PwshScripts\Modules\Agt.Common\Public\Get-IsAdmin.ps1"
+#. "D:\_software\PwshScripts\Modules\Agt.Install\Public\Get-GitReleaseInfo.ps1"
+#. "D:\_software\PwshScripts\Modules\Agt.Install\Public\Install-MsiPackage.ps1"
+
+#Install-OpenSsh

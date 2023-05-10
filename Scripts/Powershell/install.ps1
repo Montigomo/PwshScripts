@@ -239,12 +239,15 @@ function prompt {{
 
   $profilePath = $profile.AllUsersAllHosts;
 
-  $modules = Get-ChildItem -Path $ModulesPathBase -Recurse -Filter *.psd1 `
+  $modules = Get-ChildItem -Path $ModulesPathSource -Recurse -Filter *.psd1 `
   | ForEach-Object { [System.IO.Path]::GetFileNameWithoutExtension($_).ToString() };
 
   New-Item -ItemType Directory -Force -Path $systemModulesPath
   $items = Get-ChildItem -Path $ModulesPathSource -Directory
-  Copy-Item $items -Destination $systemModulesPath -Recurse -Force
+
+  foreach($item in $items){
+    Copy-Item $item.FullName -Destination $systemModulesPath -Recurse -Force
+  }
 
   # embedding import modules code into profile
 
