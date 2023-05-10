@@ -1,4 +1,4 @@
-﻿function Expand-items
+﻿function Expand-Items
 {
     <#
     .SYNOPSIS

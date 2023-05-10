@@ -64,9 +64,10 @@ function CreateLocalUser{
     }
 }
 
+# torn on features
 Enable-Features
 
-#
+# install certificate
 New-SelfSignedCertificate -DnsName odrive-self-signed -CertStoreLocation "cert:\LocalMachine\My";
 
 #& "$env:windir\system32\inetsrv\InetMgr.exe";
