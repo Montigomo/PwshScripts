@@ -96,7 +96,7 @@ function DoConfig {
         }
     }
 
-    $Content |  Out-File $DstFile
+    $Content |  Out-File $DstFile -Encoding utf8
 }
 
 
@@ -117,7 +117,7 @@ $patterns = @(
         "Value"  = "yes" 
     },
     @{
-        "Key"    = @{"Value" = "StrictMode"; "Match" = "\#?\s*{0}.*" };
+        "Key"    = @{"Value" = "StrictModes"; "Match" = "\#?\s*{0}.*" };
         "Action" = "SetValue"; 
         "Value"  = "no" 
     }

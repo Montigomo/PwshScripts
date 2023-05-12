@@ -96,7 +96,7 @@ function DoConfig {
         }
     }
 
-    $Content |  Out-File $DstFile
+    $Content |  Out-File $DstFile -Encoding utf8
 }
 
 function Set-OpenSsh {  
