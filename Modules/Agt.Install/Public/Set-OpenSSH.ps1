@@ -1,5 +1,5 @@
 
-function ReplaceString{
+function DoConfig {
     [CmdletBinding()]
     param (
         [Parameter()]
@@ -7,35 +7,91 @@ function ReplaceString{
         [Parameter()]
         [string]$DstFile,
         [Parameter()]
-        [string[]]$Patterns
+        [hashtable[]]$Patterns
     )
 
-    $Content = Get-Content $SrcFile
-
-    foreach ($itemj in $Patterns) {
-        $tmp = $itemj.Split("|")        
-        switch ($tmp[2]) {
-            "replace" {
-                $index = [System.Array]::IndexOf($Content, $tmp[0])
-                if($index -lt 0)
-                {
-                    continue
-                }
-                $Content[$index] = $tmp[1]
+    function GetMatch {
+        param(
+            [object]$item
+        )
+        if ($item -is [string]) {
+            $item
+        }
+        elseif ($item -is [hashtable]) {
+            if ($item["Match"]) {
+                $item["Match"] -f $item["Value"] 
             }
-            "append" {
-                $index = [System.Array]::IndexOf($Content, $tmp[1])
-                # item already exists
-                if($index -gt -1)
-                {
-                    continue
+            else {
+                $item["Value"]
+            }
+        }
+    }
+    function GetValue {
+        param(
+            [object]$item
+        )
+        if ($item -is [string]) {
+            $item
+        }
+        elseif ($item -is [hashtable]) {
+            $item["Value"]
+        }
+    }
+    [Collections.Generic.List[String]]$Content = (Get-Content $SrcFile)
+
+    foreach ($item in $Patterns) {
+        $key = $item["Key"]
+        $action = $item["Action"];
+        $value = $item["Value"];
+        $after = $item["After"];
+        switch ($action) {
+            "Uncomment" {
+                $index = $Content.FindIndex([Predicate[String]] { param($s) $s -match (GetMatch $key) })
+                if ($index -gt -1) {
+                    $Content[$index] = $Content[$index] -replace '\#+(.*)', '$1'
                 }
-                #
-                $index = [System.Array]::IndexOf($Content, $tmp[0])
-                $NewContent = $Content[0..$index]
-                $NewContent += $tmp[1]
-                $NewContent += $Content[($index + 1)..$Content.Length]
-                $Content = $NewContent
+            }
+            "Comment" {
+                $indexFrom = 0;
+                if ($after) {
+                    $index = $Content.FindIndex([Predicate[String]] { param($s) $s -match (GetMatch $after) })
+                    $indexFrom = if ($index -gt -1) { $index }else { 0 }
+                }
+                $index = $Content.FindIndex($indexFrom, [Predicate[String]] { param($s) $s -match (GetMatch $key) })
+                if ($index -gt -1) {
+                    $Content[$index] = "#$($Content[$index])"
+                }
+            }
+            "SetValue" {
+                $index = $Content.FindIndex([Predicate[String]] { param($s) $s -match (GetMatch $key) })
+                if ($index -gt -1) {
+                    $Content[$index] = "$(GetValue $key) $value"
+                }
+            }
+            "Append" {
+                $c = ($Content | Where-Object { $_ -eq $value }).Count
+                if ($c -lt 1) {
+                    if ($after) {
+                        $index = $Content.FindIndex([Predicate[String]] { param($s) $s -match (GetMatch $after) })
+                    }
+                    if ($index -gt -1) {
+                        $Content.Insert($index + 1, $value)
+                    }
+                    else {
+                        $Content.Add($value);
+                    }
+                }               
+            }
+            "Distinct" {
+                $c = ($Content | Where-Object { $_ -eq (GetValue $key) }).Count
+                if ($c -le 1) {
+                    continue;
+                }
+                do {
+                    $Content.RemoveAt($Content.FindLastIndex([Predicate[String]] { param($s) $s -match (GetMatch $key) }));
+                    $c = ($Content | Where-Object { $_ -eq (GetValue $key) }).Count
+                }while ($c -gt 1)
+
             }
         }
     }
@@ -70,23 +126,13 @@ function Set-OpenSsh {
 
     # set ssh-agent service startup type
     if (Get-Service  ssh-agent -ErrorAction SilentlyContinue) {
-        if((get-service sshd).StartType -ne [System.ServiceProcess.ServiceStartMode]::Manual)
-        {
+        if ((get-service sshd).StartType -ne [System.ServiceProcess.ServiceStartMode]::Manual) {
             Get-Service -Name ssh-agent | Set-Service -StartupType 'Automatic'
         }
         Start-Service ssh-agent
     }
 
-    #Exit-PSHostProcess
-
-    # private key  stored on client
-    #ssh-add "$env:userprofile\.ssh\id_rsa"
-    # public key distributed to servers
-    # save public key to file  $env:userprofile\.ssh\authorized_keys.
-
     $sshConfigFile = "$env:ProgramData/ssh/sshd_config"
-
-    $sshUseLocalAdminKeyFile = $true
 
     $sshAuthorizedKeys = @{
         local       = "$env:USERPROFILE\.ssh\authorized_keys";
@@ -113,46 +159,48 @@ function Set-OpenSsh {
         }
     }
 
-    # uncoment add replace config sile
+    # prepare config file
     $patterns = @(
-    "#PubkeyAuthentication yes|PubkeyAuthentication yes|replace",
-    "#PasswordAuthentication no|PasswordAuthentication no|replace",
-    "#PasswordAuthentication yes|PasswordAuthentication no|replace",
-    "PasswordAuthentication yes|PasswordAuthentication no|replace",
-    "# override default of no subsystems|Subsystem	powershell pwsh.exe -sshs -NoLogo -NoProfile|append"
+        @{
+            "Key"    = @{"Value" = "PubkeyAuthentication"; "Match" = "\#?\s*{0}.*" }; 
+            "Action" = "SetValue"; 
+            "Value"  = "yes" 
+        },
+        @{
+            "Key"    = @{"Value" = "StrictMode"; "Match" = "\#?\s*{0}.*" };
+            "Action" = "SetValue"; 
+            "Value"  = "no" 
+        }
+        @{
+            "Key"    = @{"Value" = "PasswordAuthentication"; "Match" = "\#?\s*{0}.*" };
+            "Action" = "SetValue"; 
+            "Value"  = "no" 
+        }
+        @{
+            "Key"    = @{"Value" = "Subsystem" }; 
+            "Action" = "Append"; 
+            "Value"  = "Subsystem powershell pwsh.exe -sshs -NoLogo -NoProfile";
+            "After"  = "\#\s*override default of no subsystems"; 
+        }
+        @{
+            "Key"    = @{"Value" = "Subsystem powershell pwsh.exe -sshs -NoLogo -NoProfile" }; 
+            "Action" = "Distinct"; 
+        }
+        @{
+            "Key"    = @{"Value" = "Match Group administrators" };
+            "Action" = "Comment"; 
+        }
+        @{
+            "Key"    = @{"Value" = "AuthorizedKeysFile" };
+            "Action" = "Comment"; 
+            "After"  = @{"Value" = "Match Group administrators"; "Match" = "\#?\s*{0}.*" }
+        }
     )
     
-    ReplaceString -SrcFile $sshConfigFile -DstFile $sshConfigFile -Patterns $patterns
+    $SrcFile = $sshConfigFile
+    $DstFile = $sshConfigFile
 
-    #comment admin group match in ssh config file
-    #Match Group administrators
-    #       AuthorizedKeysFile __PROGRAMDATA__/ssh/administrators_authorized_keys
-    $replaceSshConfigContent = $false
-    if ($sshUseLocalAdminKeyFile) {
-        $content = Get-Content $sshConfigFile;
-        $inAdminMatchGroup = $false
-        for ($cnt = 0; $cnt -lt $content.Count; $cnt++) {
-            $line = $content[$cnt]
-            
-            # Match group
-            if ($inAdminMatchGroup) {
-                if ($line -match "\AMatch ") {
-                    $inAdminMatchGroup = $false
-                }
-                elseif ($line -match "\A\s*AuthorizedKeysFile") {
-                    $content[$cnt] = ("#" + $line)
-                    $replaceSshConfigContent = $true
-                }
-            }
-            elseif ($line -match "\AMatch Group administrators\z") {
-                $inAdminMatchGroup = $true
-            }
-
-        }
-        if ($replaceSshConfigContent) {
-            Set-Content -Path $sshConfigFile -Value $content
-        }
-    }
+    DoConfig -SrcFile $SrcFile -DstFile $DstFile -Patterns $patterns
 
     ### Config firewall
 
