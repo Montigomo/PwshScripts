@@ -167,7 +167,7 @@ function Set-OpenSsh {
             "Value"  = "yes" 
         },
         @{
-            "Key"    = @{"Value" = "StrictMode"; "Match" = "\#?\s*{0}.*" };
+            "Key"    = @{"Value" = "StrictModes"; "Match" = "\#?\s*{0}\s*" };
             "Action" = "SetValue"; 
             "Value"  = "no" 
         }
