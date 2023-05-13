@@ -2,22 +2,8 @@
 
 [CmdletBinding(DefaultParameterSetName = 'Install')]
 param (
-  [Parameter(ParameterSetName = 'Install', Position = 0)]
-  [Parameter(ParameterSetName = 'Uninstall', Position = 0)]
-  [Parameter(ParameterSetName = 'RemoveModules', Position = 0)]
-  [Parameter(ParameterSetName = 'RegisterModules', Position = 0)]
-  [Parameter(ParameterSetName = 'UnregisterTasks', Position = 0)]
-  [Parameter(ParameterSetName = 'PinCommand', Position = 0)]
-  [ValidateSet('Install', 'Uninstall', 'RemoveModules', 'InstallModules', 'UnregisterTasks', 'PinCommand')]
-  [string]$Action = 'Install',
-  [Parameter(Mandatory = $true, ParameterSetName = 'PinCommand')]
-  [string]$ModuleName,
-  [Parameter(Mandatory = $true, ParameterSetName = 'PinCommand')]
-  [string]$CommandName,
-  [Parameter(ParameterSetName = 'PinCommand')]
-  [switch]$InlineCommandCall,
-  [Parameter(ParameterSetName = 'PinCommand')]
-  [string]$Arguments
+  [ValidateSet('Install', 'Uninstall', 'RemoveModules', 'InstallModules', 'UnregisterTasks')]
+  [string]$Action = 'Install'
 )
 
 $taskVersion = "2.08"
@@ -281,57 +267,6 @@ foreach($item in @({0}))
 
 }
 
-function Set-PinnedCommand {
-  <#
-    .SYNOPSIS
-        Try install underlying modules to system
-    .DESCRIPTION
-    .PARAMETER Folder
-        folder where modules be installed
-    .INPUTS
-    .OUTPUTS
-    .EXAMPLE
-    .LINK
-    #>  
-  [CmdletBinding()]
-  param(
-    [Parameter(Mandatory = $true)]
-    # [ValidateScript({
-    #     $_ -match "^Agt\..*" -or 
-    #     $(throw 'Wrong module name')
-    #   })]
-    [string]$ModuleName,
-    [Parameter(Mandatory = $true)]
-    [string]$MethodName,
-    [switch]$InlineCommandCall,
-    [string]$Arguments
-  )
-
-  Import-Module $ModuleName -ErrorAction SilentlyContinue
-
-  if ( -not (Get-Module $ModuleName) -or (-not $?)) {
-    Write-Host -ForegroundColor DarkYellow "Module $ModuleName was not found."
-    return
-  }
-
-  $methodBody = (Get-Command -Module $ModuleName -Name $MethodName).Definition
-  $method = "`r`nfunction $MethodName{`r`n$methodBody`r`n}"
-
-  if ($InlineCommandCall) {
-    $method = $method + "`r`n$MethodName $Arguments"
-  }
-
-  $profilePath = "$PSHOME\Profile.ps1"
-
-  $profileContent = Get-Content -Path $profilePath
-  $regexString = "^function $([regex]::escape($MethodName)){"
-  if (([string]::IsNullOrWhiteSpace($profileContent) -or (-not ($profileContent -match $regexString)))) {
-    $profileContent = ($profileContent + $method)
-    $profileContent | Out-File -FilePath $profilePath -Force
-  }
-
-}
-
 function Set-Services {
   
   # Check services
@@ -423,9 +358,6 @@ if (Get-IsAdmin) {
     }
     'Uninstall' {
       
-    }
-    'PinCommand' {
-      Pin-Command -ModuleName $ModuleName -MethodName $CommandName -InlineCommandCall:$InlineCommandCall -Arguments $Arguments
     }
   }
 
