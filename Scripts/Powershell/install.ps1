@@ -281,7 +281,18 @@ foreach($item in @({0}))
 
 }
 
-function Pin-Command {
+function Set-PinnedCommand {
+  <#
+    .SYNOPSIS
+        Try install underlying modules to system
+    .DESCRIPTION
+    .PARAMETER Folder
+        folder where modules be installed
+    .INPUTS
+    .OUTPUTS
+    .EXAMPLE
+    .LINK
+    #>  
   [CmdletBinding()]
   param(
     [Parameter(Mandatory = $true)]
