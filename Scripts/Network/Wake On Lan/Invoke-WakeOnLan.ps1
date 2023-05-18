@@ -215,14 +215,10 @@ function Send-MagicPacket_Method0 {
 }
 
 $Items = @{
-  AgiLaptopWiFi     = '34:f6:4b:b8:7b:ee'
-  AgiDesktop        = '74:d0:2b:a2:5c:45'
+  AgiLaptop         = @{MAC = '60:a4:4c:06:34:b2'; Port = 9 }
   NidalebLaptop     = @{MAC = '54:a0:50:bc:29:70'; Port = 9 }
-  NidalebLaptopWiFi = '54:27:1e:e4:62:57'
   SeanAdmin         = 'ac:e2:d3:65:6d:4c'
 }
 
-Send-MagicPacket_Method0 -MacAddress $Items["NidalebLaptop"]["MAC"] -Verbose 
-
-#Send-MagicPacket_Method0 $MacAdresses["AgiDesktop"]
-#Send-MagicPacket_Method0 $MacAdresses["AgiLaptopWiFi"]
+Send-MagicPacket_Method0 -MacAddress $Items["NidalebLaptop"]["MAC"] -Verbose
+Send-MagicPacket_Method0 -MacAddress $Items["AgiLaptop"]["MAC"] -Verbose

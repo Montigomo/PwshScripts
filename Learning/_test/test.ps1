@@ -1,29 +1,18 @@
 
 
-$DeskTopFolder = [Environment]::GetFolderPath("Desktop");
-$RiconFolderName = "RiconScan"
-$RiconScanFolder = "$DeskTopFolder\$RiconFolderName"
 
-$Acl = Get-Acl $RiconScanFolder 
+$servers = 'dc-01', 'dc-02', 'msv3', 'msv4'
+$ports = 80, 445, 5985
 
-$Ar = New-Object System.Security.AccessControl.FileSystemAccessRule("RiconUser", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow")
+$servers | ForEach-Object {
+    $server = $_
+    Write-Progress -Activity 'Checking Servers' -Status $server -Id 1
 
-$Acl.SetAccessRule($Ar)
-Set-Acl $RiconScanFolder $Acl
+    $ports | ForEach-Object {
+        $port = $_
+        Write-Progress -Activity 'Checking Port' -Status $port -Id 2
 
-exit
-
-
-
-
-
-$Password = Read-Host -AsSecureString
-$UserAccount = Get-LocalUser -Name "12345"
-$UserAccount | Set-LocalUser -Password $Password
-
-
-
-$c = get-credential -UserName 12345
-$SecurePassword = $c.Password
-$BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($SecurePassword)
-$UnsecurePassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+        # here would be your code that performs some task, i.e. a port test:
+         Start-Sleep -Seconds 1
+    }
+} 
