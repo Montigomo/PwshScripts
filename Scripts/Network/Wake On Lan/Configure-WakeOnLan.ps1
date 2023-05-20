@@ -12,8 +12,6 @@ function Enable-WakeOnLan {
 		[ciminstance]$NetAdapter
 	)
 
-	Disable-FastStartUp
-
 	$paramsSet = @{
 		"Wake on Magic Packet"      = "Enabled|On"
 		#"Wake on Pattern Match" = ""
@@ -49,5 +47,7 @@ function Enable-WakeOnLan {
 $interface = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.ifAlias -eq "Ethernet" }
 
 Config-WakeOnLan -NetAdapter $interface -Verbose
+
+Disable-FastStartUp
 
 exit
