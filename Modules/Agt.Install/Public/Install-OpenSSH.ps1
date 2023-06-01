@@ -36,8 +36,7 @@ function Install-OpenSsh {
     [bool]$IsOs64 = $([System.IntPtr]::Size -eq 8);
 
     #get local version
-    $exePath = `
-        if ($IsOs64) {
+    $exePath = if ($IsOs64) {
         "C:\Program Files\OpenSSH\ssh.exe"
     }
     else {
@@ -48,13 +47,13 @@ function Install-OpenSsh {
         [System.Version]::TryParse( ([System.Diagnostics.FileVersionInfo]::GetVersionInfo($exePath)).FileVersion, [ref]$localVersion)
     }
 
-    if($localVersion -ge $remoteVersion){
+    if ($localVersion -ge $remoteVersion) {
         return
     }
 
     if ($Zip) {
 
-        $pattern = if ($IsOs64) { "OpenSSH-Win64.zip" }else { "OpenSSH-Win64.zip" }
+        $pattern = if ($IsOs64) { "OpenSSH-Win64.zip" }else { "OpenSSH-Win32.zip" }
         $releaseUri = Get-GitReleaseInfo $gitUri -Pattern $pattern
         $destPath = "c:\Program Files\OpenSSH\"
         #$installScriptPath = Join-Path $destPath "install-sshd.ps1"
@@ -80,7 +79,7 @@ function Install-OpenSsh {
     }
     else {
         $pattern = if ($IsOs64) { "OpenSSH-Win64-v\d.\d.\d.\d.msi" }else { "OpenSSH-Win32-v\d.\d.\d.\d.msi" }        
-        $releaseUri = Get-GitReleaseInfo $gitUri -Pattern "OpenSSH-Win64-v\d.\d.\d.\d.msi"
+        $releaseUri = Get-GitReleaseInfo $gitUri -Pattern $pattern
         $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
         Invoke-WebRequest -OutFile $tmp $releaseUri
         Install-MsiPackage -FilePath $tmp.FullName -PackageParams ""
@@ -88,13 +87,13 @@ function Install-OpenSsh {
 
     # remove old capabilities
     if ((Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*").State -eq "Installed") {
-        foreach($item in (Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*")){
+        foreach ($item in (Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*")) {
             Remove-WindowsCapability -Online  -Name  $item.Name
         }
     }
 
     if ((Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Client*").State -eq "Installed") {
-        foreach($item in (Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Client*")){
+        foreach ($item in (Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Client*")) {
             Remove-WindowsCapability -Online  -Name  $item.Name
         }
     }

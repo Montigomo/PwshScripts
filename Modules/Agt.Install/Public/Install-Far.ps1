@@ -13,7 +13,7 @@ function Install-Far {
 
     $farPath = "C:\Program Files\Far Manager\Far.exe";
     $farFolder = [System.IO.Path]::GetDirectoryName($farPath);
-
+    [bool]$IsOs64 = $([System.IntPtr]::Size -ne 8);
     [version]$localVersion = [System.Version]::new(0, 0, 0)
 
     if (Test-Path $farPath) {
@@ -31,7 +31,7 @@ function Install-Far {
         return;
     }
 
-    $pattern = "Far.x64.\d.\d.\d\d\d\d.\d\d\d\d.[a-z0-9]{40}.msi"
+    $pattern = if ($IsOs64) { "Far.x64.\d.\d.\d\d\d\d.\d\d\d\d.[a-z0-9]{40}.msi" }else { "Far.x86.\d.\d.\d\d\d\d.\d\d\d\d.[a-z0-9]{40}.msi" }
     $requestUri = Get-GitReleaseInfo -Repouri $repoUri -Pattern $pattern
 
     $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru

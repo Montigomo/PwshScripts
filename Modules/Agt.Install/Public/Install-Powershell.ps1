@@ -27,6 +27,7 @@ function Install-Powershell {
     #$gitUriReleasesLatest = "$gitUri/releases/latest"
     $remoteVersion = [System.Version]::Parse("0.0.0")
     $localVersion = [System.Version]::Parse("0.0.0")
+    [bool]$IsOs64 = $([System.IntPtr]::Size -ne 8);
 
     #$pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName.Contains("C:\Program Files\PowerShell\7\pwsh.exe");
     
@@ -51,7 +52,7 @@ function Install-Powershell {
 
 
     if ($localVersion -lt $remoteVersion) {
-        $ReleasePattern = "PowerShell-\d.\d.\d-win-x64.msi"      
+        $ReleasePattern = if ($IsOs64) { "PowerShell-\d.\d.\d-win-x64.msi" } else { "PowerShell-\d.\d.\d-win-x86.msi" }
         $assets = $latestRelease.assets | Where-Object name -match $ReleasePattern | Select-Object -First 1
         $pwshUri = $assets.browser_download_url
 
