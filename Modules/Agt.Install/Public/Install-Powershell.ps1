@@ -27,7 +27,7 @@ function Install-Powershell {
     #$gitUriReleasesLatest = "$gitUri/releases/latest"
     $remoteVersion = [System.Version]::Parse("0.0.0")
     $localVersion = [System.Version]::Parse("0.0.0")
-    [bool]$IsOs64 = $([System.IntPtr]::Size -ne 8);
+    [bool]$IsOs64 = $([System.IntPtr]::Size -eq 8);
 
     #$pswhInstalled = [System.Diagnostics.Process]::GetCurrentProcess().MainModule.FileName.Contains("C:\Program Files\PowerShell\7\pwsh.exe");
     

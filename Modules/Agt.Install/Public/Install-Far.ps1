@@ -13,7 +13,7 @@ function Install-Far {
 
     $farPath = "C:\Program Files\Far Manager\Far.exe";
     $farFolder = [System.IO.Path]::GetDirectoryName($farPath);
-    [bool]$IsOs64 = $([System.IntPtr]::Size -ne 8);
+    [bool]$IsOs64 = $([System.IntPtr]::Size -eq 8);
     [version]$localVersion = [System.Version]::new(0, 0, 0)
 
     if (Test-Path $farPath) {
