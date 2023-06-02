@@ -58,4 +58,4 @@ function Move-UserFolder {
 # {35286A68-3C57-41A1-BBB1-0EAE73D76C95} : D:\video
 
 
-Move-UserFolder -UserProfilesFolder "D:\_users\gai\"
+# Move-UserFolder -UserProfilesFolder "D:\_users\gai\"
