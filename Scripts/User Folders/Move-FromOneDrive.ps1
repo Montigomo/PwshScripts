@@ -46,6 +46,38 @@ function Move-UserFolder {
         Start-Process explorer
     }
 }
+
+add-type @"
+
+    using System;
+    using System.Runtime.InteropServices;
+  
+    public class shell32  {
+        [DllImport("shell32.dll")]
+        private static extern int SHGetKnownFolderPath(
+             [MarshalAs(UnmanagedType.LPStruct)] 
+             Guid       rfid,
+             uint       dwFlags,
+             IntPtr     hToken,
+             out IntPtr pszPath
+         );
+
+         public static string GetKnownFolderPath(Guid rfid)  {
+            IntPtr pszPath;
+            if (SHGetKnownFolderPath(rfid, 0, IntPtr.Zero, out pszPath) != 0) {
+                return "Could not get folder";
+            }
+            string path = Marshal.PtrToStringUni(pszPath);
+            Marshal.FreeCoTaskMem(pszPath);
+            return path;
+         }
+    }
+
+"@
+
+
+# https://stackoverflow.com/questions/25049875/getting-any-special-folder-path-in-powershell-using-folder-guid/25094236#25094236
+# https://renenyffenegger.ch/notes/Windows/dirs/_known-folders
 # {374DE290-123F-4565-9164-39C4925E467B} : C:\Users\nidal\Downloads
 # {24D89E24-2F19-4534-9DDE-6A6671FBB8FE} : C:\Users\nidal\OneDrive\Изображения\Документы
 # {754AC886-DF64-4CBA-86B5-F7FBF4FBCEF5} : D:\_users\nidaleb\Desktop
@@ -57,5 +89,7 @@ function Move-UserFolder {
 # {AB5FB87B-7CE2-4F83-915D-550846C9537B} : C:\Users\nidal\OneDrive\Изображения\Пленка
 # {35286A68-3C57-41A1-BBB1-0EAE73D76C95} : D:\video
 
+# {339719B5-8C47-4894-94C2-D8F77ADD44A6} : C:\Users\adeli\OneDrive\Изображения
+# {24D89E24-2F19-4534-9DDE-6A6671FBB8FE} : C:\Users\adeli\OneDrive\Документы
 
 # Move-UserFolder -UserProfilesFolder "D:\_users\gai\"
