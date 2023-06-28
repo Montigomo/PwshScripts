@@ -1,4 +1,10 @@
 
+[CmdletBinding()]
+param (
+  [Parameter()]
+  [ValidateSet("Agitech", "Sean")]
+  [string]$NetToScan
+)
 
 function New-IpRange {
   param
@@ -160,7 +166,9 @@ function Test-Ping {
     [string]
     $ComputerName,
     [int]
-    $TimeoutMillisec = 1000
+    $TimeoutMillisec = 1000,
+    [switch]
+    $ResolveHostName
   )
     
   begin {
@@ -203,13 +211,30 @@ function ScanLanPrinters {
 
 function SeanScan {
 
-  New-IpRange -From 192.168.0.1 -To 192.168.0.255 | Invoke-Parallel { Test-Ping -ComputerName $_ -TimeoutMilliSec 500 } -ThrottleLimit 128 | Where-Object {$_.Status -eq "Succes"} | Select-Object -Property Status, Address, ComputerName | Format-Table -Wrap -AutoSize
-  New-IpRange -From 192.168.0.1 -To 192.168.0.255 | Invoke-Parallel { Test-RemotePort -ComputerName $_ -Port 22 -TimeoutMilliSec 1000 } -ThrottleLimit 128  | Where-Object { $_.Response } | Select-Object -Property ComputerName, Port, Response | Format-Table -Wrap -AutoSize
+  New-IpRange -From 192.168.0.1 -To 192.168.0.255 | Invoke-Parallel { Test-Ping -ComputerName $_ -TimeoutMilliSec 500 } -ThrottleLimit 128 | Where-Object { $_.Status -eq "Succes" } `
+  | Invoke-Parallel { 
+    try {
+      $_.ComputerName = [System.Net.DNS]::GetHostEntry($_.ComputerName).HostName ; $_ 
+    }
+    catch {
+      $t = 0;
+    }
+  } -ThrottleLimit 128 `
+  | Select-Object -Property Status, Address, ComputerName, Name | Format-Table -Wrap -AutoSize
+  #New-IpRange -From 192.168.0.1 -To 192.168.0.255 | Invoke-Parallel { Test-RemotePort -ComputerName $_ -Port 22 -TimeoutMilliSec 1000 } -ThrottleLimit 128  | Where-Object { $_.Response } | Select-Object -Property ComputerName, Port, Response | Format-Table -Wrap -AutoSize
 
 }
 
+switch ($NetToScan) {
+  "Sean" {
+    SeanScan
+    break
+  }
+  Default{
+    SeanScan
+    break
+  }
+}
 
-#Test-RemotePort -ComputerName 192.168.0.29 -Port 22 -TimeoutMilliSec 1000 
-SeanScan
 
 exit

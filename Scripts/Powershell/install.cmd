@@ -1,12 +1,21 @@
 @ECHO OFF
 
 SET ThisScriptsDirectory=%~dp0
-
 SET PowerShellScriptPath=%ThisScriptsDirectory%install.ps1
+
+pwsh -NoProfile -ExecutionPolicy Bypass -Command "& {Start-Process pwsh -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File ""%PowerShellScriptPath%""' -Verb RunAs}";
+
+if %ERRORLEVEL% equ 0 (
+	goto exit
+)
 
 PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& {Start-Process PowerShell -ArgumentList '-NoProfile -ExecutionPolicy Bypass -File ""%PowerShellScriptPath%""' -Verb RunAs}";
 
+:exit
 exit
+
+
+
 
 call :Admin
 

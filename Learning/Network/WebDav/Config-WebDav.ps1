@@ -81,3 +81,8 @@ New-NetFirewallRule -Name IISWebDav -DisplayName "IISWebDav 4433" -Description "
 #     Create-LocalUser -UserName $item -Pwd $users[$item]
 # }
 
+Import-Module WebAdministration
+
+#New-WebVirtualDirectory -Name "envtest/app1/webservice" -Site "Default Web Site" -PhysicalPath "C:\inetpub\wwwroot"
+
+#New-IISSite -Name "TestSite" -BindingInformation "*:8080:" -PhysicalPath "$env:systemdrive\inetpub\testsite"
