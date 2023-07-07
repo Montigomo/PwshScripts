@@ -67,7 +67,7 @@ function Add-Host
         [string]$HostName,
         [string]$HeaderLine,
         [string]$Comment,
-        [string]$HostFileDestination = "D:\temp1\hosts" #$env:windir + "\system32\drivers\etc"
+        [string]$HostFileDestination = "$env:windir\System32\drivers\etc\hosts"
     )
 
     $hosts = New-Object System.Collections.Specialized.OrderedDictionary
@@ -103,7 +103,7 @@ function Remove-Host
         [string]$HostIp,
         [Parameter(Mandatory=$true)]        
         [string]$HostName,
-        [string]$HostFileDestination  = "D:\temp1\hosts" #$env:windir + "\system32\drivers\etc"
+        [string]$HostFileDestination  = "$env:windir\System32\drivers\etc\hosts"
     )
 
     $hosts = New-Object System.Collections.Specialized.OrderedDictionary
@@ -125,11 +125,13 @@ function Remove-Host
 
 #$hosts = Get-Hosts;
 
-# 163.172.167.207 bt.t-ru.org
 #Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.test.org"
-
 #Remove-Host  -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
-
 #Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
+
+
+Add-Host -HostIp "0.0.0.0" -HostName "license.sublimehq.com"
+
+Add-Host -HostIp "83.243.40.67" -HostName "wiki.bash-hackers.org"
 
 #Write-Hosts
