@@ -3,7 +3,7 @@
 param (
   [Parameter()]
   [ValidateSet("Agitech", "Sean")]
-  [string]$NetToScan
+  [string]$NetToScan = "Sean"
 )
 
 function New-IpRange {
