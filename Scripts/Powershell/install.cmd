@@ -15,8 +15,6 @@ PowerShell -NoProfile -ExecutionPolicy Bypass -Command "& {Start-Process PowerSh
 exit
 
 
-
-
 call :Admin
 
 START Powershell -nologo -noninteractive -windowStyle hidden -noprofile -command ^

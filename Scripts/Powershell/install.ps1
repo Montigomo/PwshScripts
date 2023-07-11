@@ -274,7 +274,7 @@ function Set-Services {
   # FDResPub - Function Discovery Resource Publication; p2psvc - Peer Networking Grouping; ssdpsrv - SSDP Discovery
   # upnphost - UPnP Device Host
             
-  $items = @("sshd", "dnscache", "fdphost", "FDResPub", "p2psvc", "ssdpsrv", "upnphost")
+  $items = @("sshd", "fdphost", "FDResPub", "p2psvc", "ssdpsrv", "upnphost")
   foreach ($item in $items) {
     try {
       if (($service = Get-Service -Name $item -ErrorAction SilentlyContinue)) {
@@ -297,6 +297,9 @@ function Set-Services {
       WriteLog "Set-Services Error: $_"
     }
   }
+
+  # dnscache
+  net start dnscache
 }
 
 
