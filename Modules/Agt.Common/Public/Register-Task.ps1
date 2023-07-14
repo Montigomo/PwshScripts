@@ -24,19 +24,6 @@ function Register-Task {
 
     $taskName = $TaskData["Name"];
     
-    function Replaceitems([string]$text){
-        #
-        $outText = $text
-        foreach($item in $Replacements.Keys) {
-            $findtext = "{$item}"
-            $value = $Replacements[$item]
-            if($outText -match $findtext){
-                $outText = $outText -replace $findtext, $value
-            }
-        }
-        return $outText
-    }  
-
     $xml = [xml]$TaskData["XmlDefinition"];
   
     $ns = New-Object System.Xml.XmlNamespaceManager($xml.NameTable)
@@ -80,7 +67,6 @@ function Register-Task {
             $xmlNode = $xml.SelectSingleNode($item, $ns);
             if ($xmlNode) {
                 $innerText = $TaskData["Values"][$item]
-                $innerText = Replaceitems -text $innerText
                 $xmlNode.InnerText = $innerText
             }
         }

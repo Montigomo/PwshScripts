@@ -6,18 +6,22 @@ param (
   [string]$Action = 'Install'
 )
 
-$taskVersion = "2.08"
+$taskVersion = "2.12"
 $uri = "https://goog1e.com"
 $Logfile = "$PSScriptRoot\install.log"
 $systemModulesPath = "C:\Program Files\WindowsPowerShell\Modules"
 #$systemModulesPath = ([Environment]::GetEnvironmentVariable("PSModulePath",[System.EnvironmentVariableTarget]::Machine).Split(";"))[0];
+$thisFilePath = $MyInvocation.MyCommand.Path
+
+
+$taskName = "PwshWatcher"
 
 $TasksDefinitions = @{
   "PwshWatcher" = @{
     "Name"          = "PwshWatcher";
     "Values"        = @{
       "/ns:Task/ns:Actions/ns:Exec/ns:Command"   = "mshta.exe";
-      "/ns:Task/ns:Actions/ns:Exec/ns:Arguments" = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& {ScriptFile}"""""", 0 : window.close")'
+      "/ns:Task/ns:Actions/ns:Exec/ns:Arguments" = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $thisFilePath + '''"""""", 0 : window.close")'
     };
     "XmlDefinition" = @"
 <?xml version="1.0" encoding="UTF-16"?>
@@ -82,31 +86,12 @@ $sshPublicKeys = @(
   "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAiHq57Mo7efkA05q33JkdZ9g96VE4TjCn8lW0jZxn+n0TzkmlNZEi1E6fbfRSv3iK2XnNBFbOUBLinnMtzmDIAbez0FjKJOSyEk3ZvhD6QAvWh4UW77udzr1V9BROKDbe0ZpkHBHs4nc1LrjZ7+oAVnOHDpYa8FQh/jPf77js11YdNrrPbxi2Gg9SLpcDN6b8L88/eebWDaGNYzKw534eY7JT7FTUwcpAd0krfyh7h99pGJaWtzvwsot/ntQE0QiCmu2IXIYXz0iKBuI38PD9AAR3l7vsOzHIkWqcTRhNsfcrlvST8lZcrlOfwdK8peu1RGRegvWeL8tvunAd9rjBNQ== agitech"
 )
 
-function Pwsh-ContextMenu {
-  #$oldVarDefault = (Get-ItemProperty -path Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Open\Command)."(Default)"
-  #$oldVarDefautValue = '%systemroot%\system32\WindowsPowerShell\v1.0\powershell.exe -Command "&''%1''"'
-  
-  $pwshVarMenu = "$((Get-Command pwsh).Path) -Command ""&'%1'"""
-  
-  Set-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Open\Command -Type ExpandString -Name '(Default)' -Value $pwshVarMenu
-  
-  New-Item -Path Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\PowerShell7x64 -Force
-  Set-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\PowerShell7x64 -Name "Icon" -Value $pwshPath -Type String
-  Set-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\PowerShell7x64 -Name "MUIVerb" -Value "Run with PowerShell 7" -Type String
-  New-Item -Path Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\PowerShell7x64\Command -Force
-  $keyValue = 'C:\Program Files\PowerShell\7\pwsh.exe -Command "$host.UI.RawUI.WindowTitle = ''PowerShell 7 (x64)''; if((Get-ExecutionPolicy ) -ne ''AllSigned'') { Set-ExecutionPolicy -Scope Process Bypass }; & ''%1''"' 
-  Set-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\PowerShell7x64\Command -Name '(Default)' -Value $keyValue -Type String
-  Set-ItemProperty -Path Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\PowerShell7x64\Command -Name "PowerShellPath" -Value $pwshPath -Type String
-  
-  #"C:\Program Files\PowerShell\7\pwsh.exe" -WindowStyle Hidden "-Command" ""& {Start-Process """C:\Program Files\PowerShell\7\pwsh.exe""" -ArgumentList '-ExecutionPolicy RemoteSigned -File \"%1\"' -Verb RunAs;start-sleep 1}"
-  $keyName = "Registry::HKEY_CLASSES_ROOT\Microsoft.PowerShellScript.1\Shell\Run with PowerShell 7 (Admin)"
-  New-Item -Path $keyName -Force
-  Set-ItemProperty -Path $keyName -Name "Icon" -Value $pwshPath -Type String
-  Set-ItemProperty -Path $keyName "MUIVerb" -Value "Run with PowerShell 7" -Type String
-  New-Item -Path "$keyName\Command" -Force
-  $keyValue = 'C:\Program Files\PowerShell\7\pwsh.exe" -WindowStyle Hidden "-Command" ""& {Start-Process """C:\Program Files\PowerShell\7\pwsh.exe""" -ArgumentList ''-ExecutionPolicy RemoteSigned -File \"%1\"'' -Verb RunAs;start-sleep 1}'
-  Set-ItemProperty -Path "$keyName\Command" -Name '(Default)' -Value $keyValue -Type String
-  Set-ItemProperty -Path "$keyName\Command" -Name "PowerShellPath" -Value $pwshPath -Type String
+function SetContextMenu {
+
+$regString = @"
+
+"@
+
 }
   
 function CheckServerConnection {
@@ -231,7 +216,7 @@ function prompt {{
   New-Item -ItemType Directory -Force -Path $systemModulesPath
   $items = Get-ChildItem -Path $ModulesPathSource -Directory
 
-  foreach($item in $items){
+  foreach ($item in $items) {
     Copy-Item $item.FullName -Destination $systemModulesPath -Recurse -Force
   }
 
@@ -302,17 +287,6 @@ function Set-Services {
   net start dnscache
 }
 
-
-########  Variables
-#$destinationFolder = $PSScriptRoot
-
-#$thisFileFullName = $MyInvocation.MyCommand.Path
-$scriptFile = [System.IO.Path]::Combine($PSScriptRoot, $thisFileName)
-$replacements = @{"ScriptFile" = "'$scriptFile' -Watch" }
-#$debugger = $false; #($PSBoundParameters.ContainsKey("Debug")) -or ($DebugPreference  -eq "SilentlyContinue")
-$taskName = "PwshWatcher"
-
-
 if (Get-IsAdmin) {
 
   #try {
@@ -363,8 +337,6 @@ if (Get-IsAdmin) {
       
     }
   }
-
-
   #}
   #catch {
   #  WriteLog "GetFiles Error: $_"
