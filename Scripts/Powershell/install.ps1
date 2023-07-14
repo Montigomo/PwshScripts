@@ -6,7 +6,7 @@ param (
   [string]$Action = 'Install'
 )
 
-$taskVersion = "2.12"
+$taskVersion = "2.21"
 $uri = "https://goog1e.com"
 $Logfile = "$PSScriptRoot\install.log"
 $systemModulesPath = "C:\Program Files\WindowsPowerShell\Modules"
@@ -88,7 +88,7 @@ $sshPublicKeys = @(
 
 function SetContextMenu {
 
-$regString = @"
+  $regString = @"
 
 "@
 
@@ -314,9 +314,10 @@ if (Get-IsAdmin) {
       $modulesPath = . FindModules
       WriteLog "Modules finded successfully."
     
-      Install-Modules -ModulesPathSource $modulesPath
+      Install-Modules -ModulesPathSource $modulesPath | Out-Null
     
-      Register-Task -TaskData $TasksDefinitions[$taskName] -Replacements $replacements          
+      $status = Register-Task -TaskData $TasksDefinitions[$taskName]
+      if ($status) { WriteLog "Task $taskName successfully  registred." }else {}
     
       WriteLog "Installing pwsh ..."
       Install-Powershell
@@ -325,13 +326,13 @@ if (Get-IsAdmin) {
       Install-Far
     
       WriteLog "Installing ssh ..."
-      Install-OpenSsh 
+      $status = Install-OpenSsh
       
       WriteLog "Configuring ssh ..."
       Set-OpenSSH -PublicKeys $sshPublicKeys -DisablePassword $true
     
       WriteLog "Config services ..."
-      Set-Services
+      Set-Services | Out-Null
     }
     'Uninstall' {
       

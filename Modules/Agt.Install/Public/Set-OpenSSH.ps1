@@ -206,10 +206,10 @@ function Set-OpenSsh {
     ### Config firewall
 
     if ((get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue)) {
-        Remove-NetFirewallRule -Name "OpenSSH-Server-In-TCP"
+        Remove-NetFirewallRule -Name "OpenSSH-Server-In-TCP" | Out-Null
     }
     if (-not (get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue)) {
-        New-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22
+        New-NetFirewallRule -Name "OpenSSH-Server-In-TCP" -DisplayName 'OpenSSH Server (sshd)' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 22 | Out-Null
     }
 
     # Restart service

@@ -15,7 +15,6 @@ function Register-Task {
     (
         [Parameter(Mandatory)]
         [hashtable]$TaskData,
-        [hashtable]$Replacements,
         [ValidateSet('system', 'author', 'none')]
         [string]$Principal = 'none',
         [switch]$OnlyCheck,
