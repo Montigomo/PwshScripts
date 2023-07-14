@@ -1,0 +1,24 @@
+
+  
++++ mshta 
+#$execCommand = 'mshta vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $script + '''"""""", 0 : window.close")'
+
+$execCommand = "mshta.exe"
+$execArguments = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $script + '''"""""", 0 : window.close")'
+
+++ supress error 
+
+vbscript:Execute("On Error Resume Next : CreateObject(""Wscript.Shell"").Run ""{commnd}"", 0 : window.close")
+  
+
+
+
++++ not worked (windows visible)
+
+#$execCommand = '"C:\Program Files\PowerShell\7\pwsh.exe"';
+#$execArguments = "-ExecutionPolicy Bypass -NoLogo -NonInteractive -WindowStyle Hidden -NoProfile -File $script -Verb RunAs"
+
+$execCommand = "pwsh.exe"
+$execArguments = -w Hidden -Command '& "D:\work\powershell\PwshScripts\Learning\Scheduled Tasks\run_invisible.ps1"'
+-WindowStyle  Hidden -File "D:\work\powershell\PwshScripts\Learning\Scheduled Tasks\run_invisible.ps1"
+

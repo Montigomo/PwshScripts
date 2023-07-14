@@ -56,8 +56,7 @@ function Send-MagicPacket_Method3 {
      
   #формируем значение MAC- и широковещательного адреса для отправки "магического" пакета
      
-  if ($MACAddress -eq [string]::Empty -and $BroadcastAddress |
-    -eq [string]::Empty) { #значения получаем от DHCP-сервера
+  if ($MACAddress -eq [string]::Empty -and $BroadcastAddress -eq [string]::Empty) { #значения получаем от DHCP-сервера
     #формируем текстовые значения ip- и mac-адреса, а также маски подсети
          
     $ip = (Resolve-DnsName -Name $ComputerName -Type A).IPAddress
@@ -79,7 +78,9 @@ function Send-MagicPacket_Method3 {
     $mac = $MACAddress
     $broadcast = $BroadcastAddress
   }
-     
+  
+  $mac = (($mac.replace(":", "")).replace("-", "")).replace(".", "")
+  
   #формируем "магический пакет"
       
   $target = 0, 2, 4, 6, 8, 10 | ForEach-Object { [convert]::ToByte($mac.substring($_, 2), 16) } 
@@ -222,4 +223,6 @@ $Items = @{
 
 #Send-MagicPacket_Method0 -MacAddress $Items["NidalebLaptop"]["MAC"] -Verbose
 #Send-MagicPacket_Method0 -MacAddress $Items["AgiLaptop"]["MAC"] -Verbose
-Send-MagicPacket_Method0 -MacAddress $Items["SeanAdmin"]["MAC"] -Verbose
+
+#Send-MagicPacket_Method0 -MacAddress $Items["SeanAdmin"]["MAC"] -Verbose
+Send-MagicPacket_Method3 -MACAddress "ace2d3656d4c" -BroadcastAddress 192.168.0.255 -Verbose
