@@ -1,16 +1,16 @@
 
   
-+++ mshta 
-#$execCommand = 'mshta vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $script + '''"""""", 0 : window.close")'
-
-$execCommand = "mshta.exe"
-$execArguments = 'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $script + '''"""""", 0 : window.close")'
++++ mshta
+++program
+mshta.exe
+++ arguments
++ for commands
+'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -Command """"& ''' + $commands + '''"""""", 0 : window.close")'
++ for script
+'vbscript:Execute("CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -File """" + $thisFileFullName + """""", 0 : window.close")'
 
 ++ supress error 
-
-vbscript:Execute("On Error Resume Next : CreateObject(""Wscript.Shell"").Run ""{commnd}"", 0 : window.close")
-  
-
+vbscript:Execute("On Error Resume Next : CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -File """"D:\work\runi.ps1"""""", 0 : window.close")
 
 
 +++ not worked (windows visible)
