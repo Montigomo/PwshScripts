@@ -211,16 +211,17 @@ function ScanLanPrinters {
 
 function SeanScan {
 
-  New-IpRange -From 192.168.0.1 -To 192.168.0.255 | Invoke-Parallel { Test-Ping -ComputerName $_ -TimeoutMilliSec 500 } -ThrottleLimit 128 | Where-Object { $_.Status -eq "Succes" } `
-  | Invoke-Parallel { 
+  $result = New-IpRange -From 192.168.0.1 -To 192.168.0.255 | Invoke-Parallel { Test-Ping -ComputerName $_ -TimeoutMilliSec 500 } -ThrottleLimit 128 | Where-Object { $_.Status -eq "Succes" }
+  $result = $result | Invoke-Parallel { 
     try {
       $_.ComputerName = [System.Net.DNS]::GetHostEntry($_.ComputerName).HostName ; $_ 
     }
     catch {
-      $t = 0;
+      Write-Output $_ -Verbose
     }
-  } -ThrottleLimit 128 `
-  | Select-Object -Property Status, Address, ComputerName, Name | Format-Table -Wrap -AutoSize
+  } -ThrottleLimit 128
+  $result = $result | Select-Object -Property Status, Address, ComputerName, Name | Sort-Object { $_.Address -replace '\d+', { $_.Value.PadLeft(3, '0') }}
+  $result | Format-Table -Wrap -AutoSize 
   #New-IpRange -From 192.168.0.1 -To 192.168.0.255 | Invoke-Parallel { Test-RemotePort -ComputerName $_ -Port 22 -TimeoutMilliSec 1000 } -ThrottleLimit 128  | Where-Object { $_.Response } | Select-Object -Property ComputerName, Port, Response | Format-Table -Wrap -AutoSize
 
 }

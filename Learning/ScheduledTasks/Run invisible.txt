@@ -11,7 +11,8 @@ mshta.exe
 
 ++ supress error 
 vbscript:Execute("On Error Resume Next : CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -File """"D:\work\runi.ps1"""""", 0 : window.close")
-
+vbscript:Execute("On Error Resume Next : CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -File """"D:\_software\adobe\updater\cupter.ps1"""""", 0 : window.close")
+vbscript:Execute("On Error Resume Next : CreateObject(""Wscript.Shell"").Run ""pwsh -NoLogo -File """"D:\_software\adobe\updater\cupter.ps1"""""", 0 : window.close")
 
 +++ not worked (windows visible)
 
