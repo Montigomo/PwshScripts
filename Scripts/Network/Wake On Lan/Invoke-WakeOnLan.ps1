@@ -222,7 +222,7 @@ $Items = @{
 }
 
 #Send-MagicPacket_Method0 -MacAddress $Items["NidalebLaptop"]["MAC"] -Verbose
-#Send-MagicPacket_Method0 -MacAddress $Items["AgiLaptop"]["MAC"] -Verbose
+Send-MagicPacket_Method0 -MacAddress $Items["AgiLaptop"]["MAC"] -Verbose
 
 #Send-MagicPacket_Method0 -MacAddress $Items["SeanAdmin"]["MAC"] -Verbose
-Send-MagicPacket_Method3 -MACAddress "ace2d3656d4c" -BroadcastAddress 192.168.0.255 -Verbose
+#Send-MagicPacket_Method3 -MACAddress "ace2d3656d4c" -BroadcastAddress 192.168.0.255 -Verbose
