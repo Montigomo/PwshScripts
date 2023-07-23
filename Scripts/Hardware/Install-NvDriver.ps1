@@ -1,11 +1,13 @@
 
 [CmdletBinding()]
 param (
-    [Parameter()][switch]$DCH
+    [Parameter()][switch]$DCH,
+    [Parameter()][switch]$Force
 )
 
 #region functions 
 
+$Logfile = "$PSScriptRoot\nvidia.log"
 function WriteLog {
     Param ([string]$LogString)
     $Stamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss")
@@ -97,7 +99,6 @@ function getOS {
 
 #region variables and init
 $DCH = $true
-$Logfile = "$thisFileFolder\nvidia.log"
 
 $productTypeId = 0
 $productSeriesId = 0
@@ -111,7 +112,7 @@ $ctk = 0
 $dtcid = if ($DCH) { 1 }else { 0 }
 
 $gpu = Get-CimInstance Win32_VideoController | Where-Object { $_.VideoProcessor -match "(NVIDIA )?GeForce" }
-[System.Version]$drvCurrentVersion = $gpu.DriverVersion
+[System.Version]$drvCurrentVersion = ($gpu.DriverVersion -replace '\.' -replace '^.*(?=.{5}$)').Insert(3, '.')
 $gpu = $gpu.VideoProcessor
 $gpu = $gpu -replace "NVIDIA ", ""
 WriteLog "GPU $gpu found."
@@ -275,9 +276,14 @@ if ( -not $drivers -or $drivers.Count -eq 0 ) {
     return
 }
 $lastDriver = $drivers | Sort-Object { $_.version } -Descending | Select-Object -First 1
-
+6
+$drvLastVersion = $lastDriver["version"]
 #WriteLog "productSeriesId=$productSeriesId, "
-WriteLog "Installed driver version: $drvCurrentVersion, found $($lastDriver["version"]) version."
+WriteLog "Installed driver version: $drvCurrentVersion, found $drvLastVersion version."
+if($drvCurrentVersion -ge $drvLastVersion){
+    WriteLog "So no need install."
+    return
+}
 
 [System.Uri]$url = "https:{0}" -f $lastDriver["url"]
 
@@ -312,9 +318,9 @@ if ($archiver) {
 
 $iargs = "-passive -noreboot -noeula -nofinish -s"
 
-# if ($clean) {
-#     $args = $install_args + " -clean"
-# }
+if ($Force) {
+    $iargs += " -clean"
+ }
 
 Start-Process -FilePath "$($fileFolder)\setup.exe" -ArgumentList $iargs -wait
 
