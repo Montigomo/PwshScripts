@@ -124,14 +124,7 @@ function Remove-Host
 }
 
 #$hosts = Get-Hosts;
-
 #Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.test.org"
 #Remove-Host  -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
 #Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
-
-
-Add-Host -HostIp "0.0.0.0" -HostName "license.sublimehq.com"
-
-Add-Host -HostIp "83.243.40.67" -HostName "wiki.bash-hackers.org"
-
 #Write-Hosts

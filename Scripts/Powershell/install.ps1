@@ -376,6 +376,9 @@ if (Get-IsAdmin) {
     
       WriteLog "Config services ..."
       Set-Services | Out-Null
+
+      SetContextMenu
+      
     }
     'Uninstall' {
       

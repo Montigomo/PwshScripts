@@ -2,10 +2,10 @@
 
 $KnownFolders = @{
     "Documents" = @{Handle = $true; FolderName = "Personal"; GUID = "{f42ee2d3-909f-4907-8871-4c22fc0bf756}"; ComfortName = "Documents" };
-    "Pictures"  = @{Handle = $true; FolderName = "My Pictures"; GUID = "{0DDD015D-B06C-45D5-8C4C-F59713854639}"; ComfortName = "Pictures" };
-    "Desktop"   = @{Handle = $false; FolderName = "Desktop"; GUID = "{754AC886-DF64-4CBA-86B5-F7FBF4FBCEF5}"; ComfortName = "Desktop" };
-    "Video"     = @{Handle = $false; FolderName = "My Video"; GUID = "{35286A68-3C57-41A1-BBB1-0EAE73D76C95}"; ComfortName = "Video" };
-    "Music"     = @{Handle = $false; FolderName = "My Music"; GUID = "{A0C69A99-21C8-4671-8703-7934162FCF1D}"; ComfortName = "Music" };
+    #"Pictures"  = @{Handle = $true; FolderName = "My Pictures"; GUID = "{0DDD015D-B06C-45D5-8C4C-F59713854639}"; ComfortName = "Pictures" };
+    #"Desktop"   = @{Handle = $false; FolderName = "Desktop"; GUID = "{754AC886-DF64-4CBA-86B5-F7FBF4FBCEF5}"; ComfortName = "Desktop" };
+    #"Video"     = @{Handle = $false; FolderName = "My Video"; GUID = "{35286A68-3C57-41A1-BBB1-0EAE73D76C95}"; ComfortName = "Video" };
+    #"Music"     = @{Handle = $false; FolderName = "My Music"; GUID = "{A0C69A99-21C8-4671-8703-7934162FCF1D}"; ComfortName = "Music" };
 }
 
 add-type @"
@@ -180,10 +180,10 @@ function Set-UserFolder {
     }
 
     foreach ($key in $KnownFolders.Keys) {
-        $handle = $userFolders[$key]["Handle"]
-        $UserFolderName = $userFolders[$key]["FolderName"]
-        $UserFolderGUID = $userFolders[$key]["GUID"]
-        $ComfortName = $userFolders[$key]["ComfortName"]
+        $handle = $KnownFolders[$key]["Handle"]
+        $UserFolderName = $KnownFolders[$key]["FolderName"]
+        $UserFolderGUID = $KnownFolders[$key]["GUID"]
+        $ComfortName = $KnownFolders[$key]["ComfortName"]
         $UserFolderPath = [System.IO.Path]::Combine($UserFoldersDirectory, $ComfortName);
 
         if ($handle) {
@@ -191,7 +191,7 @@ function Set-UserFolder {
                 New-Item $UserFolderPath -ItemType Directory -ErrorAction SilentlyContinue -Force
             }
 
-
+            [KnownFolder]::SetKnownFolderPath()
             #attrib +r -s -h "%USERPROFILE%\Documents" /S /D
             start-sleep -Seconds 1
         }
@@ -216,8 +216,13 @@ function Set-UserFolder {
 # {B7BEDE81-DF94-4682-A7D8-57A52620B86F} : C:\Users\nidal\OneDrive\Изображения\Снимки экрана
 # {AB5FB87B-7CE2-4F83-915D-550846C9537B} : C:\Users\nidal\OneDrive\Изображения\Пленка
 # {35286A68-3C57-41A1-BBB1-0EAE73D76C95} : D:\video
-
 # {339719B5-8C47-4894-94C2-D8F77ADD44A6} : C:\Users\adeli\OneDrive\Изображения
 # {24D89E24-2F19-4534-9DDE-6A6671FBB8FE} : C:\Users\adeli\OneDrive\Документы
 
-# Move-UserFolder -UserProfilesFolder "D:\_users\gai\"
+
+#Set-UserFolder -UserFoldersDirectory "D:\_users\gai\"
+
+[shell32]::SetKnownFolderPath([KnownFolder]::Documents, "D:\_users\gai\Documents")
+[shell32]::SetKnownFolderPath([KnownFolder]::Pictures, "D:\_users\gai\Pictures")
+[shell32]::SetKnownFolderPath([KnownFolder]::Music, "E:\Music")
+[shell32]::SetKnownFolderPath([KnownFolder]::Videos, "D:\Videos")

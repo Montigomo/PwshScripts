@@ -72,9 +72,9 @@ if (Get-IsAdmin) {
     WriteLog "Modules finded successfully."6
 
 
-    #Set-StartUp -Name "VirtalHere" -Path "D:\tools\network\VirtualHere\vhui64.exe"
+    Set-StartUp -Name "VirtalHere" -Path "D:\tools\network\VirtualHere\vhui64.exe"
     #Set-StartUp -Name "OpenVPN" -Path "C:\Program Files\OpenVPN\bin\openvpn-gui.exe" -Argument '--connect "sean_agitech.ovpn"'
-    Set-StartUp -Name "SimpleDLNA" -Path "C:\Program Files (x86)\Nils Maier\SimpleDLNA\SimpleDLNA.exe"
+    Set-StartUp -Name "SimpleDLNA" -Path "D:\software\simpledlna\SimpleDLNA.exe"
 
     Start-Sleep -Seconds 7  
     # }
