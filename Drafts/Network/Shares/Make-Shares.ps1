@@ -1,5 +1,5 @@
 ﻿
-# Ð¡Ð¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð°ÐºÐºÐ°ÑƒÐ½Ñ‚Ð¾Ð² Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»ÐµÐ¹
+import-module microsoft.powershell.localaccounts -UseWindowsPowerShell
 
 function Add-SmbUsers {
     param(
@@ -17,7 +17,7 @@ function Add-SmbUsers {
 
         $SecurePassword = ConvertTo-SecureString $Password -AsPlainText -Force
 
-        # ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð½Ð°Ð»Ð¸Ñ‡Ð¸Ñ ÑƒÑ‡ÐµÑ‚Ð½Ð¾Ð¹ Ð·Ð°Ð¿Ð¸ÑÐ¸
+        # 
         if (!(Get-LocalUser -Name $UserName -ErrorAction SilentlyContinue)) {
             New-LocalUser -Name $UserName -Description $Description -Password $SecurePassword -PasswordNeverExpires:$true
         }
@@ -39,7 +39,7 @@ function Set-AccessSharedFolder {
         [string]$AccessRight
     )
 
-    # ÐŸÑ€ÐµÐ´Ð¾ÑÑ‚Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð¾Ð±Ñ‰ÐµÐ³Ð¾ Ð´Ð¾ÑÑ‚ÑƒÐ¿Ð° Ðº Ð¿Ð°Ð¿ÐºÐµ
+    # 
     if (!(Get-SmbShare $ShareName -ErrorAction SilentlyContinue)) {
         New-SmbShare -Name $ShareName -Path $Folder
     }
@@ -63,12 +63,7 @@ function Set-AccessSharedFolder {
     }
 }
 
-# ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹ÐºÐ° Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð² Ð¾Ð±Ñ‰ÐµÐ³Ð¾ Ð´Ð¾ÑÑ‚ÑƒÐ¿Ð° Ðº ÑÐµÑ‚Ð¸
-
-# Ð’Ð½ÐµÑÐµÐ½Ð¸Ðµ ÑƒÑ‡ÐµÑ‚Ð½Ð¾Ð¹ Ð·Ð°Ð¿Ð¸ÑÐ¸ Ð¿Ð¾Ð»ÑŒÐ·Ð¾Ð²Ð°Ñ‚ÐµÐ»Ñ Ð² Ð°Ð´Ñ€ÐµÑÐ½ÑƒÑŽ ÐºÐ½Ð¸Ð³Ñƒ Ricon
-
 function Update-SmbServices {
-    # ÐŸÑ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð½Ð°Ð»Ð¸Ñ‡Ð¸Ñ, Ñ€ÐµÐ¶Ð¸Ð¼Ð° Ð·Ð°Ð¿ÑƒÑÐºÐ° Ð¸ Ð²ÐºÐ»ÑŽÑ‡Ð¸Ðµ Ð½ÐµÐ¾Ð±Ñ…Ð¾Ð´Ð¸Ð¼Ñ‹Ñ… ÑÐ»ÑƒÐ¶Ð±
     # If none of those work, make sure all networking services are running. The following services should all be set to Automatic and be currently running:
     # DNS Client
     # Function Discovery Provider Host
@@ -134,4 +129,4 @@ Add-SmbUsers -Users $users
 
 #Set-AccessSharedFolder -UserName "SmbLibrary" -AccessRight "Read" -ShareName "Library" -Folder "D:"
 
-Set-AccessSharedFolder -UserName "SmbAgitech" -AccessRight "Full" -ShareName "DLib" -Folder "D:"
+#Set-AccessSharedFolder -UserName "SmbAgitech" -AccessRight "Full" -ShareName "DLib" -Folder "D:"

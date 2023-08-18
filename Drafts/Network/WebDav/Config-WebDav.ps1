@@ -14,6 +14,7 @@ function WriteLog {
     #Add-content $LogFile -value $LogMessage
   }
 
+
 function Enable-Features {
     [CmdletBinding()]
     param (
@@ -81,8 +82,18 @@ New-NetFirewallRule -Name IISWebDav -DisplayName "IISWebDav 4433" -Description "
 #     Create-LocalUser -UserName $item -Pwd $users[$item]
 # }
 
+
+
 Import-Module WebAdministration
 
+
+$SiteName = "MySite"
+$HostName = "localhost"
+$SiteFolder = Join-Path -Path 'C:\inetpub\wwwroot' -ChildPath $SiteName
+
+New-WebSite -Name $SiteName -PhysicalPath $SiteFolder -Force
+$IISSite = "IIS:\Sites\$SiteName"
+Set-ItemProperty $IISSite -name  Bindings -value @{protocol="https";bindingInformation="*:443:$HostName"}
 #New-WebVirtualDirectory -Name "envtest/app1/webservice" -Site "Default Web Site" -PhysicalPath "C:\inetpub\wwwroot"
 
 #New-IISSite -Name "TestSite" -BindingInformation "*:8080:" -PhysicalPath "$env:systemdrive\inetpub\testsite"
