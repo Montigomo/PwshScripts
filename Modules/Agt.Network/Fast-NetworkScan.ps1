@@ -1,15 +1,4 @@
 
-[CmdletBinding(DefaultParameterSetName = 'NetName')]
-param (
-  [Parameter(Mandatory = $true, ParameterSetName = 'NetName', Position = 0)]
-  [ValidateSet("Agitech", "Sean")]
-  [string]$NetToScan = "Sean",
-  [Parameter(Mandatory = $true, ParameterSetName = 'NetRange', Position = 0)]
-  [ipaddress]$FromIp,
-  [Parameter(Mandatory = $true, ParameterSetName = 'NetRange', Position = 1)]
-  [ipaddress]$ToIp
-)
-
 function New-IpRange {
   param
   (
@@ -210,68 +199,3 @@ function Install-ModuleHelper {
     throw "This is an error."
   }
 }
-
-#Install-ModuleHelper -ModuleName PSParallel
-#Install-ModuleHelper -ModuleName ImportExcel
-
-function ScanLanPrinters {
-  # Test-RemotePort -ComputerName 192.168.0.220 -Port 9100 -TimeoutMilliSec 1000
-  # Get-PrinterInfo -ComputerName 192.168.0.220
-  # Test-RemotePort -ComputerName 192.168.0.110 -Port 9100 -TimeoutMilliSec 1000
-
-  # Get-PrinterInfo -ComputerName 192.168.1.140
-
-  New-IpRange -From 192.168.0.1 -To 192.168.0.255 | ForEach-Object { Test-RemotePort -ComputerName $_ -Port 9100 -TimeoutMilliSec 1000 } | Select-Object -Property ComputerName, Port, Response | Where-Object Response #| Get-PrinterInfo -ComputerName $_.ComputerName  | Export-Excel
-
-  #New-IpRange -From 192.168.0.1 -To 192.168.0.255 | Invoke-Parallel { Test-RemotePort -ComputerName $_ -Port 9100 -TimeoutMilliSec 1000 } -ThrottleLimit 128 | Where-Object Response | Invoke-Parallel { Get-PrinterInfo -ComputerName $_.ComputerName }
-
-  #New-IpRange -From 192.168.1.1 -To 192.168.1.255 | Invoke-Parallel { Test-RemotePort -ComputerName $_ -Port 9100 -TimeoutMilliSec 1000 } -ThrottleLimit 128 | Where-Object Response | Invoke-Parallel { Get-PrinterInfo -ComputerName $_.ComputerName }
-}
-
-function NetScan {
-  param(
-    [Parameter(Mandatory = $true)]
-    [ipaddress] $From,
-    [Parameter(Mandatory = $true)]
-    [ipaddress] $To
-  )
-  $result = New-IpRange -From $From -To $To | Invoke-Parallel { Test-Ping -ComputerName $_ -TimeoutMilliSec 500 } -ThrottleLimit 128 | Where-Object { $_.Status -eq "Succes" }
-  $result = $result | Invoke-Parallel { 
-    try {
-      $_.ComputerName = [System.Net.DNS]::GetHostEntry($_.ComputerName).HostName ; $_ 
-    }
-    catch {
-      Write-Output $_ -Verbose
-    }
-  } -ThrottleLimit 128
-  $result = $result | Select-Object -Property Status, Address, ComputerName, Name | Sort-Object { $_.Address -replace '\d+', { $_.Value.PadLeft(3, '0') } }
-  $result | Format-Table -Wrap -AutoSize 
-}
-
-function SeanScan {
-  NetScan -From "192.168.0.1" -To "192.168.0.255"
-}
-
-switch ($PSCmdlet.ParameterSetName) {
-  'NetName' {
-    switch ($NetToScan) {
-      "Sean" {
-        SeanScan
-        break
-      }
-      "Lan" {
-    
-      }
-      Default {
-        SeanScan
-        break
-      }
-    }
-    break
-  }
-  'NetRange' {
-    NetScan -From $FromIp -To $ToIp
-    break
-  }
-}
-
