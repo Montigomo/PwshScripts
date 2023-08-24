@@ -9,7 +9,7 @@
 @{
 
 # Script module or binary module file associated with this manifest.
-#RootModule = 'Agt.Network.psm1'
+RootModule = 'Agt.Network.psm1'
 
 # Version number of this module.
 ModuleVersion = '0.0.1'
@@ -33,7 +33,7 @@ Copyright = '(c) Agitech. All rights reserved.'
 Description = 'Network functions'
 
 # Minimum version of the PowerShell engine required by this module
-PowerShellVersion = '3.0'
+PowerShellVersion = '5.0'
 
 # Name of the PowerShell host required by this module
 # PowerShellHostName = ''
@@ -66,9 +66,7 @@ PowerShellVersion = '3.0'
 # FormatsToProcess = @()
 
 # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess
-NestedModules = @(
-    'Get-Hosts.ps1'
-)
+NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = '*'

@@ -1,13 +1,4 @@
 
-
-$KnownFolders = @{
-    "Documents" = @{Handle = $true; FolderName = "Personal"; GUID = "{f42ee2d3-909f-4907-8871-4c22fc0bf756}"; ComfortName = "Documents" };
-    #"Pictures"  = @{Handle = $true; FolderName = "My Pictures"; GUID = "{0DDD015D-B06C-45D5-8C4C-F59713854639}"; ComfortName = "Pictures" };
-    #"Desktop"   = @{Handle = $false; FolderName = "Desktop"; GUID = "{754AC886-DF64-4CBA-86B5-F7FBF4FBCEF5}"; ComfortName = "Desktop" };
-    #"Video"     = @{Handle = $false; FolderName = "My Video"; GUID = "{35286A68-3C57-41A1-BBB1-0EAE73D76C95}"; ComfortName = "Video" };
-    #"Music"     = @{Handle = $false; FolderName = "My Music"; GUID = "{A0C69A99-21C8-4671-8703-7934162FCF1D}"; ComfortName = "Music" };
-}
-
 add-type @"
 
     using System;
@@ -149,42 +140,15 @@ add-type @"
         KF_FLAG_SIMPLE_IDLIST = 256,
         KF_FLAG_ALIAS_ONLY = 214783648
     }
-
-    public class shell32  {
-        [DllImport("shell32.dll")]
-        private static extern int SHGetKnownFolderPath(
-             [MarshalAs(UnmanagedType.LPStruct)] 
-             Guid       rfid,
-             uint       dwFlags,
-             IntPtr     hToken,
-             out IntPtr pszPath
-         );
-
-         [DllImport("shell32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, PreserveSig = false)]
-         public extern static int SHSetKnownFolderPath(
-             [MarshalAs(UnmanagedType.LPStruct)]
-             Guid rfid,
-             uint flags,
-             IntPtr token,
-             [MarshalAs(UnmanagedType.LPWStr)]
-             string path);
-
-         public static string GetKnownFolderPath(Guid rfid)  {
-            IntPtr pszPath;
-            if (SHGetKnownFolderPath(rfid, 0, IntPtr.Zero, out pszPath) != 0) {
-                return "Could not get folder";
-            }
-            string path = Marshal.PtrToStringUni(pszPath);
-            Marshal.FreeCoTaskMem(pszPath);
-            return path;
-         }
-
-         public static int SetKnownFolderPath(Guid rfid, string path)
-         {
-             return SHSetKnownFolderPath(rfid, 0, IntPtr.Zero, path);
-         }
-    }
 "@
+
+$KnownFolders = @{
+    "Documents" = @{Handle = $true; FolderName = "Personal"; GUID = "{f42ee2d3-909f-4907-8871-4c22fc0bf756}"; ComfortName = "Documents" };
+    #"Pictures"  = @{Handle = $true; FolderName = "My Pictures"; GUID = "{0DDD015D-B06C-45D5-8C4C-F59713854639}"; ComfortName = "Pictures" };
+    #"Desktop"   = @{Handle = $false; FolderName = "Desktop"; GUID = "{754AC886-DF64-4CBA-86B5-F7FBF4FBCEF5}"; ComfortName = "Desktop" };
+    #"Video"     = @{Handle = $false; FolderName = "My Video"; GUID = "{35286A68-3C57-41A1-BBB1-0EAE73D76C95}"; ComfortName = "Video" };
+    #"Music"     = @{Handle = $false; FolderName = "My Music"; GUID = "{A0C69A99-21C8-4671-8703-7934162FCF1D}"; ComfortName = "Music" };
+}
 
 function Set-KnownFolderByReg {
     [CmdletBinding()]
