@@ -135,7 +135,8 @@ namespace KnownFolders
 }
 "@
 
-
+$arr = New-Object -TypeName "string[]" -ArgumentList ([KnownFolders.KnownFolder]::Kguids.Keys.Count)
+[KnownFolders.KnownFolder]::Kguids.Keys.CopyTo($arr,0)
 function Set-KnownFolderPath {
 	<#
 	.SYNOPSIS
@@ -152,18 +153,11 @@ function Set-KnownFolderPath {
 	#>
 	Param (
 		[Parameter(Mandatory = $true)]
-		[ValidateSet('AddNewPrograms', 'AdminTools', 'AppUpdates', 'CDBurning', 'ChangeRemovePrograms',
-		'CommonAdminTools', 'CommonOEMLinks', 'CommonPrograms', 'CommonStartMenu', 'CommonStartup', 'CommonTemplates',
-		'ComputerFolder', 'ConflictFolder', 'ConnectionsFolder', 'Contacts', 'ControlPanelFolder', 'Cookies', 'Desktop',
-		'Documents', 'Downloads', 'Favorites', 'FOLDERID_SkyDrive', 'Fonts', 'Games', 'GameTasks', 'History', 'InternetCache',
-		'InternetFolder', 'Links', 'LocalAppData', 'LocalAppDataLow', 'LocalizedResourcesDir', 'Music', 'NetHood', 'NetworkFolder',
-		'OriginalImages', 'PhotoAlbums', 'Pictures', 'Playlists', 'PrintersFolder', 'PrintHood', 'Profile', 'ProgramData',
-		'ProgramFiles', 'ProgramFilesX64', 'ProgramFilesX86', 'ProgramFilesCommon', 'ProgramFilesCommonX64', 'ProgramFilesCommonX86',
-		'Programs', 'Public', 'PublicDesktop', 'PublicDocuments', 'PublicDownloads', 'PublicGameTasks', 'PublicMusic', 'PublicPictures',
-		'PublicVideos', 'QuickLaunch', 'Recent', 'RecycleBinFolder', 'ResourceDir', 'RoamingAppData', 'SampleMusic', 'SamplePictures',
-		'SamplePlaylists', 'SampleVideos', 'SavedGames', 'SavedSearches', 'SEARCH_CSC', 'SEARCH_MAPI', 'SearchHome', 'SendTo',
-		'SidebarDefaultParts', 'SidebarParts', 'StartMenu', 'Startup', 'SyncManagerFolder', 'SyncResultsFolder', 'SyncSetupFolder',
-		'System', 'SystemX86', 'Templates', 'TreeProperties', 'UserProfiles', 'UsersFiles', 'Videos', 'Windows')]
+		[ArgumentCompleter({param($cmd, $param, $wordToComplete) $arr -like "$wordToComplete*"})]		
+		[ValidateScript({
+			if ($_ -in $arr) { return $true }
+			throw "'$_' is not in the set of the supported values: $($arr -join ', ')"
+		  })]
 		[string]$KnownFolder,
 
 		[Parameter(Mandatory = $true)]
@@ -198,19 +192,12 @@ function Get-KnownFolderPath {
 	#>
 	Param (
 		[Parameter(Mandatory = $true)]
-            [ValidateSet('AddNewPrograms', 'AdminTools', 'AppUpdates', 'CDBurning', 'ChangeRemovePrograms',
-            'CommonAdminTools', 'CommonOEMLinks', 'CommonPrograms', 'CommonStartMenu', 'CommonStartup', 'CommonTemplates',
-            'ComputerFolder', 'ConflictFolder', 'ConnectionsFolder', 'Contacts', 'ControlPanelFolder', 'Cookies', 'Desktop',
-            'Documents', 'Downloads', 'Favorites', 'FOLDERID_SkyDrive', 'Fonts', 'Games', 'GameTasks', 'History', 'InternetCache',
-            'InternetFolder', 'Links', 'LocalAppData', 'LocalAppDataLow', 'LocalizedResourcesDir', 'Music', 'NetHood', 'NetworkFolder', 'OneDriveFolder',
-            'OriginalImages', 'PhotoAlbums', 'Pictures', 'Playlists', 'PrintersFolder', 'PrintHood', 'Profile', 'ProgramData',
-            'ProgramFiles', 'ProgramFilesX64', 'ProgramFilesX86', 'ProgramFilesCommon', 'ProgramFilesCommonX64', 'ProgramFilesCommonX86',
-            'Programs', 'Public', 'PublicDesktop', 'PublicDocuments', 'PublicDownloads', 'PublicGameTasks', 'PublicMusic', 'PublicPictures',
-            'PublicVideos', 'QuickLaunch', 'Recent', 'RecycleBinFolder', 'ResourceDir', 'RoamingAppData', 'SampleMusic', 'SamplePictures',
-            'SamplePlaylists', 'SampleVideos', 'SavedGames', 'SavedSearches', 'SEARCH_CSC', 'SEARCH_MAPI', 'SearchHome', 'SendTo',
-            'SidebarDefaultParts', 'SidebarParts', 'StartMenu', 'Startup', 'SyncManagerFolder', 'SyncResultsFolder', 'SyncSetupFolder',
-            'System', 'SystemX86', 'Templates', 'TreeProperties', 'UserProfiles', 'UsersFiles', 'Videos', 'Windows')]
-            [string]$KnownFolder
+		[ArgumentCompleter({param($cmd, $param, $wordToComplete) $arr -like "$wordToComplete*"})]		
+		[ValidateScript({
+			if ($_ -in $arr) { return $true }
+			throw "'$_' is not in the set of the supported values: $($arr -join ', ')"
+		  })]
+		[string]$KnownFolder
     )
     return [KnownFolders.KnownFolder]::GetKnownFolderPath([KnownFolders.KnownFolder]::Kguids[$KnownFolder]);
 }
