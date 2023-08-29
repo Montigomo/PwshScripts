@@ -1,4 +1,0 @@
-
-
-
-ssh -fNTC -L 127.0.0.1:20000:my-computer.corp.example.com:3389 azureuser@my-jumpbox.westus2.cloudapp.azure.com
