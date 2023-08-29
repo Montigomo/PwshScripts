@@ -1,4 +1,3 @@
-
 function Register-Task {  
     <#
     .SYNOPSIS
@@ -24,6 +23,7 @@ function Register-Task {
         [switch] for future use
     .INPUTS
     .OUTPUTS
+    .NOTES
     .EXAMPLE
     .LINK
     #>
