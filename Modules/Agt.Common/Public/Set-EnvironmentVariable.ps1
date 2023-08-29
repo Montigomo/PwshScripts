@@ -51,5 +51,5 @@ function Set-EnvironmentVariable
     }
 }
 
-Set-EnvironmentVariable -Name 'Path' -Value "C:\Program Files\Git\usr\bin" -Action Add -Scope Machine
+#Set-EnvironmentVariable -Name 'Path' -Value "C:\Program Files\Git\usr\bin" -Action Add -Scope Machine
 #Set-EnvironmentVariable -Name 'Path' -Scope 'Machine' -Value "C:\Program Files\Far Manager" -Action "Remove"

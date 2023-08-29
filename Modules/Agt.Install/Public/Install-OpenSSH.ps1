@@ -123,10 +123,3 @@ function Install-OpenSsh {
         Start-Service ssh-agent
     }
 }
-
-
-#. "D:\_software\PwshScripts\Modules\Agt.Common\Public\Get-IsAdmin.ps1"
-#. "D:\_software\PwshScripts\Modules\Agt.Install\Public\Get-GitReleaseInfo.ps1"
-#. "D:\_software\PwshScripts\Modules\Agt.Install\Public\Install-MsiPackage.ps1"
-
-#Install-OpenSsh
