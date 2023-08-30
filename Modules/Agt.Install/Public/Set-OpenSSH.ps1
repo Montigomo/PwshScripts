@@ -214,6 +214,6 @@ function Set-OpenSsh {
 
     # Restart service
     if (Get-Service  sshd -ErrorAction SilentlyContinue) {
-        Get-Service -Name ssh-agent | Restart-Service 
+        Get-Service -Name sshd | Restart-Service 
     }
 }

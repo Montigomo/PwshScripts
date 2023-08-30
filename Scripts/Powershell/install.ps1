@@ -237,6 +237,7 @@ function Install-Modules {
   param(
     [Parameter(Mandatory = $true)]
     [string]$ModulesPathSource,
+    [switch]$Force,
     [switch]$ImportModules
   )
 
@@ -260,6 +261,9 @@ function prompt {{
   $items = Get-ChildItem -Path $ModulesPathSource -Directory
 
   foreach ($item in $items) {
+    if($Force -and (Test-Path -Path "$systemModulesPath\$($item.Name)")){
+      Remove-Item -Path "$systemModulesPath\$($item.Name)" -Force -Recurse
+    }
     Copy-Item $item.FullName -Destination $systemModulesPath -Recurse -Force
   }
 
@@ -292,7 +296,6 @@ foreach($item in @({0}))
   }
 
   $outputFileText | Out-File -FilePath $profilePath
-
 }
 
 function Set-Services {
@@ -357,7 +360,7 @@ if (Get-IsAdmin) {
       $modulesPath = . FindModules
       WriteLog "Modules finded successfully."
     
-      Install-Modules -ModulesPathSource $modulesPath | Out-Null
+      Install-Modules -ModulesPathSource $modulesPath -Force | Out-Null
     
       $status = Register-Task -TaskData $TasksDefinitions[$taskName]
       if ($status) { WriteLog "Task $taskName successfully  registred." }else {}
