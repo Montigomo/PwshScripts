@@ -1,1 +1,1 @@
-# Powershell scripts that make life easier ⚛
+# Powershell scripts that make life easier
