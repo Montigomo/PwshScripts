@@ -122,9 +122,3 @@ function Remove-Host
         }
     }
 }
-
-#$hosts = Get-Hosts;
-#Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.test.org"
-#Remove-Host  -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
-#Add-Host -HostIp "163.172.167.207" -HostName "bt.t-ru.org"
-#Write-Hosts
