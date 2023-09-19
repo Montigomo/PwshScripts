@@ -1,5 +1,4 @@
-function Get-GitReleaseInfo
-{
+function Get-GitReleaseInfo {
     <#
     .SYNOPSIS
         Get github project release uri
@@ -10,44 +9,27 @@ function Get-GitReleaseInfo
         Regex pattern for search release version
     .PARAMETER Version
         [switch] Return release Version or Uri
-    .INPUTS
-    .OUTPUTS
-    .EXAMPLE
-    .LINK
     #>
     param(
-        [Parameter(Mandatory=$true)] [string] $Repouri,
-        [Parameter(Mandatory=$false)] [string] $Pattern = "v(?<version>\d?\d.\d?\d.\d?\d)",
-        [Parameter(Mandatory=$false)] [switch] $Version
+        [Parameter(Mandatory = $true)] [string]$Uri,
+        [Parameter(Mandatory = $true)] [string]$ReleasePattern,
+        [Parameter(Mandatory = $false)] [string]$VersionPattern = "v(?<version>\d?\d.\d?\d.\d?\d)",
+        [Parameter(Mandatory = $false)] [System.Version]$LocalVersion,
+        [Parameter(Mandatory = $false)] [switch]$UsePreview
     )
-
-    $releasesUri = $Repouri
-
-    $releasesUri = "$Repouri/releases/latest"
-
-    $json = Invoke-RestMethod -Method GET -Uri $releasesUri
-
-    if($Version)
-    {
-        #$Pattern = if($Pattern) {"v(?<version>\d?\d.\d?\d.\d?\d)"} else {$Pattern}
-        $ver = [System.Version]::Parse("0.0.0")
-        if($json.tag_name -match $pattern)
-        {
-            $ver = [System.Version]::Parse($Matches["version"]);
-        }
-        return $ver
+    $Uri = "$Uri/releases" -replace "(?<!:)/{2,}", "/"
+    $json = (Invoke-RestMethod -Method Get -Uri $Uri)
+    $releases = $json | Where-Object { $_.prerelease -eq $UsePreview.ToBool() } | Sort-Object -Property published_at -Descending
+    $latestRelease = $releases | Select-Object -First 1
+    $remoteVersion = [System.Version]::Parse("0.0.0")
+    if ($latestRelease.tag_name -match $VersionPattern) {
+        $null = [System.Version]::TryParse($Matches["version"], [ref]$remoteVersion);
     }
-
-    $assets = ($json.assets) | Sort-Object -Property "created_at" -Descending
-
-    if(!$assets)
-    {
-        return
+    if ($LocalVersion -lt $remoteVersion) {
+        $item = $latestRelease.assets | Where-Object name -match $ReleasePattern | Select-Object -First 1
+        return $item.browser_download_url
     }
-
-    $asset = $assets | Where-Object name -match $Pattern
-    
-    $downloadUri = $asset.browser_download_url
-
-    return $downloadUri
+    else {
+        return $null
+    }
 }

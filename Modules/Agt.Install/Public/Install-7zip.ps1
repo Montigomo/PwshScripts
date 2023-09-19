@@ -1,14 +1,11 @@
 function Install-7zip {
     <#
     .SYNOPSIS
-        Install 7zip archiver 
+        Install 7zip archiver
     .DESCRIPTION
+        Install 7zip archiver
     .PARAMETER InstallFolder
        Folder to where install 7zip (optional)
-    .INPUTS
-    .OUTPUTS
-    .EXAMPLE
-    .LINK
     #>
     Param
     (   

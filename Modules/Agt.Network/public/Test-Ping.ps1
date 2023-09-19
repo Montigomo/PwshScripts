@@ -3,8 +3,7 @@ function Test-Ping {
   (
     [Parameter(Mandatory, ValueFromPipeline)]
     [string]
-    $ComputerName,
-        
+    $ComputerName,        
     [int]
     $TimeoutMillisec = 1000
   )

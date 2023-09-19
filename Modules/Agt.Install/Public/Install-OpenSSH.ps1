@@ -1,15 +1,11 @@
-
 function Install-OpenSsh {  
     <#
     .SYNOPSIS
         Install OpenSsh
     .DESCRIPTION
-    .PARAMETER Name
-    .PARAMETER Extension
-    .INPUTS
-    .OUTPUTS
-    .EXAMPLE
-    .LINK
+        Install OpenSsh
+    .PARAMETER Zip
+        Install from msi or zip
     #>
     [CmdletBinding()]
     param (
@@ -17,25 +13,15 @@ function Install-OpenSsh {
         [switch]$Zip
     )
 
-    if (!(Get-IsAdmin)) {
-        Write-Error "Run as administrator"
+    $Principal = new-object System.Security.Principal.WindowsPrincipal([System.Security.Principal.WindowsIdentity]::GetCurrent())
+    if ( -not ($Principal -and ([bool]$Principal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)))) {
+        Write-Error "Run as admin!"
         exit
     }
-    
-    $remoteVersion = [System.Version]::Parse("0.0.0")
     $localVersion = [System.Version]::Parse("0.0.0")
     
-    ### Download OpenSSH archive from github and try to install it
-
     $gitUri = "https://api.github.com/repos/powershell/Win32-OpenSSH"
-
-    $remoteVersion = Get-GitReleaseInfo $gitUri -Version
-    
-
-    #detect OS arch
     [bool]$IsOs64 = $([System.IntPtr]::Size -eq 8);
-
-    #get local version
     $exePath = if ($IsOs64) {
         "C:\Program Files\OpenSSH\ssh.exe"
     }
@@ -44,45 +30,41 @@ function Install-OpenSsh {
     }
 
     if (Test-Path $exePath) {
-        [System.Version]::TryParse( ([System.Diagnostics.FileVersionInfo]::GetVersionInfo($exePath)).FileVersion, [ref]$localVersion)
-    }
-
-    if ($localVersion -ge $remoteVersion) {
-        return
+        $vtext = ([System.Diagnostics.FileVersionInfo]::GetVersionInfo($exePath)).FileVersion
+        $null = [System.Version]::TryParse($vtext, [ref]$localVersion)
     }
 
     if ($Zip) {
-
-        $pattern = if ($IsOs64) { "OpenSSH-Win64.zip" }else { "OpenSSH-Win32.zip" }
-        $releaseUri = Get-GitReleaseInfo $gitUri -Pattern $pattern
-        $destPath = "c:\Program Files\OpenSSH\"
-        #$installScriptPath = Join-Path $destPath "install-sshd.ps1"
-        [System.IO.Directory]::CreateDirectory($destPath)
-        $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'zip' } -PassThru
-        Invoke-WebRequest -OutFile $tmp $releaseUri
-        Add-Type -Assembly System.IO.Compression.FileSystem
-        $zip = [IO.Compression.ZipFile]::OpenRead($tmp.FullName)
-        $entries = $zip.Entries | Where-Object { -not [string]::IsNullOrWhiteSpace($_.Name) } #| where {$_.FullName -like 'myzipdir/c/*' -and $_.FullName -ne 'myzipdir/c/'} 
-        if ((get-service sshd -ErrorAction SilentlyContinue).Status -eq "Running") {
-            Stop-Service sshd
+        $ReleasePattern = if ($IsOs64) { "OpenSSH-Win64.zip" }else { "OpenSSH-Win32.zip" }
+        $downloadUri = Get-GitReleaseInfo -Uri $gitUri -ReleasePattern $ReleasePattern -LocalVersion $localVersion
+        if ($downloadUri) {
+            $destPath = "c:\Program Files\OpenSSH\"
+            [System.IO.Directory]::CreateDirectory($destPath)
+            $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'zip' } -PassThru
+            Invoke-WebRequest -OutFile $tmp $downloadUri
+            Add-Type -Assembly System.IO.Compression.FileSystem
+            $zip = [IO.Compression.ZipFile]::OpenRead($tmp.FullName)
+            $entries = $zip.Entries | Where-Object { -not [string]::IsNullOrWhiteSpace($_.Name) } #| where {$_.FullName -like 'myzipdir/c/*' -and $_.FullName -ne 'myzipdir/c/'} 
+            if ((get-service sshd -ErrorAction SilentlyContinue).Status -eq "Running") {
+                Stop-Service sshd
+            }
+            foreach ($entry in $entries) {
+                $dpath = $destPath + $entry.Name
+                [IO.Compression.ZipFileExtensions]::ExtractToFile( $entry, $dpath, $true)
+            }
+            $zip.Dispose()
+            Set-EnvironmentVariable -Name 'Path' -Scope 'Machine' -Value $destPath
+            $tmp | Remove-Item
         }
-        foreach ($entry in $entries) {
-            $dpath = $destPath + $entry.Name
-            [IO.Compression.ZipFileExtensions]::ExtractToFile( $entry, $dpath, $true)
-        }
-        $zip.Dispose()
-        # set environment path vartiable
-        #[Environment]::SetEnvironmentVariable("Path",[Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::Machine) + ";C:\Program Files\OpenSSH",[EnvironmentVariableTarget]::Machine)
-        Set-EnvironmentVariable -Name 'Path' -Scope 'Machine' -Value $destPath
-        # remove temporary file
-        $tmp | Remove-Item
     }
     else {
-        $pattern = if ($IsOs64) { "OpenSSH-Win64-v\d.\d.\d.\d.msi" }else { "OpenSSH-Win32-v\d.\d.\d.\d.msi" }        
-        $releaseUri = Get-GitReleaseInfo $gitUri -Pattern $pattern
-        $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
-        Invoke-WebRequest -OutFile $tmp $releaseUri
-        Install-MsiPackage -FilePath $tmp.FullName -PackageParams ""
+        $ReleasePattern = if ($IsOs64) { "OpenSSH-Win64-v\d.\d.\d.\d.msi" }else { "OpenSSH-Win32-v\d.\d.\d.\d.msi" }        
+        $downloadUri = Get-GitReleaseInfo -Uri $gitUri -ReleasePattern $ReleasePattern -LocalVersion $localVersion
+        if ($downloadUri) {
+            $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
+            Invoke-WebRequest -OutFile $tmp $downloadUri
+            Install-MsiPackage -FilePath $tmp.FullName -PackageParams ""
+        }
     }
 
     # remove old capabilities

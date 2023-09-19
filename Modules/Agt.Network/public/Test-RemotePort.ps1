@@ -19,6 +19,7 @@ function Test-RemotePort {
     else {
       $success = $false 
     }
+    $ip4address = $client.Client.RemoteEndPoint.Address.MapToIPv4();
   }
   catch { $success = $false }
   finally {
@@ -27,6 +28,7 @@ function Test-RemotePort {
   }
     
   [ PSCustomObject]@{
+    Address      = $ip4address
     ComputerName = $ComputerName
     Port         = $Port
     Response     = $success
