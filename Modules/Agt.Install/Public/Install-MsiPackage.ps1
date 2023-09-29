@@ -1,5 +1,4 @@
-function Install-MsiPackage
-{
+function Install-MsiPackage{
     <#
     .SYNOPSIS
         Run msi package 

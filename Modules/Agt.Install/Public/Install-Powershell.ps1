@@ -37,7 +37,7 @@ function Install-Powershell {
     $downloadUri = Get-GitReleaseInfo -Uri "https://api.github.com/repos/powershell/powershell/" -ReleasePattern $ReleasePattern -LocalVersion $localVersion
     if ($downloadUri) {
         $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
-        Invoke-WebRequest -OutFile $tmp $pwshUri
+        Invoke-WebRequest -OutFile $tmp $downloadUri
         $logFile = '{0}-{1}.log' -f $tmp.FullName, (get-date -Format yyyyMMddTHHmmss)
 
         # https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3#install-the-msi-package-from-the-command-line

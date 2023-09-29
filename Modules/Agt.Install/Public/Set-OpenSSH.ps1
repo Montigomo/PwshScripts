@@ -103,27 +103,16 @@ function DoConfig {
 function Set-OpenSsh {  
     <#
     .SYNOPSIS
-        
+        Config openssh server 
     .DESCRIPTION
-    .PARAMETER Name
-    .PARAMETER Extension
-    .INPUTS
-    .OUTPUTS
-    .EXAMPLE
-    .EXAMPLE
-    .EXAMPLE
-    .LINK
+    .PARAMETER PublicKeys
+        public keys for write to authorized_keys
     #>
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
-        [System.Array]$PublicKeys,
-        [Parameter(Mandatory = $false)]
-        [System.Array]$PrivateKeys,
-        [Parameter(Mandatory = $false)]
-        [bool]$DisablePassword = $false
+        [System.Array]$PublicKeys
     )
-    #configure and tuning ssh on windows 10
 
     # set ssh-agent service startup type
     if (Get-Service  ssh-agent -ErrorAction SilentlyContinue) {
@@ -151,12 +140,6 @@ function Set-OpenSsh {
             If (!(Select-String -Path $sshAuthKeys -pattern $key -SimpleMatch)) {
                 Add-Content $sshAuthKeys $key
             }
-        }
-    }
-    
-    foreach ($privateKey in $PrivateKeys) {
-        if ( (Test-Path $privateKey) -and !((ssh-add -l).Contains($privateKey))) {
-            ssh-add  $privateKey
         }
     }
 
@@ -204,7 +187,6 @@ function Set-OpenSsh {
     DoConfig -SrcFile $SrcFile -DstFile $DstFile -Patterns $patterns
 
     ### Config firewall
-
     if ((get-netfirewallrule -Name "OpenSSH-Server-In-TCP" -ErrorAction SilentlyContinue)) {
         Remove-NetFirewallRule -Name "OpenSSH-Server-In-TCP" | Out-Null
     }
