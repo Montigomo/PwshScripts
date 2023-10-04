@@ -9,12 +9,12 @@ function Install-OpenSsh {
     #>
     [CmdletBinding()]
     param (
-        [Parameter()]
+        [Parameter(Mandatory = $false)] 
         [switch]$Zip
     )
 
-    $Principal = new-object System.Security.Principal.WindowsPrincipal([System.Security.Principal.WindowsIdentity]::GetCurrent())
-    if ( -not ($Principal -and ([bool]$Principal.IsInRole([System.Security.Principal.WindowsBuiltInRole]::Administrator)))) {
+    $IsAdmin = [bool]([Security.Principal.WindowsIdentity]::GetCurrent().Groups -match 'S-1-5-32-544')
+    if ( -not $IsAdmin) {
         Write-Error "Run as admin!"
         exit
     }

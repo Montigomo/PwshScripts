@@ -17,11 +17,12 @@ function Install-Git {
         [switch]$UsePreview
     )
 	exit
-    if (!(Get-IsAdmin)) {
-        Write-Error "Run as administrator"
+
+    $IsAdmin = [bool]([Security.Principal.WindowsIdentity]::GetCurrent().Groups -match 'S-1-5-32-544')
+    if ( -not $IsAdmin) {
+        Write-Error "Run as admin!"
         exit
     }
-    
     $gitUri = "https://api.github.com/repos/powershell/powershell"
     $gitUriReleases = "$gitUri/releases"
     #$gitUriReleasesLatest = "$gitUri/releases/latest"

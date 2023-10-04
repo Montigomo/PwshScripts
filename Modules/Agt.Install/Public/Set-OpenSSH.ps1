@@ -84,15 +84,14 @@ function DoConfig {
                 }               
             }
             "Distinct" {
-                $c = ($Content | Where-Object { $_ -match (GetMatch $key) }).Count
+                $c = @($Content | Where-Object { $_ -match (GetMatch $key) }).Count
                 if ($c -eq 1) {
                     continue;
                 }
                 do {
                     $Content.RemoveAt($Content.FindLastIndex([Predicate[String]] { param($s) $s -match (GetMatch $key) }));
-                    $c = ($Content | Where-Object { $_ -eq (GetValue $key) }).Count
+                    $c = @($Content | Where-Object { $_ -eq (GetValue $key) }).Count
                 }while ($c -gt 1)
-
             }
         }
     }
@@ -161,13 +160,13 @@ function Set-OpenSsh {
             "Value"  = "no" 
         }
         @{
-            "Key"    = @{"Value" = "Subsystem"; "Match" = "\s*Subsystem\s*powershell\s*pwsh\.exe\s*-sshs\s*-NoLogo\s*-NoProfile\s*"}; 
+            "Key"    = @{"Value" = "Subsystem"; "Match" = "\s*Subsystem\s*powershell\s*pwsh\.exe\s*-sshs\s*-NoLogo\s*-NoProfile\s*" }; 
             "Action" = "Append"; 
             "Value"  = "Subsystem powershell pwsh.exe -sshs -NoLogo -NoProfile";
             "After"  = "\#\s*override default of no subsystems"; 
         }
         @{
-            "Key"    = @{"Value" = "Subsystem powershell pwsh.exe -sshs -NoLogo -NoProfile"; "Match" = "\s*Subsystem\s*powershell\s*pwsh\.exe\s*-sshs\s*-NoLogo\s*-NoProfile\s*"}; 
+            "Key"    = @{"Value" = "Subsystem powershell pwsh.exe -sshs -NoLogo -NoProfile"; "Match" = "\s*Subsystem\s*powershell\s*pwsh\.exe\s*-sshs\s*-NoLogo\s*-NoProfile\s*" }; 
             "Action" = "Distinct"; 
         }
         @{
