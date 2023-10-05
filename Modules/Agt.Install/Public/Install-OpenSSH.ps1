@@ -68,40 +68,33 @@ function Install-OpenSsh {
     }
 
     # remove old capabilities
-    if ((Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*").State -eq "Installed") {
-        foreach ($item in (Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Server*")) {
-            Remove-WindowsCapability -Online  -Name  $item.Name
-        }
-    }
+    $windowsCapabilities = @("OpenSSH.Server*", "OpenSSH.Client*")
 
-    if ((Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Client*").State -eq "Installed") {
-        foreach ($item in (Get-WindowsCapability -Online | Where-Object Name -like "OpenSSH.Client*")) {
-            Remove-WindowsCapability -Online  -Name  $item.Name
+    foreach ($item  in $windowsCapabilities) {
+        $caps = Get-WindowsCapability -Online | Where-Object Name -like $item
+        foreach ($cap in $caps) {
+            if ($cap.State -eq "Installed") {
+                Remove-WindowsCapability -Online  -Name  $cap.Name
+            }
         }
     }
 
     # change default ssh shell to powershell
+    # "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
     $pwshPath = "C:\Program Files\PowerShell\7\pwsh.exe"
     if (Test-Path $pwshPath -PathType Leaf) {
         if (!(Test-Path "HKLM:\SOFTWARE\OpenSSH")) {
             New-Item 'HKLM:\Software\OpenSSH' -Force
         }
-        #New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe" -PropertyType String –Force
-        #New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value "C:\Program Files\PowerShell\7\pwsh.exe" -PropertyType String –Force
-        New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value $pwshPath -PropertyType String -Force
+        New-ItemProperty -Path "HKLM:\SOFTWARE\OpenSSH" -Name DefaultShell -Value $pwshPath -PropertyType String -Force | Out-Null
     }
 
-    #setup sshd service startup type and start it
-    if (Get-Service  sshd -ErrorAction SilentlyContinue) {
-        # if((get-service sshd).StartType -eq [System.ServiceProcess.ServiceStartMode]::Manual)
-        Get-Service -Name sshd | Set-Service -StartupType 'Automatic'
-        Start-Service sshd
-    }
-
-    #setup ssh-agent service startup type and start it
-    if (Get-Service  ssh-agent -ErrorAction SilentlyContinue) {
-        # if((get-service ssh-agent).StartType -eq [System.ServiceProcess.ServiceStartMode]::Manual)
-        Get-Service -Name ssh-agent | Set-Service -StartupType 'Automatic'
-        Start-Service ssh-agent
+    #setup service startup type and start it
+    $services = @("sshd", "ssh-agent")
+    foreach ($serviceName in $services) {
+        $service = Get-Service -Name $serviceName -ErrorAction SilentlyContinue
+        if ($service) {
+            $service | Set-Service -StartupType 'Automatic' | Start-Service
+        }
     }
 }
