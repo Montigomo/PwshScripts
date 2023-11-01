@@ -11,8 +11,8 @@ function Install-Powershell {
     #>
     [CmdletBinding()]
     param(
-        [switch]$IsWait,
-        [switch]$UsePreview
+        [Parameter(Mandatory = $false)] [switch]$IsWait,
+        [Parameter(Mandatory = $false)] [switch]$UsePreview
     )
     $IsAdmin = [bool]([Security.Principal.WindowsIdentity]::GetCurrent().Groups -match 'S-1-5-32-544')
     if ( -not $IsAdmin) {

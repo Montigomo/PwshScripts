@@ -18,22 +18,24 @@ function Install-7zip {
 
     [bool]$IsOs64 = $([System.IntPtr]::Size -eq 8)
     [version]$localVersion = [System.Version]::new(0, 0, 0)
-
+    
     $filePath = "C:\Program Files\7-Zip\7z.exe"
-
+    #$filePath = if (Test-Path $filePath) { $filePath } else { $null } 
+    
     if (Test-path "HKLM:\SOFTWARE\7-Zip") {
         $value = Get-ItemProperty "HKLM:\SOFTWARE\7-Zip\" -Name "Path" -ErrorAction SilentlyContinue
         if ($value) {
             $filePath = "{0}7z.exe" -f $value.Path
         }
     }
-
+    
     $fileFolder = [System.IO.Path]::GetDirectoryName($filePath);
     if (Test-Path $filePath) {
         $verinfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($filePath)
         #$localVersion = $verinfo.ProductVersion
+        $null = [System.Version]::TryParse($verinfo.ProductVersion, [ref]$localVersion);
     }
-
+    
     if (-not (Get-Module -ListAvailable -Name "PowerHTML")) {
         Install-Module -Name "PowerHTML"
     }
@@ -42,14 +44,14 @@ function Install-7zip {
         Write-Error "Can't detect or install reqired module PowerHTML"
         throw "This is an error." 
     }
-
+    
     $htmlDoc = ConvertFrom-Html -URI "https://7-zip.org/download.html"
-
+    
     $downloadUrix64 = $null
     $downloadUri = $null
-
+    
     [version]$remoteVersion = [System.Version]::new(0, 0, 0)
-
+    
     $node = $htmlDoc.SelectSingleNode('/html[1]/body[1]/table[1]//tr[1]/td[2]/p[1]/b')
     if ($node) {
         $nodeText = $node.InnerText
@@ -68,18 +70,24 @@ function Install-7zip {
     if ($node) {
         $downloadUri = "https://7-zip.org/{0}" -f $node.Attributes["href"].Value
     }
-
+    
     if ($localVersion -ge $remoteVersion) {
         return;
     }
-
+    
     $requestUri = $downloadUrix64
     if (-not $IsOs64) {
         $requestUri = $downloadUri
     }
-
+    
     $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
     Invoke-WebRequest -OutFile $tmp $requestUri
-    
-    Install-MsiPackage -FilePath $tmp.FullName -PackageParams "/q"
+        
+        
+    $IsWait = $true
+    $FilePath = $tmp.FullName
+    $PackageParams = "/q"
+    $logFile = '{0}-{1}.log' -f $FilePath, $(get-date -Format yyyyMMddTHHmmss)
+    $MSIArguments = '/i "{0}" {1} /qn /norestart /L*v {2}' -f $FilePath, $PackageParams, $logFile
+    Start-Process "msiexec.exe" -ArgumentList $MSIArguments -NoNewWindow -Wait:$IsWait
 }

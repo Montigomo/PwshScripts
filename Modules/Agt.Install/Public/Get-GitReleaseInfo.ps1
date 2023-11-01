@@ -1,14 +1,21 @@
 function Get-GitReleaseInfo {
     <#
     .SYNOPSIS
-        Get github project release uri
+        Get github project release uri.
     .DESCRIPTION
-    .PARAMETER Repouri
-        Uri github project
-    .PARAMETER Pattern
-        Regex pattern for search release version
-    .PARAMETER Version
-        [switch] Return release Version or Uri
+        Get latest version of product (software) that hosted on github, uri for download.
+    .PARAMETER repository uri
+        [mandatory][string] github project url
+    .PARAMETER ReleasePattern
+        [mandatory][string] Regex pattern for search release version
+    .PARAMETER VersionPattern
+        [string] Return release Version or Uri
+    .PARAMETER LocalVersion
+        [System.Version] local(installed) version of product
+    .PARAMETER RemoteVersion
+        [ref] the remote version of the product. This version value will be retrieved in the function and assigned to this variable.
+    .PARAMETER UsePreview
+        [switch] Use preview version product
     #>
     param(
         [Parameter(Mandatory = $true)] [string]$Uri,
