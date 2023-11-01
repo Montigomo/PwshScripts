@@ -46,7 +46,7 @@ function Enable-WakeOnLan {
 
 $interface = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.ifAlias -eq "Ethernet" }
 
-Config-WakeOnLan -NetAdapter $interface -Verbose
+Enable-WakeOnLan -NetAdapter $interface -Verbose
 
 Disable-FastStartUp
 
