@@ -10,6 +10,33 @@ Set-StrictMode -Version 3.0
 # https://learn.microsoft.com/en-us/visualstudio/install/create-a-network-installation-of-visual-studio?view=vs-2022#download-the-visual-studio-bootstrapper-to-create-the-layout
 # https://learn.microsoft.com/en-us/visualstudio/install/command-line-parameter-examples?view=vs-2022
 
+[hashtable]$assets = @{
+    "2017" = @{
+        "version" = 15
+        "urls"    = @{
+            "com" = "https://aka.ms/vs/15/release/vs_community.exe"
+            "pro" = "https://aka.ms/vs/15/release/vs_professional.exe"
+            "ent" = "https://aka.ms/vs/15/release/vs_enterprise.exe"
+        }
+    }
+    "2019" = @{
+        "version" = 16
+        "urls"    = @{
+            "com" = "https://aka.ms/vs/16/release/vs_community.exe"
+            "pro" = "https://aka.ms/vs/16/release/vs_professional.exe"
+            "ent" = "https://aka.ms/vs/16/release/vs_enterprise.exe"
+        }
+    }        
+    "2022" = @{
+        "version" = 17
+        "urls"    = @{
+            "com" = "https://aka.ms/vs/17/release/vs_community.exe"
+            "pro" = "https://aka.ms/vs/17/release/vs_professional.exe"
+            "ent" = "https://aka.ms/vs/17/release/vs_enterprise.exe"
+        }
+    }        
+}
+
 function Get-VSStudio {
     [CmdletBinding()]
     param (
@@ -18,33 +45,6 @@ function Get-VSStudio {
         [Parameter(Mandatory = $false)][string]$FolderPath,
         [Parameter(Mandatory = $false)][switch]$ClearFolder
     )
-
-    [hashtable]$assets = @{
-        "2017" = @{
-            "version" = 15
-            "urls"    = @{
-                "com" = "https://aka.ms/vs/15/release/vs_community.exe"     # +
-                "pro" = "https://aka.ms/vs/15/release/vs_professional.exe"  # +
-                "ent" = "https://aka.ms/vs/15/release/vs_enterprise.exe"    # +
-            }
-        }
-        "2019" = @{
-            "version" = 16
-            "urls"    = @{
-                "com" = "https://aka.ms/vs/16/release/vs_community.exe"     # 
-                "pro" = "https://aka.ms/vs/16/release/vs_professional.exe"  # 
-                "ent" = "https://aka.ms/vs/16/release/vs_enterprise.exe"    # +
-            }
-        }        
-        "2022" = @{
-            "version" = 17
-            "urls"    = @{
-                "com" = "https://aka.ms/vs/17/release/vs_community.exe"     # 
-                "pro" = "https://aka.ms/vs/17/release/vs_professional.exe"  # 
-                "ent" = "https://aka.ms/vs/17/release/vs_enterprise.exe"    # 
-            }
-        }        
-    }
 
     if (-not $FolderPath) {
         $FolderPath = $PSScriptRoot
@@ -119,32 +119,6 @@ $XAML.SelectNodes("//*[@Name]") | %{Set-Variable -Name ($_.Name) -Value $Form.Fi
 #endregion
 
 #region XAML Controlls
-[hashtable]$assets = @{
-    "2017" = @{
-        "version" = 15
-        "urls"    = @{
-            "com" = "https://aka.ms/vs/15/release/vs_community.exe"
-            "pro" = "https://aka.ms/vs/15/release/vs_professional.exe"
-            "ent" = "https://aka.ms/vs/15/release/vs_enterprise.exe"
-        }
-    }
-    "2019" = @{
-        "version" = 16
-        "urls"    = @{
-            "com" = "https://aka.ms/vs/16/release/vs_community.exe"
-            "pro" = "https://aka.ms/vs/16/release/vs_professional.exe"
-            "ent" = "https://aka.ms/vs/16/release/vs_enterprise.exe"
-        }
-    }        
-    "2022" = @{
-        "version" = 17
-        "urls"    = @{
-            "com" = "https://aka.ms/vs/17/release/vs_community.exe"
-            "pro" = "https://aka.ms/vs/17/release/vs_professional.exe"
-            "ent" = "https://aka.ms/vs/17/release/vs_enterprise.exe"
-        }
-    }        
-}
 
 [string]$IconB64=@"
 iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAJIElEQVR4nOWbeYxT1xXGf/fZw4w9MKxmSWj
