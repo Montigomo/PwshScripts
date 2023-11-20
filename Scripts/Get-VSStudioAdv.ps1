@@ -50,8 +50,6 @@ function Get-VSStudio {
         $FolderPath = $PSScriptRoot
     }
 
-    #$src = ($sources | Out-GridView -Title 'Select destination path' -OutputMode Single)
-
     if ( $assets.Keys -inotcontains $Version) {
         Write-Host "Can't find $Version vs version" -ForegroundColor Red
         return
@@ -79,6 +77,12 @@ function Get-VSStudio {
     Invoke-WebRequest -Uri $url -OutFile $installerPath
 
     . $installerPath --layout $layoutPath --lang en-US
+
+    Start-Sleep -Seconds 3
+
+    $shortcutPath = "$DownLoadFolderPath\setup.lnk"
+    $targetPath = "components\vs_setup.exe"
+    New-Item -ItemType SymbolicLink -Path $shortcutPath -Target $targetPath
 }
 
 #endregion
@@ -204,7 +208,7 @@ $btnStart.Add_Click({
 $btnSelectFolder.Add_Click({
     $folderDialog = New-Object -TypeName Microsoft.Win32.OpenFolderDialog
     $folderDialog.Title = "Select Folder"
-    $folderDialog.InitialDirectory = "D:\temp\3"
+    #$folderDialog.InitialDirectory = "$PSScriptRoot"
     if ($folderDialog.ShowDialog())
     {
         $folderName = $folderDialog.FolderName;
