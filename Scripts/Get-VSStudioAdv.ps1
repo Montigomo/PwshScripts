@@ -5,8 +5,6 @@ Set-StrictMode -Version 3.0
 
 #region Functions
 
-Set-StrictMode -Version 3.0
-
 # https://learn.microsoft.com/en-us/visualstudio/install/create-a-network-installation-of-visual-studio?view=vs-2022#download-the-visual-studio-bootstrapper-to-create-the-layout
 # https://learn.microsoft.com/en-us/visualstudio/install/command-line-parameter-examples?view=vs-2022
 
@@ -45,7 +43,27 @@ function Get-VSStudio {
         [Parameter(Mandatory = $false)][string]$FolderPath,
         [Parameter(Mandatory = $false)][switch]$ClearFolder
     )
-
+    <#
+    .SYNOPSIS
+        Download Visual Studio (2017[15],2019[16],2022[17]) all components and workloads to selected folder.
+    .DESCRIPTION
+    .PARAMETER Version
+        [string] Visual Studio version. Allowed values "2017", "2019", "2022"
+    .PARAMETER Edition
+        [string] Visual Studio edition. Allowed values "com" (community), "pro" (professiaonal), "ent" (enterprise)
+    .PARAMETER FolderPath
+        [string] Destination folder path. To where it will be ddownloaded
+    .PARAMETER ClearFolder
+        [switch] If set all content of destination folder will be deleted
+    .INPUTS
+        none
+    .OUTPUTS
+        none
+    .NOTES
+    .EXAMPLE
+        Get-VSStudio -Version 2022 -Edition "pro" -FolderPath "D:\vs\20222\pro" -ClearFolder
+    .LINK
+    #>
     if (-not $FolderPath) {
         $FolderPath = $PSScriptRoot
     }
@@ -65,14 +83,16 @@ function Get-VSStudio {
     $installerPath = [System.IO.Path]::GetFullPath("$FolderPath\$filename")
     $layoutPath = [System.IO.Path]::GetFullPath("$FolderPath\components")
 
+    if (-not (Test-Path -Path $FolderPath  -PathType Container)) {
+        New-Item -ItemType Directory -Force -Path $layoutPath
+    }
+
     if ($ClearFolder) {
         Remove-Item -Path "$FolderPath\*" -Force -Confirm:$false -Recurse
     }
-    elseif (Test-Path $installerPath) {
+    elseif (Test-Path-Path $installerPath -PathType Leaf) {
         Remove-Item -Path $installerPath -Force -Confirm:$false
     }
-
-    #New-Item -ItemType Directory -Force -Path $layoutPath
 
     Invoke-WebRequest -Uri $url -OutFile $installerPath
 
@@ -92,7 +112,7 @@ function Get-VSStudio {
 
 Add-Type -AssemblyName PresentationFramework, System.Drawing, System.Windows.Forms, WindowsFormsIntegration
 
-[xml]$XAML= @'
+[xml]$XAML = @'
 
 <Window x:Name="wndMain" x:Class="Demo_App_1.Window1"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -113,18 +133,18 @@ Add-Type -AssemblyName PresentationFramework, System.Drawing, System.Windows.For
     </Grid>
 </Window>
 
-'@ -replace 'mc:Ignorable="d"','' -replace "x:N",'N' -replace '^<Win.*', '<Window' -replace 'x:Class="\S+"','' -replace 'Icon="\S+"','' -replace '(SelectionChanged|Click)="\S+"',''
+'@ -replace 'mc:Ignorable="d"', '' -replace "x:N", 'N' -replace '^<Win.*', '<Window' -replace 'x:Class="\S+"', '' -replace 'Icon="\S+"', '' -replace '(SelectionChanged|Click)="\S+"', ''
 
 #Read XAML
-$reader=(New-Object System.Xml.XmlNodeReader $XAML)
-$Form=[Windows.Markup.XamlReader]::Load($reader)
-$XAML.SelectNodes("//*[@Name]") | %{Set-Variable -Name ($_.Name) -Value $Form.FindName($_.Name)}
+$reader = (New-Object System.Xml.XmlNodeReader $XAML)
+$wndMain = [Windows.Markup.XamlReader]::Load($reader)
+$XAML.SelectNodes("//*[@Name]") | % { Set-Variable -Name ($_.Name) -Value $wndMain.FindName($_.Name) }
 
 #endregion
 
 #region XAML Controlls
 
-[string]$IconB64=@"
+[string]$IconB64 = @"
 iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAJIElEQVR4nOWbeYxT1xXGf/fZw4w9MKxmSWj
 YlAUESmghQBbaRgqYhCVVhRrhYWubcSiaKiCVra1aNUtLFaUplBIPgRKYiYpo2ZOaoUopJZR12BeFnZCymGUWxh4/+73bPzweZjz2eHvPiZTvL/
 vd63Pu/c53n+9yrpBS8nWG9ctuwJeNnBLg87odwADgQaAzUNRY5AdqgGvAReCKw+nJiTSFmUPA53U/CrwAfBt4EuiV4k/rgEPAbsAL/Nfh9Ohmt
@@ -156,67 +176,66 @@ jN4fSkPf6yujBxdWvJEEVQVrEnOPLI5dye7gCMH9ruxhN9rLMHTl7x90xtZH1lZu3iGdZdZ0Lv+FVeBU
 7EWw0yLY/pc1FVndDGsLphIQC5fLVaQIHtMlDkXQXVGwAwgIhDR8VgWfLjm3trwiq3GdDnJKwFcRX/vb4/8HB/60ZhINKCsAAAAASUVORK5CYII=
 "@
 
-$bitmap=New-Object System.Windows.Media.Imaging.BitmapImage
+$bitmap = New-Object System.Windows.Media.Imaging.BitmapImage
 $bitmap.BeginInit()
-$bitmap.StreamSource=[System.IO.MemoryStream][System.Convert]::FromBase64String($IconB64)
+$bitmap.StreamSource = [System.IO.MemoryStream][System.Convert]::FromBase64String($IconB64)
 $bitmap.EndInit()
 $bitmap.Freeze()
 
-$Form.Icon=$bitmap
+$wndMain.Icon = $bitmap
 
 $cmbVersion.Items.Clear()
 $cmbEdition.Items.Clear()
 
-function FillCmbEditions{
-    $selectedVersion = $cmbVersion.SelectedItem.ToString() -replace ' (\S+)',''
-    if($selectedVersion){
+function FillCmbEditions {
+    $selectedVersion = $cmbVersion.SelectedItem.ToString() -replace ' (\S+)', ''
+    if ($selectedVersion) {
         $cmbEdition.ItemsSource = $assets[$selectedVersion]["urls"].Keys
         $cmbEdition.SelectedIndex = 0
     }
 }
 
-$cmbVersion.ItemsSource = ($assets.Keys | Sort-Object -Descending | ForEach-Object { "$_ ($($assets[$_].version))"})
+$cmbVersion.ItemsSource = ($assets.Keys | Sort-Object -Descending | ForEach-Object { "$_ ($($assets[$_].version))" })
 $cmbVersion.SelectedIndex = 0
 $cmbVersion.add_SelectionChanged({
-    FillCmbEditions
-})
+        FillCmbEditions
+    })
 
 FillCmbEditions
 
 $btnStart.Add_Click({
-    $VsVersion = $cmbVersion.SelectedItem.ToString() -replace ' (\S+)',''
-    $VsEdition = $cmbEdition.SelectedItem.ToString()
-    $DownLoadFolderPath = $txtFolderPath.Text
+        $VsVersion = $cmbVersion.SelectedItem.ToString() -replace ' (\S+)', ''
+        $VsEdition = $cmbEdition.SelectedItem.ToString()
+        $DownLoadFolderPath = $txtFolderPath.Text
 
-    if(-not $DownLoadFolderPath){
-        $lblInfo.Foreground = "#FFFF5151"
-        $lblInfo.Content = "Select Destination folder."
-        $txtFolderPath.Focus()
-        return
-    }
+        if (-not $DownLoadFolderPath) {
+            $lblInfo.Foreground = "#FFFF5151"
+            $lblInfo.Content = "Select Destination folder."
+            $txtFolderPath.Focus()
+            return
+        }
 
-    $VsUrl = $assets[$VsVersion]["urls"][$VsEdition]
+        $VsUrl = $assets[$VsVersion]["urls"][$VsEdition]
 
-    $lblInfo.Foreground = "#FF007800"
-    $lblInfo.Content = "The download is going to start. $VsUrl"
+        $lblInfo.Foreground = "#FF007800"
+        $lblInfo.Content = "The download is going to start. $VsUrl"
 
-    Get-VSStudio -Version $VsVersion -Edition $VsEdition -FolderPath $DownLoadFolderPath -ClearFolder:($chkClearFolder.IsChecked)
+        Get-VSStudio -Version $VsVersion -Edition $VsEdition -FolderPath $DownLoadFolderPath -ClearFolder:($chkClearFolder.IsChecked)
 
-    $Form.Close()
-})
+        $wndMain.Close()
+    })
 
 $btnSelectFolder.Add_Click({
-    $folderDialog = New-Object -TypeName Microsoft.Win32.OpenFolderDialog
-    $folderDialog.Title = "Select Folder"
-    #$folderDialog.InitialDirectory = "$PSScriptRoot"
-    if ($folderDialog.ShowDialog())
-    {
-        $folderName = $folderDialog.FolderName;
-        $txtFolderPath.Text=$folderName
-        $lblInfo.Content = ""
-    }
-})
+        $folderDialog = New-Object -TypeName Microsoft.Win32.OpenFolderDialog
+        $folderDialog.Title = "Select Folder"
+        #$folderDialog.InitialDirectory = "$PSScriptRoot"
+        if ($folderDialog.ShowDialog()) {
+            $folderName = $folderDialog.FolderName;
+            $txtFolderPath.Text = $folderName
+            $lblInfo.Content = ""
+        }
+    })
 
 #endregion
 
-$Form.ShowDialog()
+$wndMain.ShowDialog()
