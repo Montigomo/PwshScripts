@@ -45,8 +45,9 @@ function Get-VSStudio {
     )
     <#
     .SYNOPSIS
-        Download Visual Studio (2017[15],2019[16],2022[17]) all components and workloads to selected folder.
+        Download Visual Studio packages.
     .DESCRIPTION
+        Download Visual Studio (2017[15],2019[16],2022[17]) all components and workloads to selected folder.
     .PARAMETER Version
         [string] Visual Studio version. Allowed values "2017", "2019", "2022"
     .PARAMETER Edition
@@ -236,6 +237,6 @@ $btnSelectFolder.Add_Click({
         }
     })
 
-#endregion
-
 $wndMain.ShowDialog()
+
+#endregion
