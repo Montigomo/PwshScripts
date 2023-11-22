@@ -31,7 +31,7 @@ function Install-Far {
         Invoke-WebRequest -Uri $downloadUri -OutFile $tmp
         $logFile = '{0}-{1}.log' -f $tmp.FullName, (get-date -Format yyyyMMddTHHmmss)
         $arguments = "/i ""{0}"" /quiet /norestart /L*v ""{1}""" -f $tmp.FullName, $logFile
-        Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow -Wait:$IsWait        
+        Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow -Wait:$IsWait
         #   set path environment variable
         Set-EnvironmentVariable -Value $farFolder -Scope "Machine" -Action "Add"
     }
