@@ -1,13 +1,22 @@
 
 function DoConfig {
+    <#
+    .SYNOPSIS
+        Edit ssh config file
+    .DESCRIPTION
+        Edit ssh config file
+    .PARAMETER SrcFile
+        [string] 
+    .PARAMETER DstFile
+        [string] 
+    .PARAMETER Patterns
+        [hashtable[]]
+    #>    
     [CmdletBinding()]
     param (
-        [Parameter()]
-        [string]$SrcFile,
-        [Parameter()]
-        [string]$DstFile,
-        [Parameter()]
-        [hashtable[]]$Patterns
+        [Parameter(Mandatory = $false)] [string]$SrcFile,
+        [Parameter(Mandatory = $false)] [string]$DstFile,
+        [Parameter(Mandatory = $false)] [hashtable[]]$Patterns
     )
 
     function GetMatch {

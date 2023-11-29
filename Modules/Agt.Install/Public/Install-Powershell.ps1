@@ -5,9 +5,9 @@ function Install-Powershell {
     .DESCRIPTION
         Install latest Powershell core
     .PARAMETER IsWait
-        Waits for the installation process to complete
+        [switch] Waits for the installation process to complete
     .PARAMETER UsePreview
-        Use or not beta versions
+        [switch] Use or not beta versions
     #>
     [CmdletBinding()]
     param(

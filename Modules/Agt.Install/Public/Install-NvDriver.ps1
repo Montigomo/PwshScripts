@@ -6,14 +6,16 @@ function Install-NvDriver {
         Install latest Nvidia driver
     .DESCRIPTION
         Install latest Nvidia driver
+    .PARAMETER Language
+        [string] Language [ValidateSet("en-us","en-uk","en-in","cn","tw","jp","kr","de","es","la","fr","it","pl","br","ru","tr","int")]
     .PARAMETER DCH
-        "DCH" refers to drivers developed according to Microsoft's DCH driver design principles;
+        [switch] "DCH" refers to drivers developed according to Microsoft's DCH driver design principles;
         DCH drivers are built with requisite Declarative, Componentized, Hardware Support App elements. DCH drivers are installed on most new desktop and mobile workstation systems.
         "Standard" refers to driver packages that predate the DCH driver design paradigm. Standard drivers are for those who have not yet transitioned to contemporary DCH drivers, or require these drivers to support older products.
         DCH drivers can be installed over a system that presently has a Standard driver, and vice versa.
         To confirm the type of driver that is presently installed on a system, locate Driver Type under the System Information menu in the NVIDIA Control Panel.
     .PARAMETER Force
-        Force - install(reinstall) the driver even if remote version is the same
+        [switch] Force - install(reinstall) the driver even if remote version is the same
     #>
     [CmdletBinding()]
     param (
