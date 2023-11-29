@@ -9,6 +9,10 @@ function Install-WinRar {
     .OUTPUTS
     .EXAMPLE
     .LINK
+    .NOTES
+        Author : Agitech 
+        Version : 1.0 
+        Purpose : Get world better    
     #>
     Param
     (   

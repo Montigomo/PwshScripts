@@ -5,6 +5,10 @@ function Install-Far {
     .DESCRIPTION
     .PARAMETER IsWait
     .PARAMETER UsePreview
+    .NOTES
+        Author : Agitech 
+        Version : 1.0 
+        Purpose : Get world better    
     #>
     [CmdletBinding()]
     param(

@@ -61,6 +61,9 @@ function Get-VSStudio {
     .OUTPUTS
         none
     .NOTES
+        Author : Agitech 
+        Version : 1.0 
+        Purpose : Get world better
     .EXAMPLE
         Get-VSStudio -Version 2022 -Edition "pro" -FolderPath "D:\vs\20222\pro" -ClearFolder
     .LINK

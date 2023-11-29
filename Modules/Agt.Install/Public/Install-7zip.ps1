@@ -6,6 +6,10 @@ function Install-7zip {
         Install 7zip archiver
     .PARAMETER InstallFolder
        Folder to where install 7zip (optional)
+    .NOTES
+        Author : Agitech 
+        Version : 1.0 
+        Purpose : Get world better       
     #>
     Param
     (   

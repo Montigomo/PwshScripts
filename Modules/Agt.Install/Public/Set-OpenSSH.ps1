@@ -11,6 +11,10 @@ function DoConfig {
         [string] 
     .PARAMETER Patterns
         [hashtable[]]
+    .NOTES
+        Author : Agitech 
+        Version : 1.0 
+        Purpose : Get world better        
     #>    
     [CmdletBinding()]
     param (

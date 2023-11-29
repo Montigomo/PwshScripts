@@ -5,12 +5,15 @@ function Install-MsiPackage{
     .PARAMETER FilePath
         Specifies path to msi package
     .PARAMETER PackageParams
-        Specific msi package parameters
+        Specific msi package 
+    .NOTES
+        Author : Agitech 
+        Version : 1.0 
+        Purpose : Get world better        
     #>
     Param
     (   
-        [Parameter(Mandatory=$true)]
-        [string]$FilePath,
+        [Parameter(Mandatory=$true)][string]$FilePath,
         [string]$PackageParams = ""
     )
     $DataStamp = get-date -Format yyyyMMddTHHmmss

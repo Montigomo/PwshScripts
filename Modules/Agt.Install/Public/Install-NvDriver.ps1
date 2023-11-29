@@ -16,6 +16,10 @@ function Install-NvDriver {
         To confirm the type of driver that is presently installed on a system, locate Driver Type under the System Information menu in the NVIDIA Control Panel.
     .PARAMETER Force
         [switch] Force - install(reinstall) the driver even if remote version is the same
+    .NOTES
+        Author : Agitech 
+        Version : 1.0 
+        Purpose : Get world better
     #>
     [CmdletBinding()]
     param (

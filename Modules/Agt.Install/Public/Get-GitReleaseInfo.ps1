@@ -18,6 +18,10 @@ function Get-GitReleaseInfo {
         [switch] Use preview version product
     .EXAMPLE
         Get-GitReleaseInfo -Uri "https://api.github.com/repos/powershell/powershell/" -ReleasePattern "PowerShell-\d.\d.\d-win-x64.msi" -LocalVersion ([System.Version]::Parse("0.0.0")  -RemoteVersion ([ref]$remoteVersion)
+    .NOTES
+        Author : Agitech 
+        Version : 1.0 
+        Purpose : Get world better        
     #>
     param(
         [Parameter(Mandatory = $true)] [string]$Uri,

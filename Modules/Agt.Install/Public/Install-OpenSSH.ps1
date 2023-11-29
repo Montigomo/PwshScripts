@@ -6,6 +6,10 @@ function Install-OpenSsh {
         Install OpenSsh
     .PARAMETER Zip
         Install from msi or zip
+    .NOTES
+        Author : Agitech 
+        Version : 1.0 
+        Purpose : Get world better        
     #>
     [CmdletBinding()]
     param (

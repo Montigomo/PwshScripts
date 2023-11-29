@@ -8,6 +8,10 @@ function Install-Powershell {
         [switch] Waits for the installation process to complete
     .PARAMETER UsePreview
         [switch] Use or not beta versions
+    .NOTES
+        Author : Agitech 
+        Version : 1.0 
+        Purpose : Get world better        
     #>
     [CmdletBinding()]
     param(
