@@ -47,9 +47,13 @@ function Install-Powershell {
         Write-Host - "Updating pwsh. Local version $localVersion  Remote version $remoteVersion."
         $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
         Invoke-WebRequest -OutFile $tmp $downloadUri
-        $logFile = '{0}-{1}.log' -f $tmp.FullName, (get-date -Format yyyyMMddTHHmmss)
-        # https://learn.microsoft.com/en-us/powershell/scripting/install/installing-powershell-on-windows?view=powershell-7.3#install-the-msi-package-from-the-command-line
-        $arguments = "/i {0} /quiet ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 ADD_PATH=1 /norestart /L*v {1}" -f $tmp.FullName, $logFile
-        Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow -Wait:$IsWait
+        #region msi section
+        $msiPath = $tmp.FullName
+        $msiIsWait = $IsWait
+        $logFile = '{0}-{1}.log' -f $msiPath, (get-date -Format yyyyMMddTHHmmss)
+        $packageOptions = "ADD_EXPLORER_CONTEXT_MENU_OPENPOWERSHELL=1 ADD_FILE_CONTEXT_MENU_RUNPOWERSHELL=1 ENABLE_PSREMOTING=1 REGISTER_MANIFEST=1 USE_MU=1 ENABLE_MU=1 ADD_PATH=1"
+        $arguments = "/i {0} {1} /quiet /norestart /L*v {2}" -f $msiPath, $packageOptions, $logFile
+        Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow -Wait:$msiIsWait
+        #endregion msi section
     }
 }

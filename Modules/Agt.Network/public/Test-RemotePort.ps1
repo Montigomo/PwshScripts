@@ -1,13 +1,9 @@
 function Test-RemotePort {
   param
   (
-    [Parameter(Mandatory)]
-    [int]
-    $Port ,
-    [string]
-    $ComputerName = $env:COMPUTERNAME,
-    [int ]
-    $TimeoutMilliSec = 1000
+    [Parameter(Mandatory)][int]$Port ,
+    [string]$ComputerName = $env:COMPUTERNAME,
+    [int]$TimeoutMilliSec = 1000
   )
     
   try {

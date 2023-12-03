@@ -67,7 +67,7 @@ function Install-OpenSsh {
         if ($downloadUri) {
             $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
             Invoke-WebRequest -OutFile $tmp $downloadUri
-            Install-MsiPackage -FilePath $tmp.FullName -PackageParams ""
+            Install-MsiPackage MsiPackagePath $tmp.FullName
         }
     }
 

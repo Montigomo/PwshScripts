@@ -1,7 +1,11 @@
 
 function Get-Hosts{
     param(
-        [string]$HostsFilePath = "$env:windir\System32\drivers\etc\hosts"
+        [Parameter(Mandatory=$false)]
+        [string]$HostsFilePath = "$env:windir\System32\drivers\etc\hosts",
+        [Parameter(Mandatory=$false)]
+        [switch]$Full
+
     )
     $regexip4 = "(?<ip>(((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))|(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])))";
     
@@ -27,7 +31,11 @@ function Get-Hosts{
         $hostsDictionary.Add($count, @{"line" = $line; "host" = $hosts; "ip" = $ip});
         $count++;
 	}
-    return $hostsDictionary;
+    $result = $hostsDictionary;
+    if(-not $Full){
+        $result = $hostsDictionary.GetEnumerator() | Where-Object{ $_.Value.ip } | Select-Object -ExpandProperty Value | Select-Object -Property line
+    }
+    return $result;
 }
 
 function Write-Hosts
@@ -61,10 +69,8 @@ function Add-Host
 {
     param
     (
-        [Parameter(Mandatory=$true)]        
-        [string]$HostIp,
-        [Parameter(Mandatory=$true)]        
-        [string]$HostName,
+        [Parameter(Mandatory=$true)] [string]$HostIp,
+        [Parameter(Mandatory=$true)] [string]$HostName,
         [string]$HeaderLine,
         [string]$Comment,
         [string]$HostFileDestination = "$env:windir\System32\drivers\etc\hosts"

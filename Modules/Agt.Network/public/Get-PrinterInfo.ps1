@@ -1,9 +1,7 @@
 function Get-PrinterInfo {
     param
     (
-        [Parameter(Mandatory)]
-        [string]
-        $ComputerName
+        [Parameter(Mandatory)][string]$ComputerName
     )
       
     $oid = @{

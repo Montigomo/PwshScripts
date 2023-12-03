@@ -12,9 +12,10 @@ function Install-Far {
     #>
     [CmdletBinding()]
     param(
-        [switch]$IsWait,
-        [switch]$UsePreview
+        [Parameter(Mandatory = $false)] [switch]$IsWait,
+        [Parameter(Mandatory = $false)] [switch]$UsePreview
     )
+
     $farPath = "C:\Program Files\Far Manager\Far.exe";
     $farFolder = [System.IO.Path]::GetDirectoryName($farPath);
     [bool]$IsOs64 = $([System.IntPtr]::Size -eq 8);
@@ -33,11 +34,15 @@ function Install-Far {
     if (($localVersion -lt $remoteVersion) -and ($downloadUri)) {
         $tmp = New-TemporaryFile | Rename-Item -NewName { $_ -replace 'tmp$', 'msi' } -PassThru
         Invoke-WebRequest -Uri $downloadUri -OutFile $tmp
-        $logFile = '{0}-{1}.log' -f $tmp.FullName, (get-date -Format yyyyMMddTHHmmss)
-        $arguments = "/i ""{0}"" /quiet /norestart /L*v ""{1}""" -f $tmp.FullName, $logFile
-        Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow -Wait:$IsWait
+        #region msi section
+        $msiPath = $tmp.FullName
+        $msiIsWait = $IsWait
+        $logFile = '{0}-{1}.log' -f $msiPath, (get-date -Format yyyyMMddTHHmmss)
+        $packageOptions = "ADDLOCAL=ALL"
+        $arguments = "/i {0} {1} /quiet /norestart /L*v {2}" -f $msiPath, $packageOptions, $logFile
+        Start-Process "msiexec.exe" -ArgumentList $arguments -NoNewWindow -Wait:$msiIsWait
+        #endregion msi section
         #   set path environment variable
         Set-EnvironmentVariable -Value $farFolder -Scope "Machine" -Action "Add"
     }
-
 }
