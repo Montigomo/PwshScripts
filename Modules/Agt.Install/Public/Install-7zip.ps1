@@ -40,14 +40,45 @@ function Install-7zip {
         $null = [System.Version]::TryParse($verinfo.ProductVersion, [ref]$localVersion);
     }
     
-    if (-not (Get-Module -ListAvailable -Name "PowerHTML")) {
-        Install-Module -Name "PowerHTML"
+    function Get-ModuleAdvanced {
+        param (
+            [Parameter(Mandatory = $true)] [string]$ModuleName
+        )
+    
+        function Prepare {
+            #[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor  [Net.SecurityProtocolType]::Tls12
+            if (-not ($np = Get-PackageProvider | Where-Object { $_.Name -ieq "nuget" }) -or ($np.Version -lt "2.0.0")) {
+                $PackageProvider = 'NuGet'
+                $nugetPackage = Get-PackageProvider -ListAvailable | Where-Object { $_.Name -ieq $PackageProvider }
+                if (-not $nugetPackage) {
+                    Install-PackageProvider -Name $PackageProvider -Confirm:$false -Force | Out-Null
+                }
+            }
+            $RepositorySource = 'PSGallery'
+            if (($psr = Get-PSRepository -Name $RepositorySource) -and ($psr.InstallationPolicy -eq "Untrusted")) {
+                Set-PSRepository -Name $RepositorySource -InstallationPolicy Trusted
+            }
+            if (($pm = get-module PowerShellGet) -and ($pm.Version -lt "2.0.0")) {
+                Install-Module PowerShellGet -Force -AllowClobber
+            }
+        }
+    
+        Prepare
+    
+        if ((-not (Get-Module $ModuleName))) {
+            if (-not (Get-Module -ListAvailable -Name $ModuleName)) {
+                if (Find-Module -Name $ModuleName) {
+                    Install-Module -Name $ModuleName -Force -Verbose
+                }else{
+                    Write-Host "Can't find reqired module $ModuleName" -ForegroundColor DarkYellow
+                }
+            }
+        }
+        Import-Module -Name $ModuleName
+        Write-Host "$ModuleName founded." -ForegroundColor DarkYellow    
     }
-    Import-Module -Name "PowerHTML"
-    if (-not (Get-Module -Name "PowerHTML")) {
-        Write-Error "Can't detect or install reqired module PowerHTML"
-        throw "This is an error." 
-    }
+    
+    Get-ModuleAdvanced -ModuleName "PowerHTML"
     
     $htmlDoc = ConvertFrom-Html -URI "https://7-zip.org/download.html"
     
