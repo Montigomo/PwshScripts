@@ -122,8 +122,7 @@ function Set-OpenSsh {
     #>
     [CmdletBinding()]
     param(
-        [Parameter(Mandatory = $true)]
-        [System.Array]$PublicKeys
+        [Parameter(Mandatory = $true)] [System.Array]$PublicKeys
     )
 
     # set ssh-agent service startup type
@@ -136,21 +135,22 @@ function Set-OpenSsh {
 
     $sshConfigFile = "$env:ProgramData/ssh/sshd_config"
 
-    $sshAuthorizedKeys = @{
-        local       = "$env:USERPROFILE\.ssh\authorized_keys";
+    $sshAuKeyPathItems = @{
+        #[System.IO.Path]::GetFullPath((Join-Path "$PSScriptRoot" "..\.ssh"))
+        local       = "$([System.IO.Path]::GetFullPath([System.IO.Path]::Combine("$PSScriptRoot","..\.ssh")))\authorized_keys";
         globalAdmin = "$env:ProgramData\ssh\administrators_authorized_keys"
     }
 
-    $sshAuthKeys = $sshAuthorizedKeys["local"]
-
-    if (!(Test-Path $sshAuthKeys)) {
-        new-item -Path $sshAuthKeys  -itemtype File -Force
-    }
-
-    if ($sshPublicKeys -is [System.Array]) {
-        foreach ($key in $PublicKeys) {
-            If (!(Select-String -Path $sshAuthKeys -pattern $key -SimpleMatch)) {
-                Add-Content $sshAuthKeys $key
+    foreach ($key in $sshAuKeyPathItems.Keys) {
+        $item = $sshAuKeyPathItems[$key]
+        if (!(Test-Path $item)) {
+            new-item -Path $item  -itemtype File -Force
+        }
+        if ($sshPublicKeys -is [System.Array]) {
+            foreach ($key in $PublicKeys) {
+                If (!(Select-String -Path $item -pattern $key -SimpleMatch)) {
+                    Add-Content $item $key
+                }
             }
         }
     }
@@ -183,16 +183,16 @@ function Set-OpenSsh {
             "Action" = "Distinct"; 
         }
         @{
-            "Key"    = @{"Value" = "Match Group administrators" };
+            "Key"    = @{"Value" = "Match Group administrators"; "Match" = "^\s*{0}.*"};
             "Action" = "Comment"; 
         }
         @{
-            "Key"    = @{"Value" = "AuthorizedKeysFile" };
+            "Key"    = @{"Value" = "AuthorizedKeysFile"; "Match" = "^\s*{0}.*"};
             "Action" = "Comment"; 
-            "After"  = @{"Value" = "Match Group administrators"; "Match" = "\#?\s*{0}.*" }
+            "After"  = @{"Value" = "Match Group administrators"; "Match" = "^\#?\s*{0}.*" }
         }
     )
-    
+  
     $SrcFile = $sshConfigFile
     $DstFile = $sshConfigFile
 
