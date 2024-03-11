@@ -94,7 +94,7 @@ function Get-VSStudio {
     if ($ClearFolder) {
         Remove-Item -Path "$FolderPath\*" -Force -Confirm:$false -Recurse
     }
-    elseif (Test-Path-Path $installerPath -PathType Leaf) {
+    elseif (Test-Path -Path $installerPath -PathType Leaf) {
         Remove-Item -Path $installerPath -Force -Confirm:$false
     }
 
@@ -106,7 +106,7 @@ function Get-VSStudio {
 
     $shortcutPath = "$DownLoadFolderPath\setup.lnk"
     $targetPath = "components\vs_setup.exe"
-    New-Item -ItemType SymbolicLink -Path $shortcutPath -Target $targetPath
+    New-Item -ItemType SymbolicLink -Path $shortcutPath -Target $targetPath -Force
 }
 
 #endregion
